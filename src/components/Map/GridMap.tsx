@@ -1,12 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Map as MapLibreMap, NavigationControl, Marker, type StyleSpecification, type MapLayerMouseEvent } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { FeatureCollection } from 'geojson';
 import { majorPowerPlants, majorTransmissionLines } from '../../data/gridData';
 import type { PowerPlantFeature, TransmissionLineFeature } from '../../data/gridData';
-import { Zap } from 'lucide-react';
 
-// Clean, high-performance, watermark-free Dark Gray Canvas (ESRI)
+// Clean, unwatermarked ESRI Dark Gray Canvas
 const darkMatterStyle: StyleSpecification = {
   version: 8,
   sources: {
@@ -41,42 +40,50 @@ const darkMatterStyle: StyleSpecification = {
       minzoom: 0,
       maxzoom: 20,
       paint: {
-        'raster-opacity': 0.7
+        'raster-opacity': 0.65
       }
     }
   ]
 };
 
-export const GridMap: React.FC = () => {
+interface GridMapProps {
+  selectedPlant: PowerPlantFeature | null;
+  setSelectedPlant: (plant: PowerPlantFeature | null) => void;
+  selectedLine: TransmissionLineFeature | null;
+  setSelectedLine: (line: TransmissionLineFeature | null) => void;
+  voltageFilter: 'all' | '800' | '500';
+  plantTypeFilter: string;
+}
+
+export const GridMap: React.FC<GridMapProps> = ({
+  setSelectedPlant,
+  setSelectedLine,
+  voltageFilter,
+  plantTypeFilter
+}) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
   const markersRef = useRef<Marker[]>([]);
-  const [selectedPlant, setSelectedPlant] = useState<PowerPlantFeature | null>(null);
-  const [selectedLine, setSelectedLine] = useState<TransmissionLineFeature | null>(null);
-  const [voltageFilter, setVoltageFilter] = useState<'all' | '800' | '500'>('all');
-  const [plantTypeFilter, setPlantTypeFilter] = useState<string>('all');
-  const [isReady, setIsReady] = useState<boolean>(false);
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
 
-    // Initialize MapLibre GL instance
+    // Initialize MapLibre GL
     const mapInstance = new MapLibreMap({
       container: mapContainer.current,
       style: darkMatterStyle,
-      center: [-50.0, -14.0], // Center of Brazil
-      zoom: 4.2,
+      center: [-49.5, -14.5], // Center of Brazil
+      zoom: 4.3,
       minZoom: 3.5,
-      maxZoom: 10,
+      maxZoom: 11,
+      pitch: 20,
       attributionControl: false
     });
 
-    mapInstance.addControl(new NavigationControl({ showCompass: true }), 'top-right');
+    mapInstance.addControl(new NavigationControl({ showCompass: true }), 'bottom-right');
 
     const setupLayers = () => {
-      setIsReady(true);
-
-      // Add Transmission Lines GeoJSON
+      // Transmission lines GeoJSON
       const linesGeoJSON: FeatureCollection = {
         type: 'FeatureCollection',
         features: majorTransmissionLines.map((line) => ({
@@ -89,11 +96,7 @@ export const GridMap: React.FC = () => {
             id: line.id,
             name: line.name,
             voltageKV: line.voltageKV,
-            type: line.type,
-            lengthKm: line.lengthKm,
-            from: line.from,
-            to: line.to,
-            concessionaire: line.concessionaire
+            type: line.type
           }
         }))
       };
@@ -104,7 +107,7 @@ export const GridMap: React.FC = () => {
           data: linesGeoJSON
         });
 
-        // 1. Neon Outer Glow for 800kV / 500kV
+        // 1. Neon Outer Glow
         mapInstance.addLayer({
           id: 'lines-glow',
           type: 'line',
@@ -117,7 +120,7 @@ export const GridMap: React.FC = () => {
               500, '#06b6d4',
               '#8b5cf6'
             ],
-            'line-width': ['match', ['get', 'voltageKV'], 800, 10, 500, 6, 4],
+            'line-width': ['match', ['get', 'voltageKV'], 800, 9, 500, 5, 3],
             'line-opacity': 0.35,
             'line-blur': 4
           }
@@ -136,7 +139,7 @@ export const GridMap: React.FC = () => {
               500, '#22d3ee',
               '#c084fc'
             ],
-            'line-width': ['match', ['get', 'voltageKV'], 800, 4, 500, 2.8, 2],
+            'line-width': ['match', ['get', 'voltageKV'], 800, 3.5, 500, 2.2, 1.6],
             'line-opacity': 0.95
           }
         });
@@ -161,7 +164,6 @@ export const GridMap: React.FC = () => {
       }
 
       // Add HTML Pulsing Markers for Power Plants
-      // Clear any existing markers
       markersRef.current.forEach((m) => m.remove());
       markersRef.current = [];
 
@@ -171,23 +173,23 @@ export const GridMap: React.FC = () => {
 
         const colorClass =
           plant.type === 'hidro'
-            ? 'bg-emerald-400 border-emerald-300 text-emerald-400 shadow-emerald-500/50'
+            ? 'bg-emerald-400 border-emerald-300'
             : plant.type === 'solar'
-            ? 'bg-amber-400 border-amber-300 text-amber-400 shadow-amber-500/50'
+            ? 'bg-amber-400 border-amber-300'
             : plant.type === 'eolica'
-            ? 'bg-sky-400 border-sky-300 text-sky-400 shadow-sky-500/50'
+            ? 'bg-sky-400 border-sky-300'
             : plant.type === 'nuclear'
-            ? 'bg-orange-500 border-orange-400 text-orange-400 shadow-orange-500/50'
-            : 'bg-rose-500 border-rose-400 text-rose-400 shadow-rose-500/50';
+            ? 'bg-orange-500 border-orange-400'
+            : 'bg-rose-500 border-rose-400';
 
-        const sizePx = plant.capacityMW >= 10000 ? 20 : plant.capacityMW >= 3000 ? 16 : 13;
+        const sizePx = plant.capacityMW >= 10000 ? 18 : plant.capacityMW >= 3000 ? 14 : 11;
 
         el.innerHTML = `
-          <div style="width: ${sizePx}px; height: ${sizePx}px;" class="rounded-full ${colorClass} border-2 shadow-lg flex items-center justify-center transition-transform hover:scale-150 duration-200">
+          <div style="width: ${sizePx}px; height: ${sizePx}px;" class="rounded-full ${colorClass} border-2 shadow-md flex items-center justify-center transition-transform hover:scale-150 duration-150">
             <div class="w-1.5 h-1.5 rounded-full bg-slate-950"></div>
           </div>
-          <div class="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap px-1.5 py-0.5 rounded bg-slate-950/90 border border-slate-700 text-[10px] font-mono text-slate-200 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl z-30">
-            ${plant.name.split(' ')[1] || plant.name} (${(plant.capacityMW / 1000).toFixed(1)} GW)
+          <div class="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded bg-slate-950/95 border border-slate-700 text-[10px] font-mono text-slate-200 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-2xl z-30">
+            ${plant.name} <span class="text-cyan-400 font-bold">${(plant.capacityMW / 1000).toFixed(1)} GW</span>
           </div>
         `;
 
@@ -206,8 +208,6 @@ export const GridMap: React.FC = () => {
     };
 
     mapInstance.on('load', setupLayers);
-
-    // Fallback if load already fired
     if (mapInstance.loaded()) {
       setupLayers();
     }
@@ -219,11 +219,11 @@ export const GridMap: React.FC = () => {
       mapInstance.remove();
       map.current = null;
     };
-  }, []);
+  }, [setSelectedLine, setSelectedPlant]);
 
-  // Filter line updates
+  // Update line voltage filter
   useEffect(() => {
-    if (!map.current || !isReady) return;
+    if (!map.current || !map.current.loaded()) return;
 
     let lineFilterExpr: any = null;
     if (voltageFilter === '800') {
@@ -236,9 +236,9 @@ export const GridMap: React.FC = () => {
       map.current.setFilter('lines-main', lineFilterExpr);
       map.current.setFilter('lines-glow', lineFilterExpr);
     }
-  }, [voltageFilter, isReady]);
+  }, [voltageFilter]);
 
-  // Filter plant markers
+  // Update plant markers filter
   useEffect(() => {
     markersRef.current.forEach((marker, index) => {
       const plant = majorPowerPlants[index];
@@ -253,204 +253,9 @@ export const GridMap: React.FC = () => {
     });
   }, [plantTypeFilter]);
 
-  // Camera presets
-  const flyToPreset = (coords: [number, number], zoom: number) => {
-    if (!map.current) return;
-    map.current.flyTo({
-      center: coords,
-      zoom,
-      duration: 1500,
-      essential: true
-    });
-  };
-
   return (
-    <div className="relative w-full h-[720px] rounded-xl overflow-hidden border border-slate-800 bg-[#080b11] shadow-2xl">
-      {/* MapLibre DOM Node with inline forced dimensions */}
-      <div ref={mapContainer} style={{ width: '100%', height: '100%', minHeight: '720px' }} />
-
-      {/* Top Left Floating Console Controls */}
-      <div className="absolute top-4 left-4 z-10 flex flex-col space-y-2 max-w-sm">
-        {/* Title Tag */}
-        <div className="bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-lg p-3 shadow-xl">
-          <div className="flex items-center space-x-2 text-cyan-400 font-mono text-xs mb-1">
-            <Zap className="w-4 h-4" />
-            <span className="font-semibold uppercase tracking-wider">Topologia do SIN</span>
-          </div>
-          <p className="text-xs text-slate-300">
-            Mais de 185 mil km de linhas interligando o país de Roraima ao Rio Grande do Sul.
-          </p>
-
-          {/* Voltage Line Filters */}
-          <div className="mt-3 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono">
-            <span className="text-slate-400">Tensões:</span>
-            <div className="flex space-x-1">
-              <button
-                onClick={() => setVoltageFilter('all')}
-                className={`px-2 py-0.5 rounded ${voltageFilter === 'all' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40' : 'text-slate-400 hover:text-white'}`}
-              >
-                Todas
-              </button>
-              <button
-                onClick={() => setVoltageFilter('800')}
-                className={`px-2 py-0.5 rounded flex items-center ${voltageFilter === '800' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'text-slate-400 hover:text-white'}`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mr-1"></span>
-                ±800 kV
-              </button>
-              <button
-                onClick={() => setVoltageFilter('500')}
-                className={`px-2 py-0.5 rounded flex items-center ${voltageFilter === '500' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40' : 'text-slate-400 hover:text-white'}`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 mr-1"></span>
-                ≥500 kV
-              </button>
-            </div>
-          </div>
-
-          {/* Plant Type Filter */}
-          <div className="mt-2 flex items-center justify-between text-[11px] font-mono">
-            <span className="text-slate-400">Geração:</span>
-            <div className="flex space-x-1">
-              {['all', 'hidro', 'eolica', 'solar', 'nuclear'].map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setPlantTypeFilter(t)}
-                  className={`px-1.5 py-0.5 rounded uppercase ${
-                    plantTypeFilter === t
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  {t === 'all' ? 'Todas' : t}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* View Camera Presets */}
-        <div className="bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-lg p-2 flex space-x-1 text-xs font-mono">
-          <button
-            onClick={() => flyToPreset([-50.0, -14.0], 4.2)}
-            className="px-2.5 py-1 rounded bg-slate-800/80 hover:bg-slate-700 text-slate-200 transition"
-          >
-            🇧🇷 Brasil
-          </button>
-          <button
-            onClick={() => flyToPreset([-48.0, -12.0], 5.5)}
-            className="px-2.5 py-1 rounded bg-slate-800/80 hover:bg-slate-700 text-amber-300 transition"
-          >
-            ⚡ Belo Monte ➔ Rio
-          </button>
-          <button
-            onClick={() => flyToPreset([-54.58, -25.40], 6.5)}
-            className="px-2.5 py-1 rounded bg-slate-800/80 hover:bg-slate-700 text-emerald-300 transition"
-          >
-            💧 Itaipu
-          </button>
-          <button
-            onClick={() => flyToPreset([-40.5, -11.0], 6.0)}
-            className="px-2.5 py-1 rounded bg-slate-800/80 hover:bg-slate-700 text-cyan-300 transition"
-          >
-            💨 NE Vento/Sol
-          </button>
-        </div>
-      </div>
-
-      {/* Selected Feature Card (Right Floating Drawer) */}
-      {(selectedPlant || selectedLine) && (
-        <div className="absolute top-4 right-4 z-20 w-80 bg-slate-900/95 backdrop-blur-md border border-slate-700 rounded-xl p-4 shadow-2xl animate-in fade-in slide-in-from-right-4 duration-200">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 uppercase">
-              {selectedPlant ? `USINA ${selectedPlant.type}` : `LINHA ${selectedLine?.voltageKV} kV`}
-            </span>
-            <button
-              onClick={() => {
-                setSelectedPlant(null);
-                setSelectedLine(null);
-              }}
-              className="text-slate-400 hover:text-white text-xs font-mono"
-            >
-              ✕ Fechar
-            </button>
-          </div>
-
-          {selectedPlant && (
-            <div className="mt-3 space-y-2">
-              <h3 className="font-bold text-white text-base leading-tight">{selectedPlant.name}</h3>
-              <div className="grid grid-cols-2 gap-2 text-xs font-mono pt-1">
-                <div className="bg-slate-800/60 p-2 rounded">
-                  <span className="text-slate-400 block text-[10px]">POTÊNCIA</span>
-                  <strong className="text-emerald-400 text-sm">{selectedPlant.capacityMW.toLocaleString('pt-BR')} MW</strong>
-                  <span className="text-slate-500 block text-[10px]">({(selectedPlant.capacityMW / 1000).toFixed(2)} GW)</span>
-                </div>
-                <div className="bg-slate-800/60 p-2 rounded">
-                  <span className="text-slate-400 block text-[10px]">LOCAL / SUBSISTEMA</span>
-                  <strong className="text-slate-200">{selectedPlant.state} — {selectedPlant.subsystem}</strong>
-                  <span className="text-slate-400 block text-[10px] truncate">{selectedPlant.riverOrRegion}</span>
-                </div>
-              </div>
-              <div className="text-xs text-slate-300 font-sans leading-relaxed pt-1">
-                {selectedPlant.description}
-              </div>
-              <div className="text-[11px] font-mono text-slate-400 pt-2 border-t border-slate-800">
-                Operador: <span className="text-slate-200">{selectedPlant.operator}</span>
-              </div>
-            </div>
-          )}
-
-          {selectedLine && (
-            <div className="mt-3 space-y-2">
-              <h3 className="font-bold text-white text-base leading-tight">{selectedLine.name}</h3>
-              <div className="grid grid-cols-2 gap-2 text-xs font-mono pt-1">
-                <div className="bg-slate-800/60 p-2 rounded">
-                  <span className="text-slate-400 block text-[10px]">TENSÃO NOMINAL</span>
-                  <strong className="text-amber-400 text-sm">
-                    {selectedLine.voltageKV} kV ({selectedLine.type === 'CC' ? 'Contínua' : 'Alternada'})
-                  </strong>
-                </div>
-                <div className="bg-slate-800/60 p-2 rounded">
-                  <span className="text-slate-400 block text-[10px]">EXTENSÃO</span>
-                  <strong className="text-cyan-400 text-sm">{selectedLine.lengthKm.toLocaleString('pt-BR')} km</strong>
-                </div>
-              </div>
-              <div className="text-xs text-slate-300 font-sans space-y-1 pt-1">
-                <p><strong className="text-slate-400">Origem:</strong> {selectedLine.from}</p>
-                <p><strong className="text-slate-400">Destino:</strong> {selectedLine.to}</p>
-              </div>
-              <div className="text-[11px] font-mono text-slate-400 pt-2 border-t border-slate-800">
-                Concessionária: <span className="text-slate-200">{selectedLine.concessionaire}</span>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Bottom Legend Overlay */}
-      <div className="absolute bottom-4 left-4 z-10 bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-lg px-3 py-2 flex items-center space-x-4 text-xs font-mono text-slate-300">
-        <span className="text-slate-400 text-[11px]">LEGENDA:</span>
-        <div className="flex items-center space-x-1.5">
-          <span className="w-3 h-1 rounded bg-amber-400 shadow-sm shadow-amber-400"></span>
-          <span>±800 kV CC (Belo Monte)</span>
-        </div>
-        <div className="flex items-center space-x-1.5">
-          <span className="w-3 h-1 rounded bg-cyan-400 shadow-sm shadow-cyan-400"></span>
-          <span>500 kV CA (Tronco)</span>
-        </div>
-        <div className="flex items-center space-x-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-          <span>Hidro</span>
-        </div>
-        <div className="flex items-center space-x-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
-          <span>Solar</span>
-        </div>
-        <div className="flex items-center space-x-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
-          <span>Eólica</span>
-        </div>
-      </div>
+    <div className="w-full h-full relative overflow-hidden bg-[#07090e]">
+      <div ref={mapContainer} className="w-full h-full" />
     </div>
   );
 };

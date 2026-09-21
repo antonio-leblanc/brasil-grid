@@ -9,6 +9,12 @@ export interface PowerPlantFeature {
   operator: string;
   coordinates: [number, number]; // [lon, lat]
   description: string;
+  technicalDetails?: {
+    commissionYear?: number;
+    turbinesOrUnits?: string;
+    flowOrEfficiency?: string;
+    gridConnectionVoltage?: string;
+  };
 }
 
 export interface TransmissionLineFeature {
@@ -21,7 +27,33 @@ export interface TransmissionLineFeature {
   to: string;
   concessionaire: string;
   coordinates: [number, number][]; // Line coordinates [lon, lat]
+  technicalDetails?: {
+    converterTechnology?: string;
+    towerCount?: number;
+    substations?: string[];
+  };
 }
+
+export const liveGridTelemetry = {
+  frequencyHz: 60.00,
+  instantaneousLoadMW: 85420,
+  peakRecordMW: 105150,
+  renewableSharePct: 84.8,
+  systemStatus: 'NOMINAL // DESPACHO ONS 100% INTEGRADO',
+  interchanges: [
+    { from: 'N', to: 'SE/CO', flowMW: 8420, direction: 'EXPORT' },
+    { from: 'NE', to: 'SE/CO', flowMW: 6180, direction: 'EXPORT' },
+    { from: 'S', to: 'SE/CO', flowMW: 2340, direction: 'EXPORT' }
+  ],
+  generationMix: [
+    { source: 'Hidráulica', mw: 48200, pct: 56.4, color: '#10b981' },
+    { source: 'Eólica', mw: 13500, pct: 15.8, color: '#38bdf8' },
+    { source: 'Solar Fotov.', mw: 9600, pct: 11.2, color: '#facc15' },
+    { source: 'Térmica/Gás', mw: 8200, pct: 9.6, color: '#f97316' },
+    { source: 'Biomassa', mw: 4000, pct: 4.7, color: '#a855f7' },
+    { source: 'Nuclear', mw: 1920, pct: 2.3, color: '#ec4899' }
+  ]
+};
 
 export const majorPowerPlants: PowerPlantFeature[] = [
   {
@@ -34,7 +66,13 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     riverOrRegion: 'Rio Paraná (Foz do Iguaçu)',
     operator: 'Itaipu Binacional (Brasil / Paraguai)',
     coordinates: [-54.5889, -25.4083],
-    description: 'Segunda maior usina do mundo em geração e ápice da engenharia hidroelétrica. Possui 20 unidades geradoras de 700 MW cada.'
+    description: 'Segunda maior usina do mundo em geração histórica e o maior colosso do setor elétrico sul-americano. Opera com 20 turbinas Francis de 700 MW cada.',
+    technicalDetails: {
+      commissionYear: 1984,
+      turbinesOrUnits: '20 x 700 MW (Francis)',
+      flowOrEfficiency: 'Vazão nominal: 14.000 m³/s',
+      gridConnectionVoltage: '500 kV (CA) & ±600 kV (CC)'
+    }
   },
   {
     id: 'belo-monte',
@@ -43,10 +81,16 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     capacityMW: 11233,
     subsystem: 'N',
     state: 'PA',
-    riverOrRegion: 'Rio Xingu (Altamira)',
+    riverOrRegion: 'Rio Xingu (Altamira/Vitória do Xingu)',
     operator: 'Norte Energia',
     coordinates: [-51.7778, -3.1256],
-    description: 'A maior usina puramente brasileira. Opera a fio d\'água, com vazão altamente sazonal, escoando sua energia para o Sudeste via dois superlinhões de ±800 kV CC.'
+    description: 'Maior hidrelétrica 100% brasileira. Usina a fio d\'água, altamente sazonal, cuja energia é drenada para o Sudeste através dos dois superlinhões de ±800 kV CC.',
+    technicalDetails: {
+      commissionYear: 2016,
+      turbinesOrUnits: '18 x 611 MW (Sítio Belo Monte) + 9 x 25 MW (Pimental)',
+      flowOrEfficiency: 'Queda líquida: ~89 metros',
+      gridConnectionVoltage: '±800 kV UHVDC'
+    }
   },
   {
     id: 'tucurui',
@@ -55,10 +99,16 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     capacityMW: 8370,
     subsystem: 'N',
     state: 'PA',
-    riverOrRegion: 'Rio Tocantins',
+    riverOrRegion: 'Rio Tocantins (Tucuruí)',
     operator: 'Eletrobras Eletronorte',
     coordinates: [-49.6469, -3.8328],
-    description: 'Gigante da Amazônia Oriental, essencial para o suprimento de indústrias de alumínio e interligação com o Nordeste e Sudeste.'
+    description: 'Âncora industrial da Amazônia Oriental. Alimentador crítico dos complexos eletrointensivos de alumínio e interligação com os subsistemas Nordeste e Sudeste.',
+    technicalDetails: {
+      commissionYear: 1984,
+      turbinesOrUnits: '24 unidades geradoras (Fases I e II)',
+      flowOrEfficiency: 'Vazão máxima do vertedouro: 110.000 m³/s',
+      gridConnectionVoltage: '500 kV'
+    }
   },
   {
     id: 'jirau',
@@ -70,7 +120,13 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     riverOrRegion: 'Rio Madeira (Porto Velho)',
     operator: 'Energia Sustentável do Brasil (Engie / Eletrobras)',
     coordinates: [-64.6547, -9.2647],
-    description: 'Complexo do Rio Madeira com turbinas bulbo de alta tecnologia para baixa queda d\'água.'
+    description: 'Complexo de engenharia no Rio Madeira equipado com turbinas bulbo de alto rendimento para baixas quedas d\'água.',
+    technicalDetails: {
+      commissionYear: 2013,
+      turbinesOrUnits: '50 turbinas tipo Bulbo de 75 MW',
+      flowOrEfficiency: 'Queda líquida: 15.2 metros',
+      gridConnectionVoltage: '500 kV ➔ Conversora ±600 kV'
+    }
   },
   {
     id: 'santo-antonio',
@@ -82,7 +138,13 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     riverOrRegion: 'Rio Madeira (Porto Velho)',
     operator: 'Santo Antônio Energia (Eletrobras)',
     coordinates: [-63.9536, -8.8028],
-    description: 'Irmã de Jirau, escoa energia via o Bipolo do Madeira (linhas de corrente contínua até Araraquara em SP).'
+    description: 'Opera a fio d\'água em conjunto com Jirau. Sua energia viaja pelo Bipolo do Madeira até a subestação de Araraquara (SP).',
+    technicalDetails: {
+      commissionYear: 2012,
+      turbinesOrUnits: '50 turbinas tipo Bulbo',
+      flowOrEfficiency: 'Vazão nominal: 24.000 m³/s',
+      gridConnectionVoltage: '±600 kV CC'
+    }
   },
   {
     id: 'xingó',
@@ -94,23 +156,34 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     riverOrRegion: 'Rio São Francisco (Canindé/Piranhas)',
     operator: 'Eletrobras Chesf',
     coordinates: [-37.7958, -9.6158],
-    description: 'A âncora da regulação hídrica e elétrica do Rio São Francisco no Nordeste brasileiro.'
+    description: 'Chave mestre da segurança eletroenergética do Nordeste no baixo São Francisco, com vertedouro encravado no cânion.',
+    technicalDetails: {
+      commissionYear: 1994,
+      turbinesOrUnits: '6 x 527 MW (Francis)',
+      flowOrEfficiency: 'Queda nominal: 118 metros',
+      gridConnectionVoltage: '500 kV'
+    }
   },
   {
     id: 'paulo-afonso',
-    name: 'Complexo Paulo Afonso',
+    name: 'Complexo Paulo Afonso (I-IV)',
     type: 'hidro',
     capacityMW: 4279,
     subsystem: 'NE',
     state: 'BA',
-    riverOrRegion: 'Rio São Francisco',
+    riverOrRegion: 'Rio São Francisco (Paulo Afonso)',
     operator: 'Eletrobras Chesf',
     coordinates: [-38.2167, -9.4000],
-    description: 'Berço da eletrificação do semiárido nordestino, composto por quatro grandes usinas escalonadas.'
+    description: 'Complexo histórico pioneiro da eletrificação nordestina. Composto por quatro usinas e a central subterrânea de Apolônio Sales.',
+    technicalDetails: {
+      commissionYear: 1955,
+      turbinesOrUnits: '23 unidades geradoras totais',
+      gridConnectionVoltage: '230 kV & 500 kV'
+    }
   },
   {
     id: 'angra-nuclear',
-    name: 'CNAAA (Angra 1 e 2)',
+    name: 'Central Nuclear Almirante Álvaro Alberto (Angra 1 e 2)',
     type: 'nuclear',
     capacityMW: 1990,
     subsystem: 'SE/CO',
@@ -118,31 +191,29 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     riverOrRegion: 'Praia de Itaorna (Angra dos Reis)',
     operator: 'Eletronuclear',
     coordinates: [-44.4578, -23.0078],
-    description: 'Geração de base limpa (zero emissão direta) essencial para garantir estabilidade e tensão na ponta de carga do Rio de Janeiro.'
+    description: 'Geração térmica de base com zero emissão direta de carbono. Estabilidade inercial e sustentação de tensão para o polo de consumo do Grande Rio.',
+    technicalDetails: {
+      commissionYear: 1985,
+      turbinesOrUnits: 'Angra 1 (640 MW - PWR Westinghouse) + Angra 2 (1.350 MW - PWR Siemens)',
+      gridConnectionVoltage: '500 kV'
+    }
   },
   {
     id: 'eolica-alto-sertao',
-    name: 'Complexo Eólico Alto Sertão I, II e III',
+    name: 'Complexo Eólico Alto Sertão',
     type: 'eolica',
     capacityMW: 1200,
     subsystem: 'NE',
     state: 'BA',
-    riverOrRegion: 'Caetité / Igaporã',
+    riverOrRegion: 'Caetité / Igaporã / Guanambi',
     operator: 'Renova Energia / AES Brasil',
     coordinates: [-42.4800, -14.0700],
-    description: 'Um dos maiores complexos eólicos da América do Sul, aproveitando os ventos constantes e unidirecionais do sertão baiano.'
-  },
-  {
-    id: 'solar-pirapora',
-    name: 'Complexo Solar Pirapora',
-    type: 'solar',
-    capacityMW: 400,
-    subsystem: 'SE/CO',
-    state: 'MG',
-    riverOrRegion: 'Pirapora (Norte de Minas Gerais)',
-    operator: 'EDF Renewables / Omega',
-    coordinates: [-44.9358, -17.3458],
-    description: 'Pioneiro em energia solar centralizada de altíssima escala, às margens do Rio São Francisco.'
+    description: 'Polo eólico de alta densidade aproveitando o vento unidirecional da Chapada Diamantina, com fatores de capacidade acima de 50%.',
+    technicalDetails: {
+      commissionYear: 2012,
+      turbinesOrUnits: '400+ aerogeradores GE / Alstom',
+      gridConnectionVoltage: '230 kV ➔ 500 kV'
+    }
   },
   {
     id: 'solar-janauba',
@@ -151,10 +222,15 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     capacityMW: 1200,
     subsystem: 'SE/CO',
     state: 'MG',
-    riverOrRegion: 'Janaúba (Norte de Minas Gerais)',
+    riverOrRegion: 'Janaúba (Norte de Minas)',
     operator: 'Elera Renováveis',
     coordinates: [-43.3089, -15.8028],
-    description: 'Um dos maiores parques solares do planeta, com mais de 2,2 milhões de módulos fotovoltaicos instalados.'
+    description: 'Um dos maiores complexos solares fotovoltaicos do hemisfério sul, cobrindo mais de 3.000 hectares com 2,2 milhões de módulos.',
+    technicalDetails: {
+      commissionYear: 2023,
+      turbinesOrUnits: '2,2 milhões de módulos bifaciais com rastreadores (trackers)',
+      gridConnectionVoltage: '500 kV SE Janaúba 3'
+    }
   },
   {
     id: 'termica-porto-sergipe',
@@ -166,7 +242,12 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     riverOrRegion: 'Barra dos Coqueiros',
     operator: 'Eneva',
     coordinates: [-36.9800, -10.8200],
-    description: 'Maior termelétrica a gás natural da América Latina, abastecida por GNL regaseificado no mar para garantir segurança de despacho.'
+    description: 'Maior termelétrica a gás natural da América Latina. Opera em ciclo combinado (3 turbinas a gás + 1 a vapor) integrada a terminal de regaseificação de GNL oceânico.',
+    technicalDetails: {
+      commissionYear: 2020,
+      turbinesOrUnits: '3 x GE 7HA.02 + 1 x GE Steam Turbine',
+      gridConnectionVoltage: '500 kV'
+    }
   }
 ];
 
@@ -188,7 +269,12 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-46.0000, -18.5000],
       [-44.2000, -21.5000],
       [-43.6000, -22.7500]
-    ]
+    ],
+    technicalDetails: {
+      converterTechnology: 'UHVDC ±800 kV LCC (Line Commutated Converter)',
+      towerCount: 4448,
+      substations: ['SE Xingu (PA)', 'SE Terminal Rio (RJ)']
+    }
   },
   {
     id: 'linha-belo-monte-estreito',
@@ -206,7 +292,12 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-48.6000, -15.8000],
       [-47.9000, -18.8000],
       [-47.1000, -20.4500]
-    ]
+    ],
+    technicalDetails: {
+      converterTechnology: 'UHVDC ±800 kV Bipolo 1',
+      towerCount: 3950,
+      substations: ['SE Xingu (PA)', 'SE Estreito (MG)']
+    }
   },
   {
     id: 'linha-madeira-sp',
@@ -224,7 +315,12 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-52.5000, -18.2000],
       [-49.0000, -20.8000],
       [-48.1800, -21.7900]
-    ]
+    ],
+    technicalDetails: {
+      converterTechnology: 'HVDC ±600 kV (2 x Bipolos)',
+      towerCount: 4900,
+      substations: ['SE Coletora Porto Velho', 'SE Araraquara 2']
+    }
   },
   {
     id: 'linha-itaipu-sp',
@@ -240,7 +336,11 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-51.6800, -24.2500],
       [-49.4000, -23.5000],
       [-47.0500, -23.6500]
-    ]
+    ],
+    technicalDetails: {
+      converterTechnology: '765 kV CA Tri-circuito',
+      substations: ['SE Foz do Iguaçu', 'SE Ivaiporã', 'SE Tijuco Preto']
+    }
   },
   {
     id: 'linha-interligacao-ne-se',
@@ -256,7 +356,10 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-44.1500, -15.8000],
       [-44.3000, -18.2000],
       [-44.0500, -19.7800]
-    ]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA Malha de Escoamento Eólico/Solar'
+    }
   },
   {
     id: 'linha-tucurui-manaus',
@@ -266,18 +369,21 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
     lengthKm: 1800,
     from: 'SE Tucuruí (PA)',
     to: 'SE Eng. Lechuga (Manaus - AM)',
-    concessionaire: 'Eletrobras Eletronorte / Abengoa',
+    concessionaire: 'Eletrobras Eletronorte',
     coordinates: [
       [-49.6469, -3.8328],
       [-51.0500, 0.0400],
       [-54.7000, -2.4300],
       [-58.4500, -3.1000],
       [-60.0200, -3.0500]
-    ]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA (Inclui travessia aérea do Rio Amazonas com torres de 295 metros)'
+    }
   },
   {
     id: 'anel-sudeste-500',
-    name: 'Anel Metropolitano de 500 kV (Rio - São Paulo - Belo Horizonte)',
+    name: 'Anel Metropolitano de 500 kV (Rio - São Paulo - BH)',
     voltageKV: 500,
     type: 'CA',
     lengthKm: 850,
@@ -289,13 +395,16 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-44.5000, -22.5000],
       [-45.8000, -23.1000],
       [-47.0500, -23.6500]
-    ]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA Malha Crítica de Carga'
+    }
   }
 ];
 
 export const subsystems = [
-  { id: 'SE_CO', name: 'Sudeste / Centro-Oeste', loadShare: '58%', icon: '🏙️', center: [-47.92, -18.8], desc: 'Maior centro de carga e capacidade de armazenamento dos reservatórios do país.' },
-  { id: 'S', name: 'Sul', loadShare: '17%', icon: '🌾', center: [-51.21, -27.5], desc: 'Forte presença de Itaipu, hidrelétricas em cascata e biomassa.' },
-  { id: 'NE', name: 'Nordeste', loadShare: '17%', icon: '💨', center: [-39.50, -9.5], desc: 'Grande exportador de energia limpa graças aos recordes diários de eólica e solar.' },
-  { id: 'N', name: 'Norte', loadShare: '8%', icon: '🌳', center: [-52.50, -4.2], desc: 'Berço das usinas a fio d\'água (Belo Monte, Tucuruí, Madeira), interligado por megavoltagens.' }
+  { id: 'SE_CO', name: 'Sudeste / Centro-Oeste', loadShare: '58.4%', center: [-47.92, -18.8], desc: 'Centro de gravidade do consumo e capacidade de regularização plurianual dos reservatórios.' },
+  { id: 'S', name: 'Sul', loadShare: '17.2%', center: [-51.21, -27.5], desc: 'Polo hidroelétrico do Iguaçu/Uruguai e interligações internacionais com Argentina e Uruguai.' },
+  { id: 'NE', name: 'Nordeste', loadShare: '16.8%', center: [-39.50, -9.5], desc: 'Exportador líquido estrutural de energia renovável (eólica noturna e solar diurna).' },
+  { id: 'N', name: 'Norte', loadShare: '7.6%', center: [-52.50, -4.2], desc: 'Supergerador a fio d\'água (Belo Monte/Tucuruí) drenado para o centro de carga nacional via UHVDC.' }
 ];
