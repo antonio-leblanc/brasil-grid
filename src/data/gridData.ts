@@ -497,6 +497,206 @@ export const majorPowerPlants: PowerPlantFeature[] = [
       commissionYear: 2004,
       gridConnectionVoltage: '345 kV'
     }
+  },
+  {
+    id: 'teles-pires',
+    name: 'UHE Teles Pires',
+    type: 'hidro',
+    capacityMW: 1820,
+    subsystem: 'N',
+    state: 'PA/MT',
+    riverOrRegion: 'Rio Teles Pires (Paranaíta / Apiacás)',
+    operator: 'Cia Hidrelétrica Teles Pires (Neoenergia / Eletrobras)',
+    coordinates: [-56.4744, -9.3444],
+    description: 'Aproveitamento a fio d\'água de grande porte no Rio Teles Pires, escoando energia gerada na Amazônia Meridional para o Centro-Oeste e Sudeste.',
+    technicalDetails: {
+      commissionYear: 2015,
+      turbinesOrUnits: '5 x 364 MW (Francis)',
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'porto-primavera',
+    name: 'UHE Porto Primavera (Eng. Sérgio Motta)',
+    type: 'hidro',
+    capacityMW: 1540,
+    subsystem: 'SE/CO',
+    state: 'SP/MS',
+    riverOrRegion: 'Rio Paraná (Rosana / Batayporã)',
+    operator: 'Auren Energia',
+    coordinates: [-52.9556, -22.4833],
+    description: 'Possui o mais extenso lago em barragem de terra do Brasil e a maior eclusa de navegação fluvial da Hidrovia Tietê-Paraná.',
+    technicalDetails: {
+      commissionYear: 1999,
+      turbinesOrUnits: '14 x 110 MW (Kaplan)',
+      gridConnectionVoltage: '500 kV / 138 kV'
+    }
+  },
+  {
+    id: 'salto-santiago',
+    name: 'UHE Salto Santiago',
+    type: 'hidro',
+    capacityMW: 1420,
+    subsystem: 'S',
+    state: 'PR',
+    riverOrRegion: 'Rio Iguaçu (Saudade do Iguaçu)',
+    operator: 'Engie Brasil',
+    coordinates: [-52.6103, -25.6144],
+    description: 'Segunda maior usina do Rio Iguaçu em capacidade, fundamental no suporte de potência e controle de frequência para os subsistemas Sul e Sudeste.',
+    technicalDetails: {
+      commissionYear: 1980,
+      turbinesOrUnits: '4 x 355 MW (Francis)',
+      gridConnectionVoltage: '525 kV'
+    }
+  },
+  {
+    id: 'machadinho',
+    name: 'UHE Machadinho',
+    type: 'hidro',
+    capacityMW: 1140,
+    subsystem: 'S',
+    state: 'RS/SC',
+    riverOrRegion: 'Rio Pelotas (Machadinho / Piratuba)',
+    operator: 'Consórcio Machadinho (Engie Brasil)',
+    coordinates: [-51.7889, -27.5306],
+    description: 'Imponente usina de concreto compactado a rolo na divisa gaúcho-catarinense, integrando a cascata hidrelétrica da Bacia do Rio Uruguai.',
+    technicalDetails: {
+      commissionYear: 2002,
+      turbinesOrUnits: '3 x 380 MW (Francis)',
+      gridConnectionVoltage: '525 kV'
+    }
+  },
+  {
+    id: 'estreito',
+    name: 'UHE Estreito',
+    type: 'hidro',
+    capacityMW: 1087,
+    subsystem: 'N',
+    state: 'MA/TO',
+    riverOrRegion: 'Rio Tocantins (Estreito / Aguiarnópolis)',
+    operator: 'CESTE (Engie / Vale / Alcoa)',
+    coordinates: [-47.4528, -6.5417],
+    description: 'Aproveitamento a fio d\'água no Médio Tocantins com turbinas tipo bulbo de grande vazão, suprindo a indústria mineral e a interligação regional.',
+    technicalDetails: {
+      commissionYear: 2011,
+      turbinesOrUnits: '8 x 135.9 MW (Bulbo/Kaplan)',
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'emborcacao',
+    name: 'UHE Emborcação',
+    type: 'hidro',
+    capacityMW: 1192,
+    subsystem: 'SE/CO',
+    state: 'MG/GO',
+    riverOrRegion: 'Rio Paranaíba (Araguari / Catalão)',
+    operator: 'Cemig',
+    coordinates: [-47.9861, -18.4417],
+    description: 'Importante usina de cabeceira do Rio Paranaíba com grande reservatório de acumulação e regularização plurianual para o SIN.',
+    technicalDetails: {
+      commissionYear: 1982,
+      turbinesOrUnits: '4 x 298 MW (Francis)',
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'solar-futura',
+    name: 'Complexo Solar Futura',
+    type: 'solar',
+    capacityMW: 852,
+    subsystem: 'NE',
+    state: 'BA',
+    riverOrRegion: 'Juazeiro',
+    operator: 'Eneva',
+    coordinates: [-40.5000, -9.6000],
+    description: 'Um dos maiores complexos fotovoltaicos das Américas, com cerca de 1,4 milhão de módulos bifaciais e rastreadores de eixo único em pleno sertão baiano.',
+    technicalDetails: {
+      commissionYear: 2023,
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'solar-sao-goncalo',
+    name: 'Complexo Solar São Gonçalo',
+    type: 'solar',
+    capacityMW: 864,
+    subsystem: 'NE',
+    state: 'PI',
+    riverOrRegion: 'São Gonçalo do Gurguéia',
+    operator: 'Enel Green Power',
+    coordinates: [-42.8500, -9.8000],
+    description: 'Gigantesca instalação solar no semiárido piauiense, pioneira em larga escala de módulos bifaciais para maximizar captura da irradiação albedo do solo.',
+    technicalDetails: {
+      commissionYear: 2020,
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'eolica-chafariz',
+    name: 'Complexo Eólico Chafariz',
+    type: 'eolica',
+    capacityMW: 471,
+    subsystem: 'NE',
+    state: 'PB',
+    riverOrRegion: 'Santa Luzia',
+    operator: 'Neoenergia',
+    coordinates: [-36.8800, -6.8700],
+    description: 'Polo eólico de alta produtividade no sertão paraibano composto por 15 parques e 136 aerogeradores, conectado à Subestação Santa Luzia II (500 kV).',
+    technicalDetails: {
+      commissionYear: 2022,
+      gridConnectionVoltage: '500 kV / 230 kV'
+    }
+  },
+  {
+    id: 'eolica-morro-do-chapeu',
+    name: 'Complexo Eólico Morro do Chapéu Sul',
+    type: 'eolica',
+    capacityMW: 393,
+    subsystem: 'NE',
+    state: 'BA',
+    riverOrRegion: 'Morro do Chapéu / Cafarnaum',
+    operator: 'Enel Green Power',
+    coordinates: [-41.1500, -11.5500],
+    description: 'Situado nas cristas de altitude da Chapada Diamantina baiana, usufrui de regime contínuo de ventos de alto fator de capacidade.',
+    technicalDetails: {
+      commissionYear: 2018,
+      gridConnectionVoltage: '230 kV'
+    }
+  },
+  {
+    id: 'termica-gna-1',
+    name: 'UTE GNA I (Gás Natural Açu)',
+    type: 'termica',
+    capacityMW: 1338,
+    subsystem: 'SE/CO',
+    state: 'RJ',
+    riverOrRegion: 'Porto do Açu (São João da Barra)',
+    operator: 'GNA (bp / Siemens / SPIC / Prumo)',
+    coordinates: [-41.0500, -21.8333],
+    description: 'Segunda maior termelétrica a gás natural do Brasil. Opera em ciclo combinado a partir de GNL recebido na FSRU do terminal portuário do Açu.',
+    technicalDetails: {
+      commissionYear: 2021,
+      turbinesOrUnits: '3 turbinas a gás + 1 a vapor (Siemens)',
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'termica-parnaiba',
+    name: 'Complexo Termelétrico Parnaíba (Gas-to-Wire)',
+    type: 'termica',
+    capacityMW: 1428,
+    subsystem: 'NE',
+    state: 'MA',
+    riverOrRegion: 'Santo Antônio dos Lopes / Bacia do Parnaíba',
+    operator: 'Eneva',
+    coordinates: [-44.6000, -4.8500],
+    description: 'Pioneiro parque integrado gas-to-wire da América Latina: gás onshore extraído na Bacia do Parnaíba vira eletricidade in loco conectada ao SIN.',
+    technicalDetails: {
+      commissionYear: 2013,
+      turbinesOrUnits: 'Ciclos abertos e combinados (Fases I a V)',
+      gridConnectionVoltage: '500 kV'
+    }
   }
 ];
 
@@ -791,6 +991,290 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
     ],
     technicalDetails: {
       converterTechnology: '500 kV CA — escoamento da cascata do Paranaíba para o Distrito Federal'
+    }
+  },
+  {
+    id: 'bipolo-itaipu-ibiuna',
+    name: 'Bipolo de Itaipu HVDC (Foz do Iguaçu ➔ Ibiúna)',
+    voltageKV: 600,
+    type: 'CC',
+    lengthKm: 810,
+    from: 'SE Foz do Iguaçu (PR)',
+    to: 'SE Ibiúna (Cotia / Ibiúna - SP)',
+    concessionaire: 'Eletrobras Furnas',
+    coordinates: [
+      [-54.5889, -25.4083],
+      [-52.5000, -24.8000],
+      [-49.8000, -24.0000],
+      [-47.1800, -23.6500]
+    ],
+    technicalDetails: {
+      converterTechnology: 'HVDC ±600 kV (Bipolos 1 e 2) — converte os 50 Hz do setor paraguaio para os 60 Hz da Grande SP',
+      substations: ['SE Foz do Iguaçu', 'SE Ibiúna']
+    }
+  },
+  {
+    id: 'linha-norte-sul-500',
+    name: 'Tronco Norte-Sul (Imperatriz ➔ Serra da Mesa ➔ Brasília)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 1280,
+    from: 'SE Imperatriz (MA)',
+    to: 'SE Samambaia (DF)',
+    concessionaire: 'Taesa / Eletronorte',
+    coordinates: [
+      [-47.4900, -5.5300],
+      [-48.2000, -8.0500],
+      [-48.5500, -10.2000],
+      [-49.0000, -11.7500],
+      [-48.3300, -13.8300],
+      [-48.0800, -15.8700]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — espinha dorsal histórica que selou a integração elétrica do Norte com o Sudeste em 1999'
+    }
+  },
+  {
+    id: 'linha-telespires-seco',
+    name: 'Linhão Teles Pires (Paranaíta ➔ Ribeirãozinho ➔ Rio Verde)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 1050,
+    from: 'SE Coletora Paranaíta (MT)',
+    to: 'SE Ribeirãozinho (MT/GO)',
+    concessionaire: 'Matrinchã Transmissora / State Grid',
+    coordinates: [
+      [-56.4500, -9.6000],
+      [-55.5000, -11.9000],
+      [-54.5000, -14.3000],
+      [-53.1500, -16.4500]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — escoamento da cascata hidrelétrica do Rio Teles Pires cruzando o Centro-Oeste'
+    }
+  },
+  {
+    id: 'linha-tucurui-imperatriz',
+    name: 'Linha Tucuruí ➔ Marabá ➔ Imperatriz',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 540,
+    from: 'SE Tucuruí (PA)',
+    to: 'SE Imperatriz (MA)',
+    concessionaire: 'Eletronorte',
+    coordinates: [
+      [-49.6469, -3.8328],
+      [-49.1200, -5.3500],
+      [-47.4900, -5.5300]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — conecta a potência de Tucuruí ao polo mínero-metalúrgico de Carajás e ao nó de Imperatriz'
+    }
+  },
+  {
+    id: 'linha-sertao-salvador',
+    name: 'Corredor Renováveis Bahia (Morro do Chapéu ➔ Sapeaçu ➔ Camaçari)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 420,
+    from: 'SE Morro do Chapéu II (BA)',
+    to: 'SE Camaçari Polo (BA)',
+    concessionaire: 'Neoenergia / Chesf',
+    coordinates: [
+      [-41.1500, -11.5500],
+      [-40.0000, -12.3000],
+      [-39.0500, -12.7000],
+      [-38.3000, -12.7000]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — escoa a intensa produção eólica da Chapada Diamantina para o polo petroquímico e Salvador'
+    }
+  },
+  {
+    id: 'linha-acu-campina-recife',
+    name: 'Corredor Potiguar/Borborema (Açu ➔ Campina Grande ➔ Suape)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 510,
+    from: 'SE Açu III (RN)',
+    to: 'SE Suape II (PE)',
+    concessionaire: 'Taesa / Chesf',
+    coordinates: [
+      [-36.9000, -5.5800],
+      [-36.2000, -6.5000],
+      [-35.9000, -7.2200],
+      [-35.0500, -8.3800]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — principal rota de escoamento eólico dos parques potiguares e paraibanos rumo ao Recife'
+    }
+  },
+  {
+    id: 'linha-pauloafonso-salvador',
+    name: 'Linha Paulo Afonso ➔ Camaçari (Tronco Chesf)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 430,
+    from: 'SE Paulo Afonso (BA)',
+    to: 'SE Camaçari (BA)',
+    concessionaire: 'Chesf',
+    coordinates: [
+      [-38.2200, -9.4000],
+      [-38.5000, -10.5000],
+      [-38.4500, -11.8000],
+      [-38.3000, -12.7000]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — linha tronco clássica da Chesf transportando energia do Rio São Francisco para a RMS'
+    }
+  },
+  {
+    id: 'linha-furnas-campinas',
+    name: 'Tronco Furnas ➔ Campinas (500 kV)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 340,
+    from: 'SE Furnas (São José da Barra - MG)',
+    to: 'SE Campinas (SP)',
+    concessionaire: 'Eletrobras Furnas',
+    coordinates: [
+      [-46.3167, -20.6667],
+      [-46.7000, -21.6000],
+      [-47.0600, -22.9000]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — corredor pioneiro integrando o Lago de Furnas ao polo industrial paulista'
+    }
+  },
+  {
+    id: 'linha-ilhasolteira-araraquara',
+    name: 'Linha Ilha Solteira ➔ Araraquara (Tronco Rio Paraná)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 380,
+    from: 'SE Ilha Solteira (SP)',
+    to: 'SE Araraquara (SP)',
+    concessionaire: 'ISA CTEEP',
+    coordinates: [
+      [-51.3667, -20.4333],
+      [-49.8000, -21.0000],
+      [-48.1800, -21.7900]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — conecta as hidrelétricas da calha do Paraná ao entroncamento energético de Araraquara'
+    }
+  },
+  {
+    id: 'linha-iguacu-curitiba',
+    name: 'Corredor Iguaçu ➔ Curitiba Leste (525 kV)',
+    voltageKV: 525,
+    type: 'CA',
+    lengthKm: 410,
+    from: 'SE Foz do Areia (PR)',
+    to: 'SE Curitiba Leste (Bateias - PR)',
+    concessionaire: 'Copel GeT',
+    coordinates: [
+      [-51.6600, -26.0100],
+      [-50.5000, -25.7000],
+      [-49.2700, -25.4200]
+    ],
+    technicalDetails: {
+      converterTechnology: '525 kV CA — escoa as usinas de Foz do Areia, Segredo e Salto Santiago até Curitiba'
+    }
+  },
+  {
+    id: 'linha-curitiba-blumenau',
+    name: 'Linha Curitiba ➔ Joinville ➔ Blumenau',
+    voltageKV: 525,
+    type: 'CA',
+    lengthKm: 220,
+    from: 'SE Curitiba Leste (PR)',
+    to: 'SE Blumenau (SC)',
+    concessionaire: 'Copel / Eletrosul',
+    coordinates: [
+      [-49.2700, -25.4200],
+      [-48.8500, -26.3000],
+      [-49.0700, -26.9200]
+    ],
+    technicalDetails: {
+      converterTechnology: '525 kV CA — corredor litorâneo abastecendo os polos têxtil e metalmecânico de Joinville e Vale do Itajaí'
+    }
+  },
+  {
+    id: 'linha-ita-portoalegre',
+    name: 'Linha Itá ➔ Caxias do Sul ➔ Nova Santa Rita (Porto Alegre)',
+    voltageKV: 525,
+    type: 'CA',
+    lengthKm: 390,
+    from: 'SE Itá (SC/RS)',
+    to: 'SE Nova Santa Rita (RS)',
+    concessionaire: 'CGT Eletrosul',
+    coordinates: [
+      [-52.3800, -27.2800],
+      [-51.1800, -29.1700],
+      [-51.2700, -29.8500]
+    ],
+    technicalDetails: {
+      converterTechnology: '525 kV CA — rota principal que alimenta a Grande Porto Alegre a partir da bacia do Rio Uruguai'
+    }
+  },
+  {
+    id: 'linha-brasilia-cuiaba',
+    name: 'Corredor Trans-Cerrado (Brasília ➔ Goiânia ➔ Rio Verde ➔ Cuiabá)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 980,
+    from: 'SE Samambaia (DF)',
+    to: 'SE Cuiabá (MT)',
+    concessionaire: 'Furnas / IE Paranaíba',
+    coordinates: [
+      [-48.0800, -15.8700],
+      [-49.2500, -16.6800],
+      [-50.9200, -17.7900],
+      [-54.6300, -16.4700],
+      [-56.0900, -15.6000]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — conecta o polo agroindustrial do Mato Grosso e a capital mato-grossense ao anel Centro-Oeste'
+    }
+  },
+  {
+    id: 'linha-acu-rio',
+    name: 'Linha GNA Porto do Açu ➔ Terminal Rio',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 345,
+    from: 'SE GNA Porto do Açu (RJ)',
+    to: 'SE Terminal Rio (Nova Iguaçu - RJ)',
+    concessionaire: 'GNA / Eletrobras Furnas',
+    coordinates: [
+      [-41.0500, -21.8333],
+      [-41.3200, -21.7500],
+      [-42.4000, -22.3000],
+      [-43.6000, -22.7500]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — conecta a mega usina a GNL de Porto do Açu ao centro de consumo metropolitano do RJ'
+    }
+  },
+  {
+    id: 'linha-gracaaranha-silvania',
+    name: 'Linhão UHVDC Nordeste ➔ Centro-Oeste (Graça Aranha ➔ Silvânia)',
+    voltageKV: 800,
+    type: 'CC',
+    lengthKm: 1468,
+    from: 'SE Graça Aranha (MA)',
+    to: 'SE Silvânia (GO)',
+    concessionaire: 'State Grid Brasil (Bipolo 3)',
+    coordinates: [
+      [-44.2500, -5.0800],
+      [-46.0000, -7.5000],
+      [-47.2000, -10.5000],
+      [-47.8000, -13.5000],
+      [-48.6000, -16.6500]
+    ],
+    technicalDetails: {
+      converterTechnology: 'UHVDC ±800 kV — projeto histórico do Leilão de Transmissão 01/2023 para escoamento maciço de solar/eólica do NE para o Sudeste'
     }
   }
 ];
