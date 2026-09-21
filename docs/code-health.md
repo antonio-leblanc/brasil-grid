@@ -1,0 +1,59 @@
+# 🩺 Code Health — Brasil Grid
+
+> Revisão pontual do estado do projeto no estágio de MVP: o que está bem resolvido, o que vale ajustar antes de crescer, e qual é o próximo passo de maior impacto.
+>
+> **Status:** projeto em estágio de MVP, funcional e com boa base. Nenhum item abaixo é bloqueante — são melhorias incrementais.
+
+---
+
+## ✅ O que está bem resolvido
+
+- **Escopo coerente:** os 4 pilares (topologia, cadeia de valor, ACR/ACL, régua de grandezas) formam uma narrativa clara e o `docs/spec.md` documenta motivação e arquitetura — raro em projeto recém-criado.
+- **Stack adequada ao problema:** Vite + React 19 + TypeScript para uma SPA client-side estática, sem necessidade de SSR/backend nesse estágio.
+- **MapLibre GL em vez de Mapbox:** evita vendor lock-in e chave paga, é a ferramenta certa para mapa técnico/WebGL.
+- **Zero backend / dados estáticos embutidos:** decisão correta para MVP — não construir infraestrutura antes de precisar dela.
+- **Organização por domínio:** `Console/`, `Map/`, `Inspector/`, `Market/`, `EnergyChain/`, `Scales/` é uma estrutura legível e fácil de navegar.
+
+---
+
+## 🔧 Pontos de melhoria
+
+### Prioridade alta (rápidos e com risco de confundir usuário/contribuidor)
+
+1. **Código morto do template inicial**
+   `src/components/Header.tsx` e `Footer.tsx` não são importados em lugar nenhum — o app real usa `ConsoleHeader`/`ConsoleBottomBar`. Sobraram do boilerplate. Remover.
+
+2. **Nome enganoso em `src/data/gridData.ts`**
+   `liveGridTelemetry` (frequência, carga instantânea, intercâmbios) contém **valores fixos hardcoded**, não dado real de nenhuma fonte. O nome e a linguagem do README ("geoprocessamento em tempo real", "Coordenação ONS") sugerem tempo real, o que engana quem lê o código ou usa o app.
+   Sugestão: renomear para algo como `referenceGridSnapshot` e deixar explícito na UI (ex.: label "dado de referência, não live") até que exista integração real.
+
+3. **Doc e código dessincronizados**
+   O README descreve o basemap como "CARTO Dark Matter", mas `GridMap.tsx` usa tiles raster do **ESRI ArcGIS Online** (`World_Dark_Gray_Base`). Além de corrigir a doc, vale checar os termos de uso desse serviço gratuito da Esri — costuma ter limite de volume/uso comercial, o que é um risco real se o tráfego crescer.
+
+### Prioridade média (qualidade e escalabilidade)
+
+4. **Markers de usinas via `innerHTML` manual**
+   Cada usina em `GridMap.tsx` vira um `<div>` criado na mão (`el.innerHTML = ...`) e um `Marker` do MapLibre, em vez de um layer GeoJSON `circle`/`symbol`. Funciona bem para ~15-20 pontos, mas não escala — se um dia o mapa incluir todas as subestações do SIGEL, isso vai pesar. Layer nativo do MapLibre é mais barato e dá filtro/clustering de graça.
+
+5. **Sem testes e sem CI**
+   Nenhum arquivo `*.test.*`, nenhum workflow em `.github/`. Aceitável em MVP solo, mas antes de aceitar contribuições externas vale ao menos um workflow de `build + typecheck + lint` no GitHub Actions — barato e evita PR quebrado.
+
+6. **Estado não reflete na URL**
+   Aba ativa e usina/linha selecionada vivem só em `useState` local no `App.tsx`. Um `useSearchParams` simples (sem precisar de `react-router` inteiro) permitiria compartilhar link direto para uma usina ou aba específica.
+
+### Prioridade baixa (polimento)
+
+7. **`any` solto em `GridMap.tsx`**
+   `let lineFilterExpr: any = null;` quebra a tipagem boa do resto do projeto — dá para tipar como `FilterSpecification | null` do próprio `maplibre-gl`.
+
+8. **Repetição de classes condicionais**
+   Os botões de filtro em `ConsoleSidebar.tsx` repetem o mesmo bloco de classes Tailwind condicionais 5-6 vezes. `clsx` já está instalado mas não é usado — dava para extrair um `<FilterButton active={...}>` pequeno.
+
+9. **Acessibilidade**
+   Botões sem `aria-label`, emojis como texto de label (💧☀️💨) em vez de ícones semânticos, sem atenção a navegação por teclado nos markers do mapa. Não bloqueante agora, mas vale revisar se o público for além de uso pessoal/técnico.
+
+---
+
+## 🚀 Próximo passo de maior impacto
+
+O salto de valor real não é técnico, é de **dado**: hoje tudo é estático. ONS e ANEEL (SIGEL) têm portais de dados abertos de verdade — trocar ao menos a telemetria (frequência, carga, intercâmbio) por uma chamada real ao portal de dados abertos do ONS transformaria o projeto de "infográfico bonito" para "explorador de dado real", que é a proposta original do Brasil Grid. Não precisa de backend próprio — pode começar como fetch client-side com cache simples.
