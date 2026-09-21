@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Map as MapLibreMap, NavigationControl, Marker, type StyleSpecification, type MapLayerMouseEvent } from 'maplibre-gl';
+import { Map as MapLibreMap, NavigationControl, Marker, type StyleSpecification, type MapLayerMouseEvent, type FilterSpecification } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { FeatureCollection } from 'geojson';
 import { majorPowerPlants, majorTransmissionLines } from '../../data/gridData';
@@ -225,7 +225,7 @@ export const GridMap: React.FC<GridMapProps> = ({
   useEffect(() => {
     if (!map.current || !map.current.loaded()) return;
 
-    let lineFilterExpr: any = null;
+    let lineFilterExpr: FilterSpecification | null = null;
     if (voltageFilter === '800') {
       lineFilterExpr = ['==', ['get', 'voltageKV'], 800];
     } else if (voltageFilter === '500') {

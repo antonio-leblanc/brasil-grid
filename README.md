@@ -21,7 +21,7 @@ Construído 100% sobre tecnologias de código aberto (sem dependência de tokens
 ## 🏛️ Os 4 Pilares da Aplicação
 
 ### 1. 🗺️ Mapa Topológico do SIN (MapLibre GL + WebGL)
-* **Motor:** MapLibre GL JS acelerado por GPU com basemap *CARTO Dark Matter* baseado em dados OpenStreetMap.
+* **Motor:** MapLibre GL JS acelerado por GPU com basemap *ESRI Dark Gray Canvas* baseado em dados OpenStreetMap.
 * **Malha de Transmissão:**
   * **±800 kV UHVDC (Corrente Contínua):** Os superlinhões de Belo Monte (Xingu ➔ Rio de Janeiro e Xingu ➔ Estreito) com ~2.500 km de extensão.
   * **500 kV / 765 kV (Malha Tronco CA):** A espinha dorsal interligando Norte, Nordeste, Sudeste/Centro-Oeste e Sul.
@@ -52,7 +52,7 @@ Construído 100% sobre tecnologias de código aberto (sem dependência de tokens
 | Camada | Tecnologia | Função |
 |---|---|---|
 | **Engine Cartográfica** | `maplibre-gl` | Renderização vetorial e WebGL 60fps sem tokens pagos |
-| **Tiles de Fundo** | `CARTO Basemaps` | Dark Matter tiles livres de alta performance |
+| **Tiles de Fundo** | `ESRI Basemaps` | Dark Gray Canvas tiles livres de alta performance |
 | **Framework Web** | `React 19` + `Vite 8` + `TypeScript` | SPA estática com bundle ultracompacto |
 | **Estilização** | `Tailwind CSS v4` | Design system SCADA com contraste de néons |
 | **Ícones** | `lucide-react` | Iconografia vetorial limpa |
