@@ -16,10 +16,18 @@
 - [ ] Extrair um componente `FilterButton` reutilizável em `ConsoleSidebar.tsx` pra reduzir a repetição de classes Tailwind condicionais (o `clsx` já está instalado como dependência mas não é usado em nenhum lugar do código ainda).
 - [ ] Revisão de acessibilidade: `aria-label` nos botões só-de-ícone, navegação por teclado nos markers do mapa.
 
-## Sem pressa / quando fizer sentido
+## UX / UI & Design System (Lean & Foco)
 
-- [x] Deploy no GitHub Pages (SPA estática com `vite.config.ts` adaptado para `base: /brasil-grid/` e workflow automatizado no GitHub Actions).
-- [ ] Integração com dado real (ONS/ANEEL/SIGEL) no lugar do estático — decisão consciente de adiar por enquanto, não fazer sem alinhar antes.
+- [ ] **Header "Lean" & Minimalista:** Deixar o `ConsoleHeader` ultra limpo. Remover os 4 botões redundantes que duplicam os menus do sidebar e despoluir o centro (concentrando dados operacionais no `ConsoleBottomBar`), dando foco total à identidade da plataforma e ao mapa.
+- [ ] **Modo Fullscreen / Foco para o painel de abas:** Permitir que o painel lateral expanda para tela cheia (com toggle Maximizar/Restaurar e layout centralizado de leitura) ao navegar pelas abas densas em conteúdo (*02. Cadeia SEB*, *03. Mercado ACL* e *04. Grandezas*), evitando que o usuário fique lendo tabelas e diagramas espremido em 520px com o mapa no fundo.
+
+## Roadmap de Funcionalidades & Dados
+
+- [ ] **Integração com Dados Abertos do ONS:** Conectar dados de despacho/curva de carga em tempo real com fallback automático para o `referenceGridSnapshot`.
+- [ ] **Efeito visual de fluxo de potência nas linhas:** Linhas tracejadas animadas (dasharray / WebGL) indicando visualmente o sentido da potência exportada entre subsistemas.
+- [ ] **Polígonos dos 4 Subsistemas do SIN:** Camada vetorial com as fronteiras elétricas (Norte, Nordeste, Sul, Sudeste/Centro-Oeste) e toggle de visualização.
+- [ ] **Calculadora / Simulador de Economia no Mercado Livre (ACL):** Simulador prático onde o usuário simula sua conta cativa vs livre com estimativa de economia e TUSD Fio B.
+- [ ] **Code-Splitting no Vite (`React.lazy`):** Isolar as abas analíticas sob demanda para acelerar o first-load do mapa de 1.3 MB.
 
 ## Concluído recentemente (referência)
 
