@@ -32,16 +32,18 @@ Construído 100% sobre tecnologias de código aberto (sem dependência de tokens
 ### 2. ⚡ A Cadeia de Valor (Geração ➔ Transmissão ➔ Distribuição ➔ Comercialização)
 * Auditoria dos quatro elos do setor elétrico brasileiro.
 * Análise comparativa de modelos de remuneração (Leilões ANEEL, RAP, TUSD e Contratos Bilaterais).
-* Mapeamento dos grandes players nacionais (Eletrobras, Engie, Taesa, ISA CTEEP, Light, Enel, Equatorial, Tyr Energia, Comerc).
+* Mapeamento dos grandes players nacionais (Eletrobras, Engie, Taesa, ISA CTEEP, Light, Enel, Equatorial, Comerc, Auren).
 
 ### 3. 📊 Estrutura de Mercado: ACR (Cativo) vs. ACL (Mercado Livre)
 * Matriz interativa detalhando a abertura do mercado elétrico.
 * Regulação da CCEE e cronograma de desregulamentação (migração integral do Grupo A em jan/2024 e o futuro Grupo B residencial).
-* **Estudo de Caso Tyr Energia & GreenAnt:** Como o *smart metering* e a telemetria de IoT na borda transformam a gestão de faturas e a curva de carga em tempo real.
+* **Smart Metering & IoT na Borda:** Como os medidores digitais e a telemetria em alta frequência transformam a gestão de faturas, a detecção de anomalias e a curva de carga no ACL.
 
 ### 4. 📐 Régua de Grandezas: Desmistificando Watts (W a TWh)
 * Esclarecimento conceitual entre **Potência** (kW, MW, GW — taxa instantânea) e **Energia** (kWh, MWh, GWh — volume acumulado no tempo).
 * Comparador de escalas do dia a dia: do chuveiro elétrico (~5.5 kW) e conta residencial (~200 kWh/mês) ao pico do SIN brasileiro (~105 GW) e consumo anual do país (~540 TWh).
+
+> Para a visão detalhada, motivação e arquitetura completa, consulte [`docs/spec.md`](./docs/spec.md).
 
 ---
 

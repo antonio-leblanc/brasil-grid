@@ -107,11 +107,11 @@ export const energyChainStages: ValueChainStage[] = [
     revenueModel: 'Margem de comercialização (spread), taxas de gestão de carteira e serviços de eficiência/telemetria.',
     regulator: 'CCEE (registro e liquidação financeira de contratos) e ANEEL.',
     mainCompanies: [
-      { name: 'Tyr Energia', tag: 'Energytech carioca com medição inteligente (GreenAnt)' },
-      { name: 'Comerc Energia', tag: 'Uma das pioneiras do mercado livre' },
-      { name: 'Raízen Power', tag: 'Braço de energia do grupo Cosan/Shell' },
-      { name: 'Matrix Energia', tag: 'Joint venture com a Duet e EnVen' },
-      { name: '2W Ecobank', tag: 'Foco no varejo e pequenas empresas' }
+      { name: 'Comerc Energia', tag: 'Pioneira em gestão e comercialização livre' },
+      { name: 'Raízen Power', tag: 'Braço de energia e comercialização do grupo Cosan/Shell' },
+      { name: 'Auren Energia', tag: 'Gigante em comercialização de energia limpa' },
+      { name: 'Matrix Energia', tag: 'Joint venture focada em mercado livre e baterias' },
+      { name: '2W Ecobank', tag: 'Foco na digitalização do varejo e PMEs' }
     ],
     keyMetrics: [
       { label: 'Economia Típica ACL', value: '15% a 35%' },
@@ -122,7 +122,7 @@ export const energyChainStages: ValueChainStage[] = [
     highlights: [
       'Onde a inovação acontece: telemetria em tempo real com smart meters (IoT na borda) substitui a leitura manual de relógio por dados minuto a minuto.',
       'Abertura de mercado: em jan/2024 todas as empresas de média/alta tensão foram liberadas para escolher fornecedor. O próximo passo é o residencial.',
-      'A Tyr Energia se destaca ao unir comercialização varejista descomplicada com hardware de telemetria da GreenAnt para controle em tempo real.'
+      'A convergência entre comercialização e IoT na borda: medição inteligente e plataformas de dados contínuos são a nova fronteira de controle de custo e sustentabilidade no ACL.'
     ]
   }
 ];

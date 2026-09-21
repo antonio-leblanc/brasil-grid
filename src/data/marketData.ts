@@ -44,23 +44,23 @@ export const marketComparisonData: MarketComparisonRow[] = [
   }
 ];
 
-export const tyrEnergySpotlight = {
-  name: 'Tyr Energia',
-  holding: 'Mercurio Partners',
-  foundersTechLead: 'Pedro Bittencourt (CTO, ex-GreenAnt)',
-  tagline: 'Gestão Inteligente de Energia no Mercado Livre com Telemetria em Tempo Real',
+export const telemetrySpotlight = {
+  name: 'Smart Metering & Telemetria IoT no ACL',
+  category: 'Tecnologia de Borda & Gestão de Carga',
+  techLead: 'Medição em Alta Frequência & Algoritmos de Desagregação',
+  tagline: 'Como hardware na ponta e inteligência de dados transformam a gestão de faturas no Mercado Livre',
   coreDifferentiators: [
     {
-      title: 'Smart Metering & IoT na Borda (GreenAnt)',
-      desc: 'Com a aquisição da GreenAnt em fev/2026, a Tyr incorporou hardware proprietário e telemetria de alta frequência para ler o consumo em tempo real sem esperar o fechamento da fatura no fim do mês.'
+      title: 'Smart Metering & Coleta na Borda',
+      desc: 'Medidores digitais inteligentes instalados nos quadros elétricos coletam parâmetros elétricos (tensão, corrente, potência ativa e reativa, fator de potência e THD) em intervalos sub-minuto, transmitindo via 4G/NB-IoT ou Wi-Fi para nuvem.'
     },
     {
-      title: 'Comercialização Varejista Descomplicada',
-      desc: 'A Tyr representa o cliente integralmente na CCEE. O condomínio ou restaurante migra com zero aporte de capital e passa a usufruir de economia imediata com contrato digital simples.'
+      title: 'Desintermediação & Gestão Varejista',
+      desc: 'Comercializadoras varejistas utilizam esses fluxos contínuos de dados para fazer a conciliação automática com a CCEE e garantir que empresas do Grupo A (comércios, escolas, clínicas) migrem sem precisar de equipes técnicas dedicadas.'
     },
     {
-      title: 'Otimização da Curva de Carga',
-      desc: 'Com dados minuto a minuto, o cliente identifica picos de consumo, desvios operacionais em motores e ar-condicionado e desperdício de energia fora do horário comercial.'
+      title: 'Otimização Ativa da Curva de Carga',
+      desc: 'Com medições em tempo real, algoritmos detectam fugas de corrente, partidas desbalanceadas de motores, consumo fantasma fora do horário de expediente e alertam sobre riscos de ultrapassagem de demanda contratada com a distribuidora.'
     }
   ]
 };

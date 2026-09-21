@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { marketComparisonData, tyrEnergySpotlight } from '../../data/marketData';
+import { marketComparisonData, telemetrySpotlight } from '../../data/marketData';
 import { ShieldCheck, ArrowRightLeft, Sparkles, Building, Clock, Cpu } from 'lucide-react';
 
 export const AcrAclComparison: React.FC = () => {
@@ -43,7 +43,7 @@ export const AcrAclComparison: React.FC = () => {
             }`}
           >
             <Sparkles className="w-3.5 h-3.5 mr-1.5 text-amber-400" />
-            ⚡ Caso Tyr Energia & Smart Meters
+            ⚡ Telemetria & Smart Meters no ACL
           </button>
         </div>
       </div>
@@ -104,30 +104,30 @@ export const AcrAclComparison: React.FC = () => {
           </div>
         </div>
       ) : (
-        /* Tyr Energia Case Study & Smart Metering */
+        /* Smart Metering & Telemetry Deep Dive */
         <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 backdrop-blur-md shadow-2xl space-y-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
             <div>
               <div className="flex items-center space-x-3 mb-1">
                 <span className="font-mono text-xs px-2.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
-                  ESTUDO DE CASO / RADAR ESTRATÉGICO
+                  INOVAÇÃO & INFRAESTRUTURA
                 </span>
-                <span className="text-xs font-mono text-slate-400">Grupo Mercurio Partners</span>
+                <span className="text-xs font-mono text-slate-400">{telemetrySpotlight.category}</span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                {tyrEnergySpotlight.name}
+                {telemetrySpotlight.name}
               </h3>
-              <p className="text-sm text-slate-400 mt-1">{tyrEnergySpotlight.tagline}</p>
+              <p className="text-sm text-slate-400 mt-1">{telemetrySpotlight.tagline}</p>
             </div>
 
             <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs font-mono text-slate-300">
-              <span className="text-slate-500 block text-[10px]">LIDERANÇA TÉCNICA</span>
-              <strong className="text-white text-sm">{tyrEnergySpotlight.foundersTechLead}</strong>
+              <span className="text-slate-500 block text-[10px]">ARQUITETURA DE DADOS</span>
+              <strong className="text-white text-sm">{telemetrySpotlight.techLead}</strong>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {tyrEnergySpotlight.coreDifferentiators.map((diff, i) => (
+            {telemetrySpotlight.coreDifferentiators.map((diff, i) => (
               <div key={i} className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-5 space-y-3">
                 <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
                   {i === 0 ? <Cpu className="w-4 h-4" /> : i === 1 ? <Building className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
@@ -141,8 +141,8 @@ export const AcrAclComparison: React.FC = () => {
           <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-500/30 text-xs sm:text-sm text-cyan-200 flex items-start space-x-3">
             <ShieldCheck className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
             <div>
-              <strong className="text-white block mb-0.5 font-mono">Por que a tecnologia de telemetria é o diferencial crítico?</strong>
-              No mercado livre tradicional, a comercializadora apenas manda um boleto com desconto no fim do mês. A Tyr, ao incorporar a tecnologia da <strong>GreenAnt</strong>, monitora a forma de onda, a potência ativa/reativa e detecta anomalias de operação na hora, transformando a venda de energia em uma plataforma contínua de inteligência e software.
+              <strong className="text-white block mb-0.5 font-mono">Por que a telemetria é o diferencial crítico do mercado livre moderno?</strong>
+              No mercado livre tradicional analógico, o cliente recebe apenas uma fatura com desconto no final do mês. Com telemetria na borda e medidores IoT, monitora-se a forma de onda, a potência ativa/reativa e distorções harmônicas minuto a minuto, viabilizando detecção de anomalias e gestão ativa de demanda em tempo real.
             </div>
           </div>
         </div>
