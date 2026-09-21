@@ -14,7 +14,7 @@
 
 O **Brasil Grid** é uma aplicação web interativa em **Dark Mode (estética SCADA / Sala de Controle ONS)** projetada para desmistificar a engenharia de alta tensão, a geografia das renováveis e as transformações de mercado do setor elétrico no Brasil.
 
-Construído 100% sobre tecnologias de código aberto (sem dependência de tokens proprietários como Mapbox), o projeto conecta **geoprocessamento em tempo real**, **modelos mentais físicos de energia** e **análise regulatória do Mercado Livre (ACL)** em uma interface ultra-rápida.
+Construído 100% sobre tecnologias de código aberto (sem dependência de tokens proprietários como Mapbox), o projeto conecta **geoprocessamento vetorial interativo (MapLibre/WebGL)**, **modelos mentais físicos de energia** e **análise regulatória do Mercado Livre (ACL)** em uma interface ultra-rápida.
 
 ---
 
@@ -80,11 +80,13 @@ npm run build
 ---
 
 ## 📚 Fontes de Dados & Referências Oficiais
-
+ 
 * [ONS — Operador Nacional do Sistema Elétrico](https://www.ons.org.br) (Portal de Dados Abertos e Boletins Diários de Operação)
 * [CCEE — Câmara de Comercialização de Energia Elétrica](https://www.ccee.org.br) (Regras de Comercialização e Dados do ACL)
 * [ANEEL — Agência Nacional de Energia Elétrica](https://www.gov.br/aneel) (SIGEL — Sistema de Informações Georreferenciadas do Setor Elétrico)
 * [EPE — Empresa de Pesquisa Energética](https://www.epe.gov.br) (Balanço Energético Nacional - BEN)
+
+> ℹ️ **Transparência de Telemetria:** Os indicadores operacionais do console (frequência, carga instantânea, intercâmbios e geração da matriz) são **snapshots estáticos de referência técnica** baseados em regimes típicos do SIN para fins educacionais e de visualização, não constituindo telemetria em tempo real conectada ao SCADA das concessionárias.
 
 ---
 

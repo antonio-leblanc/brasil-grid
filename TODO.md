@@ -9,16 +9,16 @@
 
 ## Code health (detalhe completo em `docs/code-health.md`)
 
-- [ ] Renomear `liveGridTelemetry` (`src/data/gridData.ts`) — hoje o nome sugere dado em tempo real, mas é estático/hardcoded. Renomear para algo como `referenceGridSnapshot` e deixar isso explícito na UI (ex.: label "dado de referência, não live").
+- [x] **Transparência de telemetria:** Renomeado `liveGridTelemetry` para `referenceGridSnapshot` em `src/data/gridData.ts` e estampados selos de referência técnica na UI (`ConsoleHeader` e `ConsoleBottomBar`), com transparência formalizada no README.
 - [x] Trocar os markers de usina por camada GeoJSON nativa do MapLibre (`circle`/`symbol`) processada diretamente pela GPU via WebGL, com setFilter instantâneo e tooltips dinâmicos.
-- [ ] Adicionar CI básico (GitHub Actions): `npm run build` (inclui `tsc -b`) + `npm run lint` a cada push/PR na `main`.
+- [x] **CI Automatizado & Deploy GitHub Pages (GitHub Actions):** Workflow `.github/workflows/ci.yml` com `npm run lint` + `npm run build` e pipeline de publicação no GitHub Pages via `actions/deploy-pages` com `base` configurada em `vite.config.ts`.
 - [x] Refletir aba ativa, usina/linha selecionada e filtros na URL com sincronização bidirecional, histórico do navegador (`popstate`), câmera `flyTo` automática e botão "Compartilhar" no inspetor.
 - [ ] Extrair um componente `FilterButton` reutilizável em `ConsoleSidebar.tsx` pra reduzir a repetição de classes Tailwind condicionais (o `clsx` já está instalado como dependência mas não é usado em nenhum lugar do código ainda).
 - [ ] Revisão de acessibilidade: `aria-label` nos botões só-de-ícone, navegação por teclado nos markers do mapa.
 
 ## Sem pressa / quando fizer sentido
 
-- [ ] Deploy no GitHub Pages (projeto é SPA estática, `npm run build` já gera o `dist/` pronto — só falta configurar `base` no `vite.config.ts` + workflow ou pacote `gh-pages`).
+- [x] Deploy no GitHub Pages (SPA estática com `vite.config.ts` adaptado para `base: /brasil-grid/` e workflow automatizado no GitHub Actions).
 - [ ] Integração com dado real (ONS/ANEEL/SIGEL) no lugar do estático — decisão consciente de adiar por enquanto, não fazer sem alinhar antes.
 
 ## Concluído recentemente (referência)

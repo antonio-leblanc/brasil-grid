@@ -1,5 +1,5 @@
 import React from 'react';
-import { liveGridTelemetry } from '../../data/gridData';
+import { referenceGridSnapshot } from '../../data/gridData';
 import { PanelLeftOpen, PanelLeftClose } from 'lucide-react';
 
 interface ConsoleHeaderProps {
@@ -39,22 +39,28 @@ export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
         </div>
       </div>
 
-      {/* Center: Real-Time Grid Telemetry Ticker */}
-      <div className="hidden lg:flex items-center space-x-4 px-3 py-1 rounded bg-slate-950/80 border border-slate-800/80 text-[11px] font-mono">
+      {/* Center: Reference Grid Telemetry Ticker with Technical Reference Seal */}
+      <div
+        className="hidden lg:flex items-center space-x-3.5 px-3 py-1 rounded bg-slate-950/80 border border-slate-800/80 text-[11px] font-mono"
+        title="Snapshot estático de referência técnica do SIN (valores representativos para fins educacionais e de estudo, não telemetria em tempo real)"
+      >
+        <span className="px-1.5 py-0.5 rounded text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/30 uppercase tracking-wider font-semibold">
+          Ref. Técnica
+        </span>
         <div className="flex items-center space-x-1.5">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span className="text-emerald-400 font-bold">{liveGridTelemetry.frequencyHz.toFixed(2)} Hz</span>
+          <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span className="text-emerald-400 font-bold">{referenceGridSnapshot.frequencyHz.toFixed(2)} Hz</span>
           <span className="text-slate-500">[NOMINAL]</span>
         </div>
         <span className="text-slate-700">|</span>
         <div>
           <span className="text-slate-500">CARGA SIN: </span>
-          <strong className="text-white font-bold">{(liveGridTelemetry.instantaneousLoadMW / 1000).toFixed(1)} GW</strong>
+          <strong className="text-white font-bold">{(referenceGridSnapshot.instantaneousLoadMW / 1000).toFixed(1)} GW</strong>
         </div>
         <span className="text-slate-700">|</span>
         <div>
           <span className="text-slate-500">RENOVÁVEL: </span>
-          <strong className="text-cyan-400 font-bold">{liveGridTelemetry.renewableSharePct}%</strong>
+          <strong className="text-cyan-400 font-bold">{referenceGridSnapshot.renewableSharePct}%</strong>
         </div>
       </div>
 

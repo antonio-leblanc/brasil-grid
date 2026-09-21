@@ -23,9 +23,8 @@
 1. **Código morto do template inicial**
    `src/components/Header.tsx` e `Footer.tsx` não são importados em lugar nenhum — o app real usa `ConsoleHeader`/`ConsoleBottomBar`. Sobraram do boilerplate. Remover.
 
-2. **Nome enganoso em `src/data/gridData.ts`**
-   `liveGridTelemetry` (frequência, carga instantânea, intercâmbios) contém **valores fixos hardcoded**, não dado real de nenhuma fonte. O nome e a linguagem do README ("geoprocessamento em tempo real", "Coordenação ONS") sugerem tempo real, o que engana quem lê o código ou usa o app.
-   Sugestão: renomear para algo como `referenceGridSnapshot` e deixar explícito na UI (ex.: label "dado de referência, não live") até que exista integração real.
+2. **Nome enganoso em `src/data/gridData.ts`** — ✅ *Concluído*
+   `liveGridTelemetry` renomeado para `referenceGridSnapshot` com tipagem explícita `GridSnapshot`, metadados de referência técnica e compatibilidade legada. A UI estampa o selo `Ref. Técnica` no ticker (`ConsoleHeader`) e `REF` nos intercâmbios/matriz (`ConsoleBottomBar`), com documentação sincronizada no README.
 
 3. **Doc e código dessincronizados**
    O README descreve o basemap como "CARTO Dark Matter", mas `GridMap.tsx` usa tiles raster do **ESRI ArcGIS Online** (`World_Dark_Gray_Base`). Além de corrigir a doc, vale checar os termos de uso desse serviço gratuito da Esri — costuma ter limite de volume/uso comercial, o que é um risco real se o tráfego crescer.
@@ -35,8 +34,8 @@
 4. **Markers de usinas via `innerHTML` manual** — ✅ *Concluído*
    Migrado para camada nativa GeoJSON no MapLibre (`circle`/`symbol`) processada via WebGL/GPU com filtragem instantânea via `setFilter` e zero overhead no DOM.
 
-5. **Sem testes e sem CI** — ⏳ *Pendente*
-   Nenhum arquivo `*.test.*`, nenhum workflow em `.github/`. Adicionar workflow de `build + typecheck + lint` no GitHub Actions e pipeline de deploy no GitHub Pages.
+5. **Sem testes e sem CI** — ✅ *Concluído*
+   Workflow `.github/workflows/ci.yml` configurado com `oxlint` e `tsc -b && vite build`. Deploy contínuo e automatizado no GitHub Pages implementado via `actions/deploy-pages` com `base: /brasil-grid/` dinâmico em `vite.config.ts`.
 
 6. **Estado não reflete na URL** — ✅ *Concluído*
    Sincronização bidirecional de URL implementada (`?plant`, `?line`, `?tab`, `?v`, `?type`), suporte a navegação por histórico (`popstate`), câmera `flyTo`/`fitBounds` e botão de cópia de link no inspetor.

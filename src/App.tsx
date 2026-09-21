@@ -87,9 +87,10 @@ export function App() {
     }
 
     const searchStr = params.toString();
-    const newTarget = searchStr ? `?${searchStr}` : window.location.pathname;
+    const newSearch = searchStr ? `?${searchStr}` : '';
+    const newTarget = `${window.location.pathname}${newSearch}`;
 
-    if (window.location.search !== (searchStr ? `?${searchStr}` : '')) {
+    if (window.location.search !== newSearch) {
       window.history.replaceState(null, '', newTarget);
     }
   }, [activeTab, selectedPlant, selectedLine, voltageFilter, plantTypeFilter]);

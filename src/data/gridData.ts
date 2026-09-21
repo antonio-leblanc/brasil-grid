@@ -34,12 +34,38 @@ export interface TransmissionLineFeature {
   };
 }
 
-export const liveGridTelemetry = {
+export interface GridSnapshot {
+  frequencyHz: number;
+  instantaneousLoadMW: number;
+  peakRecordMW: number;
+  renewableSharePct: number;
+  systemStatus: string;
+  referenceNote: string;
+  interchanges: {
+    from: string;
+    to: string;
+    flowMW: number;
+    direction: 'EXPORT' | 'IMPORT';
+  }[];
+  generationMix: {
+    source: string;
+    mw: number;
+    pct: number;
+    color: string;
+  }[];
+}
+
+/**
+ * Snapshot estático de referência técnica do Sistema Interligado Nacional (SIN).
+ * Valores representativos para modelagem física e educacional (não constitui telemetria em tempo real).
+ */
+export const referenceGridSnapshot: GridSnapshot = {
   frequencyHz: 60.00,
   instantaneousLoadMW: 85420,
   peakRecordMW: 105150,
   renewableSharePct: 84.8,
-  systemStatus: 'NOMINAL // DESPACHO ONS 100% INTEGRADO',
+  systemStatus: 'NOMINAL // SNAPSHOT DE REFERÊNCIA SIN',
+  referenceNote: 'Dados estáticos de referência técnica representativos da operação do SIN',
   interchanges: [
     { from: 'N', to: 'SE/CO', flowMW: 8420, direction: 'EXPORT' },
     { from: 'NE', to: 'SE/CO', flowMW: 6180, direction: 'EXPORT' },
@@ -54,6 +80,9 @@ export const liveGridTelemetry = {
     { source: 'Nuclear', mw: 1920, pct: 2.3, color: '#ec4899' }
   ]
 };
+
+/** @deprecated Utilizar referenceGridSnapshot para explicitar natureza estática/referencial */
+export const liveGridTelemetry = referenceGridSnapshot;
 
 export const majorPowerPlants: PowerPlantFeature[] = [
   {
