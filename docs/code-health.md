@@ -32,14 +32,14 @@
 
 ### Prioridade média (qualidade e escalabilidade)
 
-4. **Markers de usinas via `innerHTML` manual**
-   Cada usina em `GridMap.tsx` vira um `<div>` criado na mão (`el.innerHTML = ...`) e um `Marker` do MapLibre, em vez de um layer GeoJSON `circle`/`symbol`. Funciona bem para ~15-20 pontos, mas não escala — se um dia o mapa incluir todas as subestações do SIGEL, isso vai pesar. Layer nativo do MapLibre é mais barato e dá filtro/clustering de graça.
+4. **Markers de usinas via `innerHTML` manual** — ✅ *Concluído*
+   Migrado para camada nativa GeoJSON no MapLibre (`circle`/`symbol`) processada via WebGL/GPU com filtragem instantânea via `setFilter` e zero overhead no DOM.
 
-5. **Sem testes e sem CI**
-   Nenhum arquivo `*.test.*`, nenhum workflow em `.github/`. Aceitável em MVP solo, mas antes de aceitar contribuições externas vale ao menos um workflow de `build + typecheck + lint` no GitHub Actions — barato e evita PR quebrado.
+5. **Sem testes e sem CI** — ⏳ *Pendente*
+   Nenhum arquivo `*.test.*`, nenhum workflow em `.github/`. Adicionar workflow de `build + typecheck + lint` no GitHub Actions e pipeline de deploy no GitHub Pages.
 
-6. **Estado não reflete na URL**
-   Aba ativa e usina/linha selecionada vivem só em `useState` local no `App.tsx`. Um `useSearchParams` simples (sem precisar de `react-router` inteiro) permitiria compartilhar link direto para uma usina ou aba específica.
+6. **Estado não reflete na URL** — ✅ *Concluído*
+   Sincronização bidirecional de URL implementada (`?plant`, `?line`, `?tab`, `?v`, `?type`), suporte a navegação por histórico (`popstate`), câmera `flyTo`/`fitBounds` e botão de cópia de link no inspetor.
 
 ### Prioridade baixa (polimento)
 
