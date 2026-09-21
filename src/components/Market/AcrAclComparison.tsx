@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { marketComparisonData, telemetrySpotlight } from '../../data/marketData';
-import { ShieldCheck, ArrowRightLeft, Sparkles, Building, Clock, Cpu } from 'lucide-react';
+import { ShieldCheck, ArrowRightLeft, Sparkles, Building, Clock, Cpu, Table2 } from 'lucide-react';
 
 export const AcrAclComparison: React.FC = () => {
   const [activeView, setActiveView] = useState<'table' | 'spotlight'>('table');
@@ -26,13 +26,14 @@ export const AcrAclComparison: React.FC = () => {
         <div className="bg-slate-900 p-1 rounded-lg border border-slate-800 flex space-x-1 text-xs sm:text-sm font-mono">
           <button
             onClick={() => setActiveView('table')}
-            className={`px-4 py-1.5 rounded-md transition ${
+            className={`px-4 py-1.5 rounded-md flex items-center transition ${
               activeView === 'table'
                 ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-semibold'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            📊 Matriz Comparativa (ACR × ACL)
+            <Table2 className="w-3.5 h-3.5 mr-1.5 text-cyan-400" />
+            Matriz Comparativa (ACR × ACL)
           </button>
           <button
             onClick={() => setActiveView('spotlight')}
@@ -43,7 +44,7 @@ export const AcrAclComparison: React.FC = () => {
             }`}
           >
             <Sparkles className="w-3.5 h-3.5 mr-1.5 text-amber-400" />
-            ⚡ Telemetria & Smart Meters no ACL
+            Telemetria & Smart Meters no ACL
           </button>
         </div>
       </div>

@@ -4,7 +4,7 @@ import { AcrAclComparison } from '../Market/AcrAclComparison';
 import { MagnitudeRuler } from '../Scales/MagnitudeRuler';
 import { subsystems, majorPowerPlants, majorTransmissionLines } from '../../data/gridData';
 import type { PowerPlantFeature, TransmissionLineFeature } from '../../data/gridData';
-import { X, Filter } from 'lucide-react';
+import { X, Filter, Droplet, Sun, Wind, Atom, Flame } from 'lucide-react';
 
 interface ConsoleSidebarProps {
   activeTab: string;
@@ -140,23 +140,24 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                 <span className="text-slate-500 text-[10px] uppercase block">FONTE DE GERAÇÃO:</span>
                 <div className="grid grid-cols-3 gap-1.5">
                   {[
-                    { id: 'all', label: 'Todas' },
-                    { id: 'hidro', label: '💧 Hidro' },
-                    { id: 'solar', label: '☀️ Solar' },
-                    { id: 'eolica', label: '💨 Eólica' },
-                    { id: 'nuclear', label: '⚛️ Nuclear' },
-                    { id: 'termica', label: '🔥 Térmica' }
+                    { id: 'all', label: 'Todas', icon: null },
+                    { id: 'hidro', label: 'Hidro', icon: Droplet },
+                    { id: 'solar', label: 'Solar', icon: Sun },
+                    { id: 'eolica', label: 'Eólica', icon: Wind },
+                    { id: 'nuclear', label: 'Nuclear', icon: Atom },
+                    { id: 'termica', label: 'Térmica', icon: Flame }
                   ].map((item) => (
                     <button
                       key={item.id}
                       onClick={() => setPlantTypeFilter(item.id)}
-                      className={`py-1.5 rounded text-center border text-[10px] uppercase transition ${
+                      className={`py-1.5 rounded border text-[10px] uppercase transition flex items-center justify-center space-x-1 ${
                         plantTypeFilter === item.id
                           ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 font-bold'
                           : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
                       }`}
                     >
-                      {item.label}
+                      {item.icon && <item.icon className="w-3 h-3" />}
+                      <span>{item.label}</span>
                     </button>
                   ))}
                 </div>
