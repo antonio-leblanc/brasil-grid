@@ -15,7 +15,7 @@ export const marketComparisonData: MarketComparisonRow[] = [
   {
     aspect: 'Escolha do fornecedor',
     acr: 'Nenhuma escolha. Consumidor cativo obrigado a comprar da distribuidora local (monopólio).',
-    acl: 'Livre escolha. Pode contratar qualquer geradora ou comercializadora (Tyr, Comerc, Raízen, etc.).',
+    acl: 'Livre escolha. Pode contratar qualquer geradora ou comercializadora livre (Comerc, Raízen, Auren, Matrix, etc.).',
     importance: 'Permite exigir 100% energia limpa (certificados I-REC) e negociar diretamente com os melhores players.'
   },
   {
