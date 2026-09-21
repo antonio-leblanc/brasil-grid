@@ -248,6 +248,255 @@ export const majorPowerPlants: PowerPlantFeature[] = [
       turbinesOrUnits: '3 x GE 7HA.02 + 1 x GE Steam Turbine',
       gridConnectionVoltage: '500 kV'
     }
+  },
+  {
+    id: 'ilha-solteira',
+    name: 'UHE Ilha Solteira',
+    type: 'hidro',
+    capacityMW: 3444,
+    subsystem: 'SE/CO',
+    state: 'SP',
+    riverOrRegion: 'Rio Paraná (Ilha Solteira)',
+    operator: 'CTG Brasil',
+    coordinates: [-51.3378, -20.4306],
+    description: 'Uma das maiores usinas inteiramente nacionais do país, opera em cascata com Três Irmãos e Jupiá, sustentando boa parte da carga do interior paulista e do Mato Grosso do Sul.',
+    technicalDetails: {
+      commissionYear: 1978,
+      turbinesOrUnits: '20 unidades Kaplan',
+      gridConnectionVoltage: '440 kV / 138 kV'
+    }
+  },
+  {
+    id: 'sobradinho',
+    name: 'UHE Sobradinho',
+    type: 'hidro',
+    capacityMW: 1050,
+    subsystem: 'NE',
+    state: 'BA',
+    riverOrRegion: 'Rio São Francisco (Sobradinho)',
+    operator: 'Chesf',
+    coordinates: [-40.8253, -9.4306],
+    description: 'Reservatório multianual que regula a vazão de todo o baixo São Francisco, viabilizando Paulo Afonso e Xingó a jusante — peça-chave da segurança hídrica e energética do semiárido nordestino.',
+    technicalDetails: {
+      commissionYear: 1979,
+      turbinesOrUnits: '6 unidades Kaplan',
+      gridConnectionVoltage: '230 kV'
+    }
+  },
+  {
+    id: 'serra-da-mesa',
+    name: 'UHE Serra da Mesa',
+    type: 'hidro',
+    capacityMW: 1275,
+    subsystem: 'SE/CO',
+    state: 'GO',
+    riverOrRegion: 'Rio Tocantins (Minaçu)',
+    operator: 'Furnas',
+    coordinates: [-48.3167, -13.8500],
+    description: 'Maior reservatório artificial do país em volume, funciona como uma bateria hídrica de longo prazo para o subsistema Sudeste/Centro-Oeste em anos secos.',
+    technicalDetails: {
+      commissionYear: 1998,
+      turbinesOrUnits: '3 unidades Francis',
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'foz-do-areia',
+    name: 'UHE Governador Bento Munhoz (Foz do Areia)',
+    type: 'hidro',
+    capacityMW: 1676,
+    subsystem: 'S',
+    state: 'PR',
+    riverOrRegion: 'Rio Iguaçu (Pinhão/Bituruna)',
+    operator: 'Copel GeT',
+    coordinates: [-51.8867, -26.0272],
+    description: 'Cabeça da cascata do Iguaçu, com uma das maiores barragens em altura da América do Sul — âncora do suprimento do sistema paranaense.',
+    technicalDetails: {
+      commissionYear: 1980,
+      turbinesOrUnits: '4 unidades Francis',
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'ita',
+    name: 'UHE Itá',
+    type: 'hidro',
+    capacityMW: 1450,
+    subsystem: 'S',
+    state: 'SC',
+    riverOrRegion: 'Rio Uruguai (Itá/Aratiba)',
+    operator: 'Consórcio Itá (Engie/Copel/Celesc)',
+    coordinates: [-52.3308, -27.2794],
+    description: 'Principal usina da bacia do Uruguai na divisa SC/RS, com papel relevante no intercâmbio energético entre os estados do Sul.',
+    technicalDetails: {
+      commissionYear: 2000,
+      turbinesOrUnits: '5 unidades Francis',
+      gridConnectionVoltage: '525 kV'
+    }
+  },
+  {
+    id: 'furnas',
+    name: 'UHE Furnas',
+    type: 'hidro',
+    capacityMW: 1312,
+    subsystem: 'SE/CO',
+    state: 'MG',
+    riverOrRegion: 'Rio Grande (São José da Barra)',
+    operator: 'Furnas Centrais Elétricas',
+    coordinates: [-46.3167, -20.6667],
+    description: 'Uma das usinas pioneiras da interligação nacional — deu origem ao nome da estatal Furnas — e segue central no abastecimento do Sudeste.',
+    technicalDetails: {
+      commissionYear: 1963,
+      turbinesOrUnits: '8 unidades Francis',
+      gridConnectionVoltage: '345 kV'
+    }
+  },
+  {
+    id: 'marimbondo',
+    name: 'UHE Marimbondo',
+    type: 'hidro',
+    capacityMW: 1488,
+    subsystem: 'SE/CO',
+    state: 'MG',
+    riverOrRegion: 'Rio Grande (Fronteira/Icém)',
+    operator: 'Furnas Centrais Elétricas',
+    coordinates: [-49.2000, -20.4000],
+    description: 'Parte da cascata do rio Grande na divisa MG/SP, reforça o corredor de escoamento entre o Triângulo Mineiro e o interior paulista.',
+    technicalDetails: {
+      commissionYear: 1975,
+      turbinesOrUnits: '8 unidades Francis',
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'salto-caxias',
+    name: 'UHE Salto Caxias',
+    type: 'hidro',
+    capacityMW: 1240,
+    subsystem: 'S',
+    state: 'PR',
+    riverOrRegion: 'Rio Iguaçu (Nova Prata do Iguaçu)',
+    operator: 'Copel GeT',
+    coordinates: [-53.5000, -25.5500],
+    description: 'Última grande usina da cascata do Iguaçu antes da fronteira com a Argentina, próxima à região das Cataratas.',
+    technicalDetails: {
+      commissionYear: 1999,
+      turbinesOrUnits: '4 unidades Francis',
+      gridConnectionVoltage: '525 kV'
+    }
+  },
+  {
+    id: 'sao-simao',
+    name: 'UHE São Simão',
+    type: 'hidro',
+    capacityMW: 1710,
+    subsystem: 'SE/CO',
+    state: 'MG',
+    riverOrRegion: 'Rio Paranaíba (divisa MG/GO)',
+    operator: 'CTG Brasil',
+    coordinates: [-50.5000, -18.9833],
+    description: 'Uma das maiores usinas inteiramente em território nacional na bacia do Paranaíba, ancorando o suprimento do Triângulo Mineiro e de Goiás.',
+    technicalDetails: {
+      commissionYear: 1978,
+      turbinesOrUnits: '6 unidades Francis',
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'lagoa-dos-ventos',
+    name: 'Complexo Eólico Lagoa dos Ventos',
+    type: 'eolica',
+    capacityMW: 716,
+    subsystem: 'NE',
+    state: 'PI',
+    riverOrRegion: 'São João do Piauí',
+    operator: 'AES Brasil',
+    coordinates: [-41.9000, -8.3500],
+    description: 'Um dos maiores complexos eólicos da América Latina, símbolo do boom eólico do semiárido nordestino na última década.',
+    technicalDetails: {
+      commissionYear: 2021,
+      gridConnectionVoltage: '230 kV'
+    }
+  },
+  {
+    id: 'rio-do-vento',
+    name: 'Complexo Eólico Rio do Vento',
+    type: 'eolica',
+    capacityMW: 583,
+    subsystem: 'NE',
+    state: 'RN',
+    riverOrRegion: 'Lajes / Pedra Preta',
+    operator: 'AES Brasil',
+    coordinates: [-36.2500, -5.6833],
+    description: 'Complexo eólico de última geração no Rio Grande do Norte, aproveitando os ventos constantes do litoral semiárido potiguar.',
+    technicalDetails: {
+      commissionYear: 2023,
+      gridConnectionVoltage: '230 kV'
+    }
+  },
+  {
+    id: 'osorio',
+    name: 'Complexo Eólico de Osório',
+    type: 'eolica',
+    capacityMW: 150,
+    subsystem: 'S',
+    state: 'RS',
+    riverOrRegion: 'Osório / Litoral Norte',
+    operator: 'Eletrosul / Ventos do Sul',
+    coordinates: [-50.2667, -29.8833],
+    description: 'Pioneiro da energia eólica em escala comercial no Brasil — colocado em operação em 2006, abriu caminho para o boom eólico nacional.',
+    technicalDetails: {
+      commissionYear: 2006,
+      gridConnectionVoltage: '69 kV'
+    }
+  },
+  {
+    id: 'pirapora',
+    name: 'Complexo Solar Pirapora',
+    type: 'solar',
+    capacityMW: 321,
+    subsystem: 'SE/CO',
+    state: 'MG',
+    riverOrRegion: 'Pirapora',
+    operator: 'EDF Renewables / Canadian Solar',
+    coordinates: [-44.9333, -17.3639],
+    description: 'Um dos primeiros grandes complexos fotovoltaicos utility-scale do país, referência para a expansão solar em Minas Gerais.',
+    technicalDetails: {
+      commissionYear: 2017,
+      gridConnectionVoltage: '230 kV'
+    }
+  },
+  {
+    id: 'ituverava',
+    name: 'Complexo Fotovoltaico Ituverava',
+    type: 'solar',
+    capacityMW: 254,
+    subsystem: 'NE',
+    state: 'BA',
+    riverOrRegion: 'Bom Jesus da Lapa / Ituverava',
+    operator: 'Enel Green Power',
+    coordinates: [-43.4000, -13.1500],
+    description: 'Um dos maiores parques solares do Nordeste, aproveitando a altíssima irradiação do semiárido baiano.',
+    technicalDetails: {
+      commissionYear: 2019,
+      gridConnectionVoltage: '230 kV'
+    }
+  },
+  {
+    id: 'norte-fluminense',
+    name: 'UTE Norte Fluminense',
+    type: 'termica',
+    capacityMW: 869,
+    subsystem: 'SE/CO',
+    state: 'RJ',
+    riverOrRegion: 'Macaé',
+    operator: 'Eneva',
+    coordinates: [-41.7833, -22.2833],
+    description: 'Termelétrica a gás natural que reforça a segurança de suprimento do Sudeste em períodos de baixa hidraulicidade, despachada pelo ONS conforme o custo marginal de operação.',
+    technicalDetails: {
+      commissionYear: 2004,
+      gridConnectionVoltage: '345 kV'
+    }
   }
 ];
 
@@ -398,6 +647,150 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
     ],
     technicalDetails: {
       converterTechnology: '500 kV CA Malha Crítica de Carga'
+    }
+  },
+  {
+    id: 'linha-xingo-recife',
+    name: 'Linha Xingó ➔ Recife',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 480,
+    from: 'SE Xingó (AL/SE/BA)',
+    to: 'SE Recife II (PE)',
+    concessionaire: 'Chesf',
+    coordinates: [
+      [-37.7958, -9.6158],
+      [-36.8000, -8.9000],
+      [-35.9000, -8.3000],
+      [-34.9500, -8.0500]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA Malha de Escoamento Hidráulico do São Francisco'
+    }
+  },
+  {
+    id: 'linha-norte-nordeste',
+    name: 'Interligação Norte-Nordeste (Imperatriz ➔ Presidente Dutra)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 480,
+    from: 'SE Imperatriz (MA)',
+    to: 'SE Presidente Dutra (MA)',
+    concessionaire: 'Eletronorte / Chesf',
+    coordinates: [
+      [-47.4900, -5.5300],
+      [-46.2000, -5.4500],
+      [-44.4800, -5.2800]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — elo histórico que uniu os subsistemas Norte e Nordeste em 1999'
+    }
+  },
+  {
+    id: 'linha-sul-sudeste',
+    name: 'Interligação Sul-Sudeste (Blumenau ➔ Ivaiporã)',
+    voltageKV: 525,
+    type: 'CA',
+    lengthKm: 900,
+    from: 'SE Blumenau (SC)',
+    to: 'SE Ivaiporã (PR)',
+    concessionaire: 'Eletrosul / Copel',
+    coordinates: [
+      [-49.0700, -26.9200],
+      [-50.2000, -25.8000],
+      [-51.6800, -24.2500]
+    ],
+    technicalDetails: {
+      converterTechnology: '525 kV CA — reforço do intercâmbio Sul-Sudeste'
+    }
+  },
+  {
+    id: 'linha-manaus-boavista',
+    name: 'Linhão de Tucuruí (Manaus ➔ Boa Vista)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 715,
+    from: 'SE Eng. Lechuga (Manaus - AM)',
+    to: 'SE Boa Vista (RR)',
+    concessionaire: 'Eletronorte',
+    coordinates: [
+      [-60.0200, -3.0500],
+      [-60.4000, -1.0000],
+      [-60.6000, 1.0000],
+      [-60.6700, 2.8200]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — encerrou em 2022 o isolamento elétrico de Roraima, último estado fora do SIN'
+    }
+  },
+  {
+    id: 'linha-acre-rondonia',
+    name: 'Interligação Acre-Rondônia',
+    voltageKV: 230,
+    type: 'CA',
+    lengthKm: 480,
+    from: 'SE Rio Branco (AC)',
+    to: 'SE Porto Velho (RO)',
+    concessionaire: 'Eletronorte',
+    coordinates: [
+      [-67.8100, -9.9700],
+      [-65.8000, -9.3000],
+      [-63.9000, -8.7600]
+    ],
+    technicalDetails: {
+      converterTechnology: '230 kV CA — encerrou em 2012 a era dos sistemas isolados no Acre'
+    }
+  },
+  {
+    id: 'linha-brasil-uruguai',
+    name: 'Interligação Brasil-Uruguai (Livramento ➔ Rivera)',
+    voltageKV: 230,
+    type: 'CC',
+    lengthKm: 3,
+    from: 'SE Livramento (RS)',
+    to: 'SE Rivera (Uruguai)',
+    concessionaire: 'CGT Eletrosul / UTE',
+    coordinates: [
+      [-55.5300, -30.8900],
+      [-55.5500, -30.9000]
+    ],
+    technicalDetails: {
+      converterTechnology: 'Estação conversora back-to-back (70 MW) — intercâmbio binacional Brasil-Uruguai'
+    }
+  },
+  {
+    id: 'linha-brasil-argentina',
+    name: 'Interligação Brasil-Argentina (Garabi)',
+    voltageKV: 500,
+    type: 'CC',
+    lengthKm: 15,
+    from: 'SE Garruchos (RS)',
+    to: 'SE Garabí (Argentina)',
+    concessionaire: 'Eletrobras / CIEN',
+    coordinates: [
+      [-55.6300, -28.1800],
+      [-55.7500, -27.9800]
+    ],
+    technicalDetails: {
+      converterTechnology: 'Estação conversora back-to-back HVDC (2.200 MW) — maior intercâmbio binacional do SIN'
+    }
+  },
+  {
+    id: 'linha-saosimao-brasilia',
+    name: 'Linha São Simão ➔ Brasília',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 430,
+    from: 'SE São Simão (MG/GO)',
+    to: 'SE Brasília Sul (DF)',
+    concessionaire: 'Furnas',
+    coordinates: [
+      [-50.5000, -18.9833],
+      [-49.3000, -17.5000],
+      [-47.9000, -15.8000]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — escoamento da cascata do Paranaíba para o Distrito Federal'
     }
   }
 ];
