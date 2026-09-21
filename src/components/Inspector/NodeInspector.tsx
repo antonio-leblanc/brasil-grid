@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { PowerPlantFeature, TransmissionLineFeature } from '../../data/gridData';
-import { X } from 'lucide-react';
+import { X, Share2, Check } from 'lucide-react';
 
 interface NodeInspectorProps {
   plant: PowerPlantFeature | null;
@@ -9,7 +9,18 @@ interface NodeInspectorProps {
 }
 
 export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant, line, onClose }) => {
+  const [isCopied, setIsCopied] = useState(false);
+
   if (!plant && !line) return null;
+
+  const handleShare = () => {
+    if (typeof window !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2200);
+      });
+    }
+  };
 
   return (
     <aside className="w-88 sm:w-96 bg-[#0a0d14]/95 backdrop-blur-xl border-l border-slate-800/90 h-full flex flex-col shadow-2xl z-30 animate-in slide-in-from-right duration-200">
@@ -21,12 +32,27 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant, line, onClo
             {plant ? `TELEMETRIA // NÓ GERADOR` : `CIRCUITO // LINHA DE TRANSMISSÃO`}
           </span>
         </div>
-        <button
-          onClick={onClose}
-          className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition font-mono text-xs flex items-center space-x-1"
-        >
-          <X className="w-4 h-4" />
-        </button>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={handleShare}
+            className={`px-2 py-1 rounded transition font-mono text-xs flex items-center space-x-1.5 border ${
+              isCopied
+                ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300'
+                : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700 hover:text-white'
+            }`}
+            title="Copiar link direto para este ativo"
+          >
+            {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 text-cyan-400" />}
+            <span className="text-[10px] tracking-wide">{isCopied ? 'COPIADO!' : 'COMPARTILHAR'}</span>
+          </button>
+          <button
+            onClick={onClose}
+            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition font-mono text-xs flex items-center"
+            title="Fechar inspetor"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Inspector Body */}

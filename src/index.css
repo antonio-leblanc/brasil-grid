@@ -32,3 +32,21 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
+
+/* MapLibre Tooltip & Popup Customization */
+.maplibregl-popup {
+  z-index: 35;
+  pointer-events: none;
+}
+
+.maplibregl-popup-content {
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.maplibregl-popup-tip {
+  border-top-color: #334155 !important;
+  border-bottom-color: #334155 !important;
+}

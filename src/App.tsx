@@ -1,18 +1,113 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { GridMap } from './components/Map/GridMap';
 import { ConsoleHeader } from './components/Console/ConsoleHeader';
 import { ConsoleSidebar } from './components/Console/ConsoleSidebar';
 import { ConsoleBottomBar } from './components/Console/ConsoleBottomBar';
 import { NodeInspector } from './components/Inspector/NodeInspector';
+import { majorPowerPlants, majorTransmissionLines } from './data/gridData';
 import type { PowerPlantFeature, TransmissionLineFeature } from './data/gridData';
 
+const VALID_TABS = ['topologia', 'cadeia', 'mercado', 'escalas'];
+const VALID_VOLTAGES: ('all' | '800' | '500')[] = ['all', '800', '500'];
+const VALID_PLANT_TYPES = ['all', 'hidro', 'solar', 'eolica', 'nuclear', 'termica'];
+
+interface UrlState {
+  tab: string;
+  plant: PowerPlantFeature | null;
+  line: TransmissionLineFeature | null;
+  voltage: 'all' | '800' | '500';
+  type: string;
+}
+
+function parseUrlState(): UrlState {
+  if (typeof window === 'undefined') {
+    return {
+      tab: 'topologia',
+      plant: null,
+      line: null,
+      voltage: 'all',
+      type: 'all'
+    };
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const tabParam = params.get('tab');
+  const plantParam = params.get('plant');
+  const lineParam = params.get('line');
+  const vParam = params.get('v');
+  const typeParam = params.get('type');
+
+  const tab = tabParam && VALID_TABS.includes(tabParam) ? tabParam : 'topologia';
+  const voltage = vParam && VALID_VOLTAGES.includes(vParam as 'all' | '800' | '500')
+    ? (vParam as 'all' | '800' | '500')
+    : 'all';
+  const type = typeParam && VALID_PLANT_TYPES.includes(typeParam) ? typeParam : 'all';
+
+  const plant = plantParam
+    ? majorPowerPlants.find((p) => p.id.toLowerCase() === plantParam.toLowerCase()) || null
+    : null;
+  const line = !plant && lineParam
+    ? majorTransmissionLines.find((l) => l.id.toLowerCase() === lineParam.toLowerCase()) || null
+    : null;
+
+  return { tab, plant, line, voltage, type };
+}
+
 export function App() {
-  const [activeTab, setActiveTab] = useState<string>('topologia');
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
-  const [selectedPlant, setSelectedPlant] = useState<PowerPlantFeature | null>(null);
-  const [selectedLine, setSelectedLine] = useState<TransmissionLineFeature | null>(null);
-  const [voltageFilter, setVoltageFilter] = useState<'all' | '800' | '500'>('all');
-  const [plantTypeFilter, setPlantTypeFilter] = useState<string>('all');
+  const [initialState] = useState<UrlState>(parseUrlState);
+  const [activeTab, setActiveTab] = useState<string>(initialState.tab);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768 && (initialState.plant || initialState.line)) {
+      return false;
+    }
+    return true;
+  });
+  const [selectedPlant, setSelectedPlant] = useState<PowerPlantFeature | null>(initialState.plant);
+  const [selectedLine, setSelectedLine] = useState<TransmissionLineFeature | null>(initialState.line);
+  const [voltageFilter, setVoltageFilter] = useState<'all' | '800' | '500'>(initialState.voltage);
+  const [plantTypeFilter, setPlantTypeFilter] = useState<string>(initialState.type);
+
+  // Synchronize state with URL search params
+  useEffect(() => {
+    const params = new URLSearchParams();
+
+    if (activeTab && activeTab !== 'topologia') {
+      params.set('tab', activeTab);
+    }
+    if (selectedPlant) {
+      params.set('plant', selectedPlant.id);
+    } else if (selectedLine) {
+      params.set('line', selectedLine.id);
+    }
+    if (voltageFilter && voltageFilter !== 'all') {
+      params.set('v', voltageFilter);
+    }
+    if (plantTypeFilter && plantTypeFilter !== 'all') {
+      params.set('type', plantTypeFilter);
+    }
+
+    const searchStr = params.toString();
+    const newTarget = searchStr ? `?${searchStr}` : window.location.pathname;
+
+    if (window.location.search !== (searchStr ? `?${searchStr}` : '')) {
+      window.history.replaceState(null, '', newTarget);
+    }
+  }, [activeTab, selectedPlant, selectedLine, voltageFilter, plantTypeFilter]);
+
+  // Handle browser navigation (back/forward)
+  const handlePopState = useCallback(() => {
+    const next = parseUrlState();
+    setActiveTab(next.tab);
+    setSelectedPlant(next.plant);
+    setSelectedLine(next.line);
+    setVoltageFilter(next.voltage);
+    setPlantTypeFilter(next.type);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [handlePopState]);
 
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col bg-[#07090e] text-slate-100 font-sans select-none">

@@ -10,9 +10,9 @@
 ## Code health (detalhe completo em `docs/code-health.md`)
 
 - [ ] Renomear `liveGridTelemetry` (`src/data/gridData.ts`) — hoje o nome sugere dado em tempo real, mas é estático/hardcoded. Renomear para algo como `referenceGridSnapshot` e deixar isso explícito na UI (ex.: label "dado de referência, não live").
-- [ ] Trocar os markers de usina, hoje criados via `el.innerHTML = ...` manual em `src/components/Map/GridMap.tsx`, por um layer GeoJSON nativo do MapLibre (`circle`/`symbol`). Não escala bem se a lista de usinas crescer muito além do que é hoje.
+- [x] Trocar os markers de usina por camada GeoJSON nativa do MapLibre (`circle`/`symbol`) processada diretamente pela GPU via WebGL, com setFilter instantâneo e tooltips dinâmicos.
 - [ ] Adicionar CI básico (GitHub Actions): `npm run build` (inclui `tsc -b`) + `npm run lint` a cada push/PR na `main`.
-- [ ] Refletir aba ativa e usina/linha selecionada na URL (`useSearchParams`, sem precisar de `react-router` inteiro) pra permitir compartilhar link direto pra um ativo específico.
+- [x] Refletir aba ativa, usina/linha selecionada e filtros na URL com sincronização bidirecional, histórico do navegador (`popstate`), câmera `flyTo` automática e botão "Compartilhar" no inspetor.
 - [ ] Extrair um componente `FilterButton` reutilizável em `ConsoleSidebar.tsx` pra reduzir a repetição de classes Tailwind condicionais (o `clsx` já está instalado como dependência mas não é usado em nenhum lugar do código ainda).
 - [ ] Revisão de acessibilidade: `aria-label` nos botões só-de-ícone, navegação por teclado nos markers do mapa.
 
@@ -23,6 +23,8 @@
 
 ## Concluído recentemente (referência)
 
+- [x] Camada GeoJSON nativa WebGL no MapLibre (GPU) com filtros instantâneos sem overhead no DOM
+- [x] Deep Linking completo e sincronização de estado na URL (?plant, ?line, ?tab, ?type, ?v) + botão Compartilhar
 - [x] Censo Tier 2 completo do SIN: 72 usinas estratégicas (hidro, solar, eólica, térmica, nuclear) e 30 linhas tronco de transmissão
 - [x] Expansão massiva de dado: 26→38 usinas (+12) e 15→30 linhas tronco (+15) integrando malha nacional e todos os subsistemas
 - [x] Bug: linhas de transmissão não renderizavam — 404 no worker do `maplibre-gl` por causa do pre-bundling do Vite (`4230d53`)
