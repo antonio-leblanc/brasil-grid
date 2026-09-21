@@ -5,7 +5,7 @@
 ## Dados
 
 - [x] **Mais linhas de transmissão.** 15→30 linhas tronco (+15 novos corredores estratégicos incluindo Bipolo Itaipu HVDC 600kV, Tronco Norte-Sul 500kV, Teles Pires, escoamento de renováveis NE/BA/RN/PB, corredores do Sul 525kV, Trans-Cerrado e Linhão UHVDC 800kV Graça Aranha-Silvânia).
-- [x] **Mais usinas estratégicas.** 26→38 usinas (+12 novas usinas cobrindo Teles Pires, Porto Primavera, Salto Santiago, Machadinho, Estreito, Emborcação, Complexo Solar Futura, São Gonçalo, Eólica Chafariz, Morro do Chapéu Sul, UTE GNA I e Complexo Parnaíba gas-to-wire).
+- [x] **Censo Tier 2 de Usinas Estruturantes do SIN.** 26→72 usinas cobrindo todo o parque gerador de grande porte (>85% da matriz brasileira em 39 hidrelétricas, 10 complexos eólicos, 9 parques solares, 13 térmicas/biomassa e central nuclear).
 
 ## Code health (detalhe completo em `docs/code-health.md`)
 
@@ -23,6 +23,7 @@
 
 ## Concluído recentemente (referência)
 
+- [x] Censo Tier 2 completo do SIN: 72 usinas estratégicas (hidro, solar, eólica, térmica, nuclear) e 30 linhas tronco de transmissão
 - [x] Expansão massiva de dado: 26→38 usinas (+12) e 15→30 linhas tronco (+15) integrando malha nacional e todos os subsistemas
 - [x] Bug: linhas de transmissão não renderizavam — 404 no worker do `maplibre-gl` por causa do pre-bundling do Vite (`4230d53`)
 - [x] Emojis trocados por ícones `lucide-react` para consistência visual (`bda8cd2`)

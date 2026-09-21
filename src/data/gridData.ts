@@ -697,6 +697,576 @@ export const majorPowerPlants: PowerPlantFeature[] = [
       turbinesOrUnits: 'Ciclos abertos e combinados (Fases I a V)',
       gridConnectionVoltage: '500 kV'
     }
+  },
+  {
+    id: 'uhe-itumbiara',
+    name: 'UHE Itumbiara',
+    type: 'hidro',
+    capacityMW: 2082,
+    subsystem: 'SE/CO',
+    state: 'MG/GO',
+    riverOrRegion: 'Rio Paranaíba (Itumbiara / Araporã)',
+    operator: 'Eletrobras Furnas',
+    coordinates: [-49.2000, -18.4167],
+    description: 'Maior hidrelétrica do complexo de Furnas em capacidade instalada e uma das maiores barragens de terra/enrocamento do mundo, chave para a regularização do Paranaíba.',
+    technicalDetails: {
+      commissionYear: 1980,
+      turbinesOrUnits: '6 x 347 MW (Francis)',
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'uhe-jupia',
+    name: 'UHE Eng. Souza Dias (Jupiá)',
+    type: 'hidro',
+    capacityMW: 1551,
+    subsystem: 'SE/CO',
+    state: 'SP/MS',
+    riverOrRegion: 'Rio Paraná (Castilho / Três Lagoas)',
+    operator: 'CTG Brasil',
+    coordinates: [-51.7778, -20.7833],
+    description: 'Localizada no Rio Paraná logo a jusante da foz do Rio Tietê, opera em conjunto com Ilha Solteira no histórico Complexo de Urubupungá.',
+    technicalDetails: {
+      commissionYear: 1969,
+      turbinesOrUnits: '14 x 103 MW + 1 x 110 MW (Kaplan)',
+      gridConnectionVoltage: '440 kV / 138 kV'
+    }
+  },
+  {
+    id: 'uhe-itaparica',
+    name: 'UHE Luiz Gonzaga (Itaparica)',
+    type: 'hidro',
+    capacityMW: 1479,
+    subsystem: 'NE',
+    state: 'PE/BA',
+    riverOrRegion: 'Rio São Francisco (Petrolândia)',
+    operator: 'Chesf',
+    coordinates: [-38.3167, -9.1333],
+    description: 'Aproveitamento central da Chesf no submédio São Francisco, cujo reservatório regulariza as vazões que seguem para o complexo de Paulo Afonso e Xingó.',
+    technicalDetails: {
+      commissionYear: 1988,
+      turbinesOrUnits: '6 x 246.5 MW (Francis)',
+      gridConnectionVoltage: '500 kV / 230 kV'
+    }
+  },
+  {
+    id: 'uhe-agua-vermelha',
+    name: 'UHE Água Vermelha (José Ermírio de Moraes)',
+    type: 'hidro',
+    capacityMW: 1396,
+    subsystem: 'SE/CO',
+    state: 'SP/MG',
+    riverOrRegion: 'Rio Grande (Ouroeste / Iturama)',
+    operator: 'Auren Energia',
+    coordinates: [-50.3444, -19.8667],
+    description: 'Maior usina da bacia do Rio Grande, localizada próxima à confluência com o Rio Paranaíba para a formação do Rio Paraná.',
+    technicalDetails: {
+      commissionYear: 1978,
+      turbinesOrUnits: '6 x 232.7 MW (Francis)',
+      gridConnectionVoltage: '440 kV'
+    }
+  },
+  {
+    id: 'uhe-segredo',
+    name: 'UHE Gov. Ney Braga (Segredo)',
+    type: 'hidro',
+    capacityMW: 1260,
+    subsystem: 'S',
+    state: 'PR',
+    riverOrRegion: 'Rio Iguaçu (Mangueirinha / Reserva do Iguaçu)',
+    operator: 'Copel GeT',
+    coordinates: [-52.1000, -25.7833],
+    description: 'Usina de grande porte no médio Rio Iguaçu com imponente barragem de enrocamento com face de concreto de 145 metros de altura.',
+    technicalDetails: {
+      commissionYear: 1992,
+      turbinesOrUnits: '4 x 315 MW (Francis)',
+      gridConnectionVoltage: '525 kV'
+    }
+  },
+  {
+    id: 'uhe-salto-osorio',
+    name: 'UHE Salto Osório',
+    type: 'hidro',
+    capacityMW: 1078,
+    subsystem: 'S',
+    state: 'PR',
+    riverOrRegion: 'Rio Iguaçu (São Jorge d\'Oeste / Quedas do Iguaçu)',
+    operator: 'Engie Brasil',
+    coordinates: [-53.0000, -25.5333],
+    description: 'Elo intermediário estratégico na cascata do Iguaçu, situada a jusante de Salto Santiago e a montante de Salto Caxias.',
+    technicalDetails: {
+      commissionYear: 1975,
+      turbinesOrUnits: '4 x 175 MW + 2 x 189 MW (Francis)',
+      gridConnectionVoltage: '525 kV / 230 kV'
+    }
+  },
+  {
+    id: 'uhe-lajeado',
+    name: 'UHE Luís Eduardo Magalhães (Lajeado)',
+    type: 'hidro',
+    capacityMW: 902,
+    subsystem: 'N',
+    state: 'TO',
+    riverOrRegion: 'Rio Tocantins (Miracema do Tocantins / Lajeado)',
+    operator: 'Investco (EDP / CPFL / CELESC)',
+    coordinates: [-48.3667, -9.7500],
+    description: 'Aproveitamento central no Rio Tocantins próximo à capital Palmas, com turbinas Kaplan de alta vazão e canal de transposição hidroviário.',
+    technicalDetails: {
+      commissionYear: 2001,
+      turbinesOrUnits: '5 x 180.5 MW (Kaplan)',
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'uhe-campos-novos',
+    name: 'UHE Campos Novos',
+    type: 'hidro',
+    capacityMW: 880,
+    subsystem: 'S',
+    state: 'SC',
+    riverOrRegion: 'Rio Canoas (Campos Novos / Celso Ramos)',
+    operator: 'Enercan (CPFL / Votorantim / Celesc)',
+    coordinates: [-51.3167, -27.6000],
+    description: 'Possui uma das barragens de enrocamento com face de concreto mais altas do mundo (202 metros de altura), situada na bacia do Rio Uruguai.',
+    technicalDetails: {
+      commissionYear: 2006,
+      turbinesOrUnits: '3 x 293.3 MW (Francis)',
+      gridConnectionVoltage: '525 kV'
+    }
+  },
+  {
+    id: 'uhe-tres-irmaos',
+    name: 'UHE Três Irmãos',
+    type: 'hidro',
+    capacityMW: 807,
+    subsystem: 'SE/CO',
+    state: 'SP',
+    riverOrRegion: 'Rio Tietê (Pereira Barreto / Andradina)',
+    operator: 'Tietê Energia',
+    coordinates: [-51.3000, -20.6500],
+    description: 'Última e maior usina da cascata do Rio Tietê antes da foz no Rio Paraná, interligada por canal navegável ao reservatório de Ilha Solteira.',
+    technicalDetails: {
+      commissionYear: 1993,
+      turbinesOrUnits: '5 x 161.5 MW (Francis)',
+      gridConnectionVoltage: '440 kV / 138 kV'
+    }
+  },
+  {
+    id: 'uhe-sao-manoel',
+    name: 'UHE São Manoel',
+    type: 'hidro',
+    capacityMW: 700,
+    subsystem: 'N',
+    state: 'MT/PA',
+    riverOrRegion: 'Rio Teles Pires (Paranaíta / Jacareacanga)',
+    operator: 'Empresa de Energia São Manoel (EDP / Furnas / CTG)',
+    coordinates: [-57.1833, -9.1833],
+    description: 'Localizada a jusante da UHE Teles Pires na fronteira do Mato Grosso com o Pará, opera a fio d\'água conectada ao sistema de transmissão 500 kV.',
+    technicalDetails: {
+      commissionYear: 2018,
+      turbinesOrUnits: '4 x 175 MW (Kaplan)',
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'uhe-barra-grande',
+    name: 'UHE Barra Grande',
+    type: 'hidro',
+    capacityMW: 690,
+    subsystem: 'S',
+    state: 'RS/SC',
+    riverOrRegion: 'Rio Pelotas (Anita Garibaldi / Pinhal da Serra)',
+    operator: 'BAESA (CPFL / Alcoa / Votorantim)',
+    coordinates: [-51.1833, -27.7833],
+    description: 'Barragem de 185 metros de altura na cabeceira do Rio Pelotas/Uruguai, escoando potência diretamente para as redes de 525 kV do Subsistema Sul.',
+    technicalDetails: {
+      commissionYear: 2005,
+      turbinesOrUnits: '3 x 230 MW (Francis)',
+      gridConnectionVoltage: '525 kV'
+    }
+  },
+  {
+    id: 'uhe-cachoeira-dourada',
+    name: 'UHE Cachoeira Dourada',
+    type: 'hidro',
+    capacityMW: 658,
+    subsystem: 'SE/CO',
+    state: 'GO/MG',
+    riverOrRegion: 'Rio Paranaíba (Cachoeira Dourada)',
+    operator: 'Enel Green Power',
+    coordinates: [-49.4833, -18.4833],
+    description: 'Histórica usina projetada originalmente para viabilizar a construção e o pioneiro suprimento elétrico de Brasília nos anos 1950.',
+    technicalDetails: {
+      commissionYear: 1959,
+      turbinesOrUnits: '10 unidades geradoras (Kaplan)',
+      gridConnectionVoltage: '230 kV / 138 kV'
+    }
+  },
+  {
+    id: 'uhe-capivara',
+    name: 'UHE Capivara (Escola Politécnica)',
+    type: 'hidro',
+    capacityMW: 619,
+    subsystem: 'SE/CO',
+    state: 'SP/PR',
+    riverOrRegion: 'Rio Paranapanema (Taciba / Primeiro de Maio)',
+    operator: 'CTG Brasil',
+    coordinates: [-51.3500, -22.6500],
+    description: 'Maior hidrelétrica da calha do Rio Paranapanema em capacidade nominal instalada, com vasto lago de acumulação e amortecimento.',
+    technicalDetails: {
+      commissionYear: 1977,
+      turbinesOrUnits: '4 x 154.8 MW (Francis)',
+      gridConnectionVoltage: '440 kV'
+    }
+  },
+  {
+    id: 'uhe-peixe-angical',
+    name: 'UHE Peixe Angical',
+    type: 'hidro',
+    capacityMW: 452,
+    subsystem: 'N',
+    state: 'TO',
+    riverOrRegion: 'Rio Tocantins (Peixe / São Salvador)',
+    operator: 'Enerpeixe (EDP Brasil)',
+    coordinates: [-48.6500, -12.2833],
+    description: 'Aproveitamento a fio d\'água no Alto/Médio Tocantins, com turbinas tipo Kaplan operando sob baixas quedas e vazões sazonais elevadas.',
+    technicalDetails: {
+      commissionYear: 2006,
+      turbinesOrUnits: '3 x 150.7 MW (Kaplan)',
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'uhe-tres-marias',
+    name: 'UHE Três Marias (Bernardo Mascarenhas)',
+    type: 'hidro',
+    capacityMW: 396,
+    subsystem: 'SE/CO',
+    state: 'MG',
+    riverOrRegion: 'Rio São Francisco (Três Marias)',
+    operator: 'Cemig',
+    coordinates: [-45.2600, -18.2100],
+    description: 'A histórica caixa d\'água de cabeceira do Rio São Francisco, fundamental para a regularização plurianual da bacia e perenização até o Nordeste.',
+    technicalDetails: {
+      commissionYear: 1962,
+      turbinesOrUnits: '6 x 66 MW (Kaplan)',
+      gridConnectionVoltage: '500 kV / 138 kV'
+    }
+  },
+  {
+    id: 'uhe-balbina',
+    name: 'UHE Balbina',
+    type: 'hidro',
+    capacityMW: 250,
+    subsystem: 'N',
+    state: 'AM',
+    riverOrRegion: 'Rio Uatumã (Presidente Figueiredo)',
+    operator: 'Eletronorte',
+    coordinates: [-59.4833, -1.9167],
+    description: 'Construída na década de 1980 para abastecer Manaus em meio à floresta amazônica. Possui um dos maiores espelhos d\'água do país por MW instalado.',
+    technicalDetails: {
+      commissionYear: 1989,
+      turbinesOrUnits: '5 x 50 MW (Kaplan)',
+      gridConnectionVoltage: '230 kV'
+    }
+  },
+  {
+    id: 'uhe-samuel',
+    name: 'UHE Samuel',
+    type: 'hidro',
+    capacityMW: 242,
+    subsystem: 'N',
+    state: 'RO',
+    riverOrRegion: 'Rio Jamari (Candeias do Jamari)',
+    operator: 'Eletronorte',
+    coordinates: [-63.4500, -8.7500],
+    description: 'Primeira grande hidrelétrica de Rondônia, fundamental na formação da rede regional antes da chegada das megauzinas do Madeira.',
+    technicalDetails: {
+      commissionYear: 1989,
+      turbinesOrUnits: '5 x 48.5 MW (Kaplan)',
+      gridConnectionVoltage: '230 kV'
+    }
+  },
+  {
+    id: 'eolica-serra-do-mel',
+    name: 'Complexo Eólico Serra do Mel',
+    type: 'eolica',
+    capacityMW: 1047,
+    subsystem: 'NE',
+    state: 'RN',
+    riverOrRegion: 'Serra do Mel / Areia Branca',
+    operator: 'Voltalia',
+    coordinates: [-37.0300, -5.1700],
+    description: 'Um dos maiores clusters eólicos integrados do planeta, beneficiado por ventos alísios oceânicos constantes com fatores de capacidade acima de 60%.',
+    technicalDetails: {
+      commissionYear: 2021,
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'eolica-santa-vitoria',
+    name: 'Complexo Eólico Santa Vitória do Palmar',
+    type: 'eolica',
+    capacityMW: 472,
+    subsystem: 'S',
+    state: 'RS',
+    riverOrRegion: 'Santa Vitória do Palmar / Chuí',
+    operator: 'Omega Energia / Echoenergia',
+    coordinates: [-52.5500, -33.5200],
+    description: 'O parque eólico mais meridional do Brasil, na fronteira sul gaúcha junto à Lagoa Mirim, impulsionado por frentes polares e ventos do Atlântico Sul.',
+    technicalDetails: {
+      commissionYear: 2017,
+      gridConnectionVoltage: '525 kV'
+    }
+  },
+  {
+    id: 'eolica-ventos-araripe',
+    name: 'Complexo Eólico Ventos do Araripe III',
+    type: 'eolica',
+    capacityMW: 359,
+    subsystem: 'NE',
+    state: 'PI/PE',
+    riverOrRegion: 'Chapada do Araripe (Simões / Araripina)',
+    operator: 'Casa dos Ventos',
+    coordinates: [-40.7500, -7.6500],
+    description: 'Instalado no altiplano da Chapada do Araripe na divisa PI/PE, usufrui de ventos termais laminares de altíssima densidade energética.',
+    technicalDetails: {
+      commissionYear: 2017,
+      gridConnectionVoltage: '230 kV'
+    }
+  },
+  {
+    id: 'eolica-coxilha-negra',
+    name: 'Complexo Eólico Coxilha Negra',
+    type: 'eolica',
+    capacityMW: 302,
+    subsystem: 'S',
+    state: 'RS',
+    riverOrRegion: 'Santana do Livramento (Fronteira Oeste)',
+    operator: 'CGT Eletrosul',
+    coordinates: [-55.5300, -30.8500],
+    description: 'Polo eólico estratégico nos pampas da fronteira Brasil-Uruguai, diversificando a geração renovável do Subsistema Sul.',
+    technicalDetails: {
+      commissionYear: 2024,
+      gridConnectionVoltage: '230 kV'
+    }
+  },
+  {
+    id: 'solar-mendubim',
+    name: 'Complexo Solar Mendubim',
+    type: 'solar',
+    capacityMW: 531,
+    subsystem: 'NE',
+    state: 'RN',
+    riverOrRegion: 'Açu',
+    operator: 'Scatec / Equinor / Hydro Rein',
+    coordinates: [-36.9100, -5.5800],
+    description: 'Parque fotovoltaico de grande porte no polo solar de Açu, projetado para abastecimento de indústrias eletrointensivas e injeção na rede de 500 kV.',
+    technicalDetails: {
+      commissionYear: 2024,
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'solar-sol-do-sertao',
+    name: 'Complexo Solar Sol do Sertão',
+    type: 'solar',
+    capacityMW: 474,
+    subsystem: 'NE',
+    state: 'BA',
+    riverOrRegion: 'Oliveira dos Brejinhos',
+    operator: 'Essentia Energia / Patria',
+    coordinates: [-42.8900, -12.3100],
+    description: 'Mega empreendimento fotovoltaico no sertão baiano com mais de 1 milhão de módulos bifaciais, conectado à SE Bom Jesus da Lapa em 500 kV.',
+    technicalDetails: {
+      commissionYear: 2022,
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'solar-lar-do-sol',
+    name: 'Complexo Solar Lar do Sol',
+    type: 'solar',
+    capacityMW: 415,
+    subsystem: 'SE/CO',
+    state: 'MG',
+    riverOrRegion: 'Pirapora',
+    operator: 'Casablanca / Atlas Renewable Energy',
+    coordinates: [-44.9500, -17.4000],
+    description: 'Expansão do polo solar do Médio São Francisco em Pirapora, contratada em modelo de autoprodução de energia renovável para a indústria.',
+    technicalDetails: {
+      commissionYear: 2023,
+      gridConnectionVoltage: '230 kV'
+    }
+  },
+  {
+    id: 'solar-arinos',
+    name: 'Complexo Solar Arinos',
+    type: 'solar',
+    capacityMW: 412,
+    subsystem: 'SE/CO',
+    state: 'MG',
+    riverOrRegion: 'Arinos (Noroeste de MG)',
+    operator: 'Newave Energia / Gerdau',
+    coordinates: [-46.1000, -15.9100],
+    description: 'Instalação solar de grande escala no Noroeste Mineiro dedicada à descarbonização da siderurgia e indústria de transformação.',
+    technicalDetails: {
+      commissionYear: 2024,
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'termica-termomacao',
+    name: 'UTE Termomacaé',
+    type: 'termica',
+    capacityMW: 929,
+    subsystem: 'SE/CO',
+    state: 'RJ',
+    riverOrRegion: 'Macaé',
+    operator: 'Petrobras',
+    coordinates: [-41.8000, -22.3500],
+    description: 'Uma das maiores termelétricas a gás natural em ciclo aberto do país, oferecendo flexibilidade e prontidão para suporte de ponta ao Sudeste.',
+    technicalDetails: {
+      commissionYear: 2002,
+      turbinesOrUnits: '2 turbinas a gás GE 7FA (ciclo aberto)',
+      gridConnectionVoltage: '345 kV'
+    }
+  },
+  {
+    id: 'termica-jorge-lacerda',
+    name: 'Complexo Termelétrico Jorge Lacerda',
+    type: 'termica',
+    capacityMW: 857,
+    subsystem: 'S',
+    state: 'SC',
+    riverOrRegion: 'Capivari de Baixo / Tubarão',
+    operator: 'Diamante Geração de Energia',
+    coordinates: [-49.0000, -28.4500],
+    description: 'Maior complexo termelétrico a carvão mineral da América Latina, abastecido pela bacia carbonífera de Santa Catarina.',
+    technicalDetails: {
+      commissionYear: 1965,
+      turbinesOrUnits: '7 unidades geradoras a vapor (Fases A, B e C)',
+      gridConnectionVoltage: '230 kV / 138 kV'
+    }
+  },
+  {
+    id: 'termica-maua-3',
+    name: 'UTE Mauá 3',
+    type: 'termica',
+    capacityMW: 591,
+    subsystem: 'N',
+    state: 'AM',
+    riverOrRegion: 'Manaus (Distrito Industrial)',
+    operator: 'Eletrobras Amazonas GT',
+    coordinates: [-59.9500, -3.1333],
+    description: 'Principal termelétrica de base de Manaus, alimentada por gás natural do gasoduto Urucu-Coari-Manaus no coração da Amazônia.',
+    technicalDetails: {
+      commissionYear: 2017,
+      turbinesOrUnits: 'Ciclo combinado (2 turbinas a gás + 1 a vapor)',
+      gridConnectionVoltage: '230 kV'
+    }
+  },
+  {
+    id: 'termica-baixada-fluminense',
+    name: 'UTE Baixada Fluminense',
+    type: 'termica',
+    capacityMW: 530,
+    subsystem: 'SE/CO',
+    state: 'RJ',
+    riverOrRegion: 'Seropédica',
+    operator: 'Petrobras',
+    coordinates: [-43.7000, -22.7500],
+    description: 'Localizada no nó logístico do Arco Metropolitano do RJ, gera energia em ciclo combinado a partir de gás natural entregue pelo Gasduc.',
+    technicalDetails: {
+      commissionYear: 2014,
+      turbinesOrUnits: '1 turbina a gás + 1 turbina a vapor',
+      gridConnectionVoltage: '500 kV'
+    }
+  },
+  {
+    id: 'termica-cuiaba',
+    name: 'UTE Governador Mário Covas (Cuiabá)',
+    type: 'termica',
+    capacityMW: 529,
+    subsystem: 'SE/CO',
+    state: 'MT',
+    riverOrRegion: 'Cuiabá',
+    operator: 'Âmbar Energia',
+    coordinates: [-56.0500, -15.6500],
+    description: 'Conectada ao gasoduto lateral Bolívia-Mato Grosso, crucial para a estabilidade elétrica e controle de tensão no Centro-Oeste.',
+    technicalDetails: {
+      commissionYear: 2002,
+      turbinesOrUnits: 'Ciclo combinado a gás natural',
+      gridConnectionVoltage: '230 kV'
+    }
+  },
+  {
+    id: 'termica-santa-cruz',
+    name: 'UTE Santa Cruz',
+    type: 'termica',
+    capacityMW: 500,
+    subsystem: 'SE/CO',
+    state: 'RJ',
+    riverOrRegion: 'Rio de Janeiro (Zona Oeste / Santa Cruz)',
+    operator: 'Eletrobras Furnas',
+    coordinates: [-43.6833, -22.9167],
+    description: 'Histórica usina termelétrica da Baía de Sepetiba, modernizada para ciclo combinado a gás natural para segurança de suprimento da cidade do Rio.',
+    technicalDetails: {
+      commissionYear: 1967,
+      turbinesOrUnits: 'Ciclo combinado moderno a gás',
+      gridConnectionVoltage: '138 kV / 500 kV'
+    }
+  },
+  {
+    id: 'termica-termopernambuco',
+    name: 'UTE Termopernambuco',
+    type: 'termica',
+    capacityMW: 498,
+    subsystem: 'NE',
+    state: 'PE',
+    riverOrRegion: 'Complexo Industrial e Portuário de Suape (Ipojuca)',
+    operator: 'Neoenergia',
+    coordinates: [-35.0000, -8.4000],
+    description: 'Instalada no Complexo de Suape, gera eletricidade em ciclo combinado a gás natural para abastecimento do litoral e pólo fabril pernambucano.',
+    technicalDetails: {
+      commissionYear: 2004,
+      turbinesOrUnits: '2 turbinas a gás + 1 a vapor (Alstom)',
+      gridConnectionVoltage: '230 kV'
+    }
+  },
+  {
+    id: 'termica-candiota-3',
+    name: 'UTE Candiota III (Fase C)',
+    type: 'termica',
+    capacityMW: 350,
+    subsystem: 'S',
+    state: 'RS',
+    riverOrRegion: 'Candiota / Campanha Gaúcha',
+    operator: 'Âmbar Energia',
+    coordinates: [-53.7200, -31.5500],
+    description: 'Situada na maior jazida de carvão mineral a céu aberto do país, concebida para suprimento de base na fronteira sul do SIN.',
+    technicalDetails: {
+      commissionYear: 2011,
+      turbinesOrUnits: '1 turbo-gerador a vapor (carvão pulverizado)',
+      gridConnectionVoltage: '230 kV'
+    }
+  },
+  {
+    id: 'biomassa-sao-martinho',
+    name: 'UTE São Martinho (Biomassa)',
+    type: 'termica',
+    capacityMW: 210,
+    subsystem: 'SE/CO',
+    state: 'SP',
+    riverOrRegion: 'Pradópolis (Ribeirão Preto)',
+    operator: 'Usina São Martinho',
+    coordinates: [-48.0667, -21.3667],
+    description: 'Maior termelétrica de cogeração a partir de biomassa de cana-de-açúcar (bagaço e palha) do planeta, exportando energia limpa no pico da safra.',
+    technicalDetails: {
+      commissionYear: 2009,
+      turbinesOrUnits: 'Caldeiras de alta pressão e turbogeradores a vapor',
+      gridConnectionVoltage: '138 kV'
+    }
   }
 ];
 
