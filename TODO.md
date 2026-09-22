@@ -11,7 +11,8 @@
 
 - [x] **Transparência de telemetria:** Renomeado `liveGridTelemetry` para `referenceGridSnapshot` em `src/data/gridData.ts` e estampados selos de referência técnica na UI (`ConsoleHeader` e `ConsoleBottomBar`), com transparência formalizada no README.
 - [x] Trocar os markers de usina por camada GeoJSON nativa do MapLibre (`circle`/`symbol`) processada diretamente pela GPU via WebGL, com setFilter instantâneo e tooltips dinâmicos.
-- [x] **CI Automatizado & Deploy GitHub Pages (GitHub Actions):** Workflow `.github/workflows/ci.yml` com `npm run lint` + `npm run build` e pipeline de publicação no GitHub Pages via `actions/deploy-pages` com `base` configurada em `vite.config.ts`.
+- [x] **CI Automatizado & Deploy GitHub Pages (GitHub Actions):** Repositório tornado público, GitHub Pages ativado com Source GitHub Actions e deploy contínuo em produção no domínio customizado `https://antonioleblanc.com/brasil-grid/` (`.github/workflows/ci.yml` + `vite.config.ts`).
+- [x] **Fix do Web Worker do MapLibre em Produção:** Corrigido 404 de `maplibre-gl-worker.mjs` no bundle de produção usando `import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'` e `setWorkerUrl(workerUrl)`, garantindo o empacotamento do worker isolado (~508 kB) e o carregamento 100% via GPU de usinas, linhas e subsistemas.
 - [x] Refletir aba ativa, usina/linha selecionada e filtros na URL com sincronização bidirecional, histórico do navegador (`popstate`), câmera `flyTo` automática e botão "Compartilhar" no inspetor.
 - [x] **Componente `FilterButton` e utilitário `cn`:** Extraído componente reutilizável em `src/components/Console/FilterButton.tsx` combinando `clsx` e `tailwind-merge` para eliminar repetição de classes Tailwind.
 - [x] **Code-Splitting no Vite (`React.lazy`):** Abas analíticas (`ValueChainSection`, `AcrAclComparison`, `MagnitudeRuler`) isoladas sob demanda em chunks dinâmicos com `<Suspense>`, otimizando o carregamento inicial.
