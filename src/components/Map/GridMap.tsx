@@ -108,7 +108,7 @@ export const GridMap: React.FC<GridMapProps> = ({
       zoom: 4.3,
       minZoom: 3.5,
       maxZoom: 11,
-      pitch: 20,
+      pitch: 0,
       attributionControl: false
     });
 
@@ -234,13 +234,21 @@ export const GridMap: React.FC<GridMapProps> = ({
           source: 'transmission-lines',
           paint: {
             'line-color': [
-              'match',
+              'step',
               ['get', 'voltageKV'],
-              800, '#f59e0b',
+              '#8b5cf6',
               500, '#06b6d4',
-              '#8b5cf6'
+              600, '#d97706',
+              800, '#f59e0b'
             ],
-            'line-width': ['match', ['get', 'voltageKV'], 800, 9, 500, 5, 3],
+            'line-width': [
+              'step',
+              ['get', 'voltageKV'],
+              3,
+              500, 5,
+              600, 7,
+              800, 9
+            ],
             'line-opacity': 0.35,
             'line-blur': 4
           }
@@ -253,13 +261,21 @@ export const GridMap: React.FC<GridMapProps> = ({
           source: 'transmission-lines',
           paint: {
             'line-color': [
-              'match',
+              'step',
               ['get', 'voltageKV'],
-              800, '#fbbf24',
+              '#c084fc',
               500, '#22d3ee',
-              '#c084fc'
+              600, '#f59e0b',
+              800, '#fbbf24'
             ],
-            'line-width': ['match', ['get', 'voltageKV'], 800, 3.5, 500, 2.2, 1.6],
+            'line-width': [
+              'step',
+              ['get', 'voltageKV'],
+              1.6,
+              500, 2.2,
+              600, 2.8,
+              800, 3.5
+            ],
             'line-opacity': 0.95
           }
         });
@@ -276,13 +292,21 @@ export const GridMap: React.FC<GridMapProps> = ({
           },
           paint: {
             'line-color': [
-              'match',
+              'step',
               ['get', 'voltageKV'],
-              800, '#ffffff',
+              '#fae8ff',
               500, '#e0f2fe',
-              '#fae8ff'
+              600, '#fef3c7',
+              800, '#ffffff'
             ],
-            'line-width': ['match', ['get', 'voltageKV'], 800, 2.8, 500, 2.0, 1.6],
+            'line-width': [
+              'step',
+              ['get', 'voltageKV'],
+              1.6,
+              500, 2.0,
+              600, 2.4,
+              800, 2.8
+            ],
             'line-opacity': 0.85,
             'line-dasharray': [4, 2.5]
           }
@@ -293,10 +317,11 @@ export const GridMap: React.FC<GridMapProps> = ({
           mapInstance.getCanvas().style.cursor = 'pointer';
           if (!e.features || !e.features[0] || !popupRef.current) return;
           const p = e.features[0].properties;
+          const voltageVal = Number(p?.voltageKV) || 0;
           const voltageColor =
-            p?.voltageKV === 800
+            voltageVal >= 600
               ? 'text-amber-400'
-              : p?.voltageKV === 500
+              : voltageVal >= 500
               ? 'text-cyan-400'
               : 'text-purple-400';
 

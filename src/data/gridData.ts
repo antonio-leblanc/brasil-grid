@@ -1401,7 +1401,8 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
     concessionaire: 'Taesa / ISA CTEEP',
     coordinates: [
       [-43.4300, -13.2500],
-      [-44.1500, -15.8000],
+      [-43.3100, -15.8000],
+      [-43.8500, -16.7300],
       [-44.3000, -18.2000],
       [-44.0500, -19.7800]
     ],
@@ -1700,7 +1701,7 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
     concessionaire: 'Taesa / Chesf',
     coordinates: [
       [-36.9000, -5.5800],
-      [-36.2000, -6.5000],
+      [-36.8800, -6.8700],
       [-35.9000, -7.2200],
       [-35.0500, -8.3800]
     ],
@@ -1874,6 +1875,462 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
     ],
     technicalDetails: {
       converterTechnology: 'UHVDC ±800 kV — projeto histórico do Leilão de Transmissão 01/2023 para escoamento maciço de solar/eólica do NE para o Sudeste'
+    }
+  },
+  {
+    id: 'linha-piaui-ceara',
+    name: 'Corredor Renováveis Piauí-Ceará (500 kV)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 720,
+    from: 'SE São João do Piauí (PI)',
+    to: 'SE Fortaleza / Pecém (CE)',
+    concessionaire: 'Chesf / Neoenergia',
+    coordinates: [
+      [-42.8500, -9.8000],
+      [-41.9000, -8.3500],
+      [-40.7500, -7.6500],
+      [-38.9000, -5.3000],
+      [-38.5500, -3.7500]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — escoamento dos complexos solares de São Gonçalo e eólicos de Lagoa dos Ventos e Chapada do Araripe',
+      substations: ['SE São João do Piauí', 'SE Curimatá', 'SE Milagres', 'SE Banabuiú', 'SE Fortaleza']
+    }
+  },
+  {
+    id: 'linha-sobradinho-pauloafonso',
+    name: 'Tronco Médio São Francisco (500 kV)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 315,
+    from: 'UHE Sobradinho (BA)',
+    to: 'Complexo Paulo Afonso (BA)',
+    concessionaire: 'Chesf',
+    coordinates: [
+      [-40.8253, -9.4306],
+      [-40.5000, -9.4000],
+      [-38.3167, -9.1333],
+      [-38.2167, -9.4000]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — espinha dorsal do Médio São Francisco conectando a regularização de Sobradinho e os parques solares de Juazeiro/Futura',
+      substations: ['SE Sobradinho', 'SE Juazeiro', 'SE Luiz Gonzaga (Itaparica)', 'SE Paulo Afonso']
+    }
+  },
+  {
+    id: 'linha-porto-sergipe-xingo',
+    name: 'Escoamento UTE Porto de Sergipe (500 kV)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 195,
+    from: 'UTE Porto de Sergipe I (Barra dos Coqueiros - SE)',
+    to: 'SE Xingó (Canindé de São Francisco - SE/AL)',
+    concessionaire: 'Celse / Eneva / Chesf',
+    coordinates: [
+      [-36.9800, -10.8200],
+      [-37.0500, -10.8800],
+      [-37.4500, -10.3000],
+      [-37.7958, -9.6158]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — linha de escoamento da maior usina termelétrica a gás natural da América Latina (1.516 MW) até o entroncamento de Xingó',
+      substations: ['SE Porto de Sergipe', 'SE Jardim (Aracaju)', 'SE Xingó']
+    }
+  },
+  {
+    id: 'linha-paranapanema-bauru',
+    name: 'Tronco Paranapanema / Oeste Paulista (440 kV)',
+    voltageKV: 440,
+    type: 'CA',
+    lengthKm: 435,
+    from: 'UHE Porto Primavera (Rosana - SP/MS)',
+    to: 'SE Bauru (SP)',
+    concessionaire: 'ISA CTEEP',
+    coordinates: [
+      [-52.9556, -22.4833],
+      [-52.1000, -22.5800],
+      [-51.3500, -22.6500],
+      [-50.4200, -22.6600],
+      [-49.0700, -22.3100]
+    ],
+    technicalDetails: {
+      converterTechnology: '440 kV CA — clássico tronco da CESP/CTEEP escoando a geração hidrelétrica da cascata do Rio Paranapanema (Porto Primavera, Taquaruçu e Capivara)',
+      substations: ['SE Porto Primavera', 'SE Taquaruçu', 'SE Capivara', 'SE Assis', 'SE Bauru']
+    }
+  },
+  {
+    id: 'linha-extremo-sul-gaucho',
+    name: 'Tronco Extremo Sul Gaúcho (525 kV)',
+    voltageKV: 525,
+    type: 'CA',
+    lengthKm: 490,
+    from: 'SE Santa Vitória do Palmar (RS)',
+    to: 'SE Nova Santa Rita (Porto Alegre - RS)',
+    concessionaire: 'CGT Eletrosul',
+    coordinates: [
+      [-52.5500, -33.5200],
+      [-52.4800, -32.8500],
+      [-52.1500, -32.0500],
+      [-51.8500, -31.3500],
+      [-51.2700, -29.8500]
+    ],
+    technicalDetails: {
+      converterTechnology: '525 kV CA — corredor costeiro escoando os ventos polares do extremo sul gaúcho para a Região Metropolitana de Porto Alegre',
+      substations: ['SE Santa Vitória do Palmar', 'SE Marmeleiros', 'SE Quinta (Pelotas/Rio Grande)', 'SE Povo Novo', 'SE Nova Santa Rita']
+    }
+  },
+  {
+    id: 'linha-candiota-quinta',
+    name: 'Interconexão Térmica Candiota (230 kV)',
+    voltageKV: 230,
+    type: 'CA',
+    lengthKm: 165,
+    from: 'UTE Candiota III (Candiota - RS)',
+    to: 'SE Quinta (Rio Grande - RS)',
+    concessionaire: 'CGT Eletrosul',
+    coordinates: [
+      [-53.7200, -31.5500],
+      [-53.6000, -31.4000],
+      [-52.3500, -31.7500],
+      [-52.1500, -32.0500]
+    ],
+    technicalDetails: {
+      converterTechnology: '230 kV CA — escoamento da geração a carvão mineral fóssil da jazida de Candiota conectando ao anel sul da CGT Eletrosul',
+      substations: ['SE Candiota', 'SE Bagé 2', 'SE Pelotas 3', 'SE Quinta']
+    }
+  },
+  {
+    id: 'linha-litoral-catarinense-gaucho',
+    name: 'Corredor Litoral Sul (Blumenau ➔ Osório ➔ Porto Alegre) (525 kV)',
+    voltageKV: 525,
+    type: 'CA',
+    lengthKm: 410,
+    from: 'SE Blumenau (SC)',
+    to: 'SE Nova Santa Rita (Porto Alegre - RS)',
+    concessionaire: 'CGT Eletrosul / ISA CTEEP',
+    coordinates: [
+      [-49.0700, -26.9200],
+      [-48.6500, -27.5000],
+      [-49.4200, -28.6000],
+      [-49.0000, -28.4500],
+      [-50.2667, -29.8833],
+      [-51.2700, -29.8500]
+    ],
+    technicalDetails: {
+      converterTechnology: '525 kV CA — linha de alta capacidade litorânea interligando SC e RS, escoando o Complexo Termelétrico Jorge Lacerda e o Complexo Eólico de Osório',
+      substations: ['SE Blumenau', 'SE Biguaçu (Florianópolis)', 'SE Siderópolis', 'SE Jorge Lacerda', 'SE Osório', 'SE Gravataí']
+    }
+  },
+  {
+    id: 'linha-caetite-lapasertao',
+    name: 'Anel Renováveis Sudoeste Baiano (500 kV)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 285,
+    from: 'SE Caetité (BA)',
+    to: 'SE Bom Jesus da Lapa (BA)',
+    concessionaire: 'Taesa / Chesf',
+    coordinates: [
+      [-42.4800, -14.0700],
+      [-42.6000, -13.8000],
+      [-43.4000, -13.1500],
+      [-43.4200, -13.2500],
+      [-42.8900, -12.3100]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — escoamento massivo do corredor de ventos de Caetité (Alto Sertão) e das fazendas solares do Velho Chico (Sol do Sertão e Ituverava)',
+      substations: ['SE Caetité', 'SE Igaporã', 'SE Ituverava', 'SE Bom Jesus da Lapa', 'SE Gentio do Ouro']
+    }
+  },
+  {
+    id: 'linha-noroeste-mineiro',
+    name: 'Tronco Noroeste Mineiro / Cerrado Solar (500 kV)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 510,
+    from: 'Complexo Solar Arinos (MG)',
+    to: 'SE Neves (Belo Horizonte - MG)',
+    concessionaire: 'Cemig GT / Taesa',
+    coordinates: [
+      [-46.1000, -15.9100],
+      [-46.8500, -17.2200],
+      [-45.2600, -18.2100],
+      [-44.9500, -17.4000],
+      [-44.1500, -19.7500]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — interligação dos polos solares de Arinos, Pirapora e Lar do Sol, integrando a UHE Três Marias ao centro de carga de Belo Horizonte',
+      substations: ['SE Arinos', 'SE Paracatu 4', 'SE Três Marias', 'SE Pirapora 2', 'SE Neves 1']
+    }
+  },
+  {
+    id: 'linha-paranaiba-grande',
+    name: 'Corredor Rio Paranaíba ➔ Rio Grande (500 kV)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 570,
+    from: 'UHE São Simão (GO/MG)',
+    to: 'UHE Água Vermelha (SP/MG)',
+    concessionaire: 'Furnas / Cemig GT / SPIC Brasil',
+    coordinates: [
+      [-50.5000, -18.9833],
+      [-49.4833, -18.4833],
+      [-49.2000, -18.4167],
+      [-47.9861, -18.4417],
+      [-49.2000, -20.4000],
+      [-50.3444, -19.8667]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — grande anel hidrelétrico do Triângulo Mineiro e Alto Paranaíba articulando São Simão, Cachoeira Dourada, Itumbiara, Emborcação e Marimbondo',
+      substations: ['SE São Simão', 'SE Cachoeira Dourada', 'SE Itumbiara', 'SE Emborcação', 'SE Marimbondo', 'SE Água Vermelha']
+    }
+  },
+  {
+    id: 'linha-rio-tocantins',
+    name: 'Corredor Hidrelétrico Rio Tocantins (500 kV)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 880,
+    from: 'UHE Estreito (MA/TO)',
+    to: 'UHE Serra da Mesa (GO)',
+    concessionaire: 'Taesa / Furnas',
+    coordinates: [
+      [-47.4528, -6.5417],
+      [-48.3667, -9.7500],
+      [-48.6500, -12.2833],
+      [-48.5000, -13.3000],
+      [-48.3167, -13.8500]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — tronco longitudinal ao longo do Rio Tocantins unindo as usinas de Estreito, Lajeado e Peixe Angical ao reservatório plurianual de Serra da Mesa',
+      substations: ['SE Estreito', 'SE Lajeado (Palmas)', 'SE Peixe Angical', 'SE Gurupi', 'SE Serra da Mesa']
+    }
+  },
+  {
+    id: 'linha-rio-iguacu-cascata',
+    name: 'Cascata do Iguaçu (525 kV)',
+    voltageKV: 525,
+    type: 'CA',
+    lengthKm: 335,
+    from: 'UHE Foz do Areia (PR)',
+    to: 'SE Foz do Iguaçu (PR)',
+    concessionaire: 'Copel GeT / Eletrobras',
+    coordinates: [
+      [-51.8867, -26.0272],
+      [-52.1000, -25.7833],
+      [-52.6103, -25.6144],
+      [-53.0000, -25.5333],
+      [-53.5000, -25.5500],
+      [-54.5889, -25.4083]
+    ],
+    technicalDetails: {
+      converterTechnology: '525 kV CA — canal de escoamento de mais de 7.500 MW instalados no Rio Iguaçu (Foz do Areia, Segredo, Salto Santiago, Salto Osório e Salto Caxias)',
+      substations: ['SE Foz do Areia', 'SE Segredo', 'SE Salto Santiago', 'SE Salto Osório', 'SE Salto Caxias', 'SE Foz do Iguaçu']
+    }
+  },
+  {
+    id: 'linha-coxilha-negra-livramento',
+    name: 'Escoamento Eólico Fronteira Oeste (230 kV)',
+    voltageKV: 230,
+    type: 'CA',
+    lengthKm: 225,
+    from: 'Complexo Eólico Coxilha Negra (Santana do Livramento - RS)',
+    to: 'SE Santa Maria 3 (RS)',
+    concessionaire: 'CGT Eletrosul',
+    coordinates: [
+      [-55.5300, -30.8500],
+      [-55.5300, -30.8900],
+      [-54.7000, -30.3000],
+      [-53.8000, -29.7000]
+    ],
+    technicalDetails: {
+      converterTechnology: '230 kV CA — escoamento de geração eólica do Pampa gaúcho conectando Santana do Livramento e Rosário do Sul à subestação troncal de Santa Maria',
+      substations: ['SE Coxilha Negra', 'SE Livramento 3', 'SE Rosário do Sul', 'SE Santa Maria 3']
+    }
+  },
+  {
+    id: 'linha-madeira-samuel',
+    name: 'Interligação Coletora Madeira ➔ Samuel (230 kV)',
+    voltageKV: 230,
+    type: 'CA',
+    lengthKm: 155,
+    from: 'UHE Jirau (Porto Velho - RO)',
+    to: 'UHE Samuel (Candeias do Jamari - RO)',
+    concessionaire: 'Eletronorte / IE Madeira',
+    coordinates: [
+      [-64.6547, -9.2647],
+      [-63.9536, -8.8028],
+      [-63.8500, -8.7500],
+      [-63.4500, -8.7500]
+    ],
+    technicalDetails: {
+      converterTechnology: '230 kV CA — malha regional de Rondônia abastecendo Porto Velho e interligando a usina histórica de Samuel com as gigantes a fio d\'água Jirau e Santo Antônio',
+      substations: ['SE Coletora Jirau', 'SE Santo Antônio', 'SE Porto Velho', 'SE Samuel']
+    }
+  },
+  {
+    id: 'linha-gas-parnaiba-sobral',
+    name: 'Tronco Gás Parnaíba ➔ Ceará (500 kV)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 540,
+    from: 'Complexo Termelétrico Parnaíba (Santo Antônio dos Lopes - MA)',
+    to: 'SE Sobral III (CE)',
+    concessionaire: 'Eneva / Taesa / Chesf',
+    coordinates: [
+      [-44.6000, -4.8500],
+      [-44.4800, -5.2800],
+      [-42.8000, -5.0800],
+      [-40.3500, -3.6800]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — escoamento de geração termelétrica a gás de poço terrestre (Gas-to-Wire) da bacia sedimentar do Parnaíba até o Ceará',
+      substations: ['SE Parnaíba', 'SE Presidente Dutra', 'SE Teresina 2', 'SE Sobral 3']
+    }
+  },
+  {
+    id: 'linha-rn-ceara-litoral',
+    name: 'Corredor Eólico Potiguar-Cearense (500 kV)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 410,
+    from: 'Complexo Eólico Rio do Vento (Touros - RN)',
+    to: 'SE Fortaleza / Pecém (CE)',
+    concessionaire: 'Chesf / Taesa',
+    coordinates: [
+      [-36.2500, -5.6833],
+      [-36.9100, -5.5800],
+      [-37.0300, -5.1700],
+      [-37.3500, -5.2000],
+      [-37.9500, -4.9500],
+      [-38.5500, -3.7500]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — corredor litorâneo integrando os clusters de vento do RN (Rio do Vento, Serra do Mel) e a solar Mendubim ao polo industrial de Pecém',
+      substations: ['SE Touros', 'SE Mendubim', 'SE Serra do Mel', 'SE Mossoró 4', 'SE Russas 2', 'SE Fortaleza']
+    }
+  },
+  {
+    id: 'linha-angra-rio-sp',
+    name: 'Escoamento Nuclear Angra (500 kV)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 135,
+    from: 'Central Nuclear de Angra (Angra dos Reis - RJ)',
+    to: 'SE Terminal Rio (Nova Iguaçu - RJ)',
+    concessionaire: 'Furnas / Eletronuclear',
+    coordinates: [
+      [-44.4578, -23.0078],
+      [-44.2000, -22.9500],
+      [-43.6000, -22.7500]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — circuito duplo blindado de altíssima confiabilidade escoando os 1.990 MW das usinas Angra 1 e Angra 2 para a Baixada Fluminense',
+      substations: ['SE Angra', 'SE Graúna', 'SE Terminal Rio']
+    }
+  },
+  {
+    id: 'linha-macae-campos-rio',
+    name: 'Corredor Termelétrico Fluminense (500 kV)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 310,
+    from: 'UTE GNA I (Porto do Açu - RJ)',
+    to: 'SE Terminal Rio (RJ)',
+    concessionaire: 'Furnas / Neoenergia / GNA',
+    coordinates: [
+      [-41.0500, -21.8333],
+      [-41.3300, -21.7500],
+      [-41.8000, -22.3500],
+      [-42.8000, -22.7000],
+      [-43.6000, -22.7500]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — grande corredor termelétrico da costa norte fluminense escoando UTE GNA I, Termomacaé e UTE Norte Fluminense',
+      substations: ['SE Porto do Açu', 'SE Campos 2', 'SE Macaé (Cabiúnas)', 'SE Itaboraí', 'SE Terminal Rio']
+    }
+  },
+  {
+    id: 'linha-rio-parana-jupia-tresirmaos',
+    name: 'Tronco Hidrelétrico Rio Paraná / Tietê (440 kV)',
+    voltageKV: 440,
+    type: 'CA',
+    lengthKm: 320,
+    from: 'UHE Ilha Solteira (SP)',
+    to: 'SE Bauru (SP)',
+    concessionaire: 'ISA CTEEP',
+    coordinates: [
+      [-51.3378, -20.4306],
+      [-51.7778, -20.7833],
+      [-51.3000, -20.6500],
+      [-50.4500, -21.2000],
+      [-49.0700, -22.3100]
+    ],
+    technicalDetails: {
+      converterTechnology: '440 kV CA — escoamento de quase 6.000 MW hidrelétricos do encontro dos rios Tietê e Paraná (Ilha Solteira, Jupiá e Três Irmãos) para o nó de Bauru',
+      substations: ['SE Ilha Solteira', 'SE Jupiá', 'SE Três Irmãos', 'SE Araçatuba', 'SE Bauru']
+    }
+  },
+  {
+    id: 'linha-bacia-uruguai-sul',
+    name: 'Cascata Rio Pelotas / Uruguai (525 kV)',
+    voltageKV: 525,
+    type: 'CA',
+    lengthKm: 280,
+    from: 'UHE Itá (SC/RS)',
+    to: 'SE Caxias do Sul (RS)',
+    concessionaire: 'CGT Eletrosul / Copel',
+    coordinates: [
+      [-52.3308, -27.2794],
+      [-51.7889, -27.5306],
+      [-51.3167, -27.6000],
+      [-51.1833, -27.7833],
+      [-51.1500, -29.1500]
+    ],
+    technicalDetails: {
+      converterTechnology: '525 kV CA — corredor hidroelétrico de 525 kV articulando Itá, Machadinho, Campos Novos e Barra Grande ao pólo de consumo de Caxias do Sul e Porto Alegre',
+      substations: ['SE Itá', 'SE Machadinho', 'SE Campos Novos', 'SE Barra Grande', 'SE Caxias 6']
+    }
+  },
+  {
+    id: 'linha-telespires-saomanoel',
+    name: 'Escoamento Bacia do Tapajós / Teles Pires (500 kV)',
+    voltageKV: 500,
+    type: 'CA',
+    lengthKm: 350,
+    from: 'UHE São Manoel (MT/PA)',
+    to: 'SE Sinop (MT)',
+    concessionaire: 'Matrinchã / State Grid / Furnas',
+    coordinates: [
+      [-57.1833, -9.1833],
+      [-56.4744, -9.3444],
+      [-55.7000, -9.6500],
+      [-54.8000, -11.8500]
+    ],
+    technicalDetails: {
+      converterTechnology: '500 kV CA — coleta da hidroeletricidade das usinas do extremo norte do Mato Grosso no Rio Teles Pires integrando ao Linhão Teles Pires',
+      substations: ['SE São Manoel', 'SE Teles Pires', 'SE Paranaíta', 'SE Sinop']
+    }
+  },
+  {
+    id: 'linha-balbina-manaus',
+    name: 'Interligação Balbina ➔ Mauá ➔ Manaus (230 kV)',
+    voltageKV: 230,
+    type: 'CA',
+    lengthKm: 175,
+    from: 'UHE Balbina (Presidente Figueiredo - AM)',
+    to: 'UTE Mauá 3 (Manaus - AM)',
+    concessionaire: 'Eletronorte / Amazonas Energia',
+    coordinates: [
+      [-59.4833, -1.9167],
+      [-60.0200, -2.0500],
+      [-60.0000, -3.0500],
+      [-59.9500, -3.1333]
+    ],
+    technicalDetails: {
+      converterTechnology: '230 kV CA — tronco de alimentação da Região Metropolitana de Manaus integrando a geração hidrelétrica de Balbina e o pólo térmico a gás de Mauá ao SIN',
+      substations: ['SE Balbina', 'SE Presidente Figueiredo', 'SE Manaus Norte', 'SE Mauá']
     }
   }
 ];
