@@ -45,19 +45,16 @@ jobs:
         with:
           path: './dist'
 
-# Nota: Para ativar o deploy automático no GitHub Pages, é necessário primeiro
-# habilitar em: https://github.com/antonio-leblanc/brasil-grid/settings/pages
-# selecionando "Source: GitHub Actions".
-#
-#   deploy:
-#     name: Deploy to GitHub Pages
-#     needs: build-and-lint
-#     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-#     runs-on: ubuntu-latest
-#     environment:
-#       name: github-pages
-#       url: ${{ steps.deployment.outputs.page_url }}
-#     steps:
-#       - name: Deploy to GitHub Pages
-#         id: deployment
-#         uses: actions/deploy-pages@v4
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build-and-lint
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
