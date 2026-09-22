@@ -10,7 +10,7 @@ import { useOnsTelemetry } from './services/onsApi';
 import { majorPowerPlants, majorTransmissionLines } from './data/gridData';
 import type { PowerPlantFeature, TransmissionLineFeature } from './data/gridData';
 
-type AppMode = 'mapa' | 'aprender';
+type AppMode = 'mapa' | 'guia';
 
 const LEARN_TABS = ['cadeia', 'mercado', 'escalas'];
 const VALID_VOLTAGES: ('all' | '800' | '500')[] = ['all', '800', '500'];
@@ -46,9 +46,9 @@ function parseUrlState(): UrlState {
   const typeParam = params.get('type');
 
   const tab = tabParam && LEARN_TABS.includes(tabParam) ? tabParam : 'cadeia';
-  // Old links pointing straight at an educational tab still land in "aprender" mode.
-  const mode: AppMode = modeParam === 'aprender' || (!modeParam && tabParam && LEARN_TABS.includes(tabParam))
-    ? 'aprender'
+  // "aprender" is a legacy alias kept for old links; new links use "guia".
+  const mode: AppMode = modeParam === 'guia' || modeParam === 'aprender' || (!modeParam && tabParam && LEARN_TABS.includes(tabParam))
+    ? 'guia'
     : 'mapa';
   const voltage = vParam && VALID_VOLTAGES.includes(vParam as 'all' | '800' | '500')
     ? (vParam as 'all' | '800' | '500')
@@ -95,8 +95,8 @@ export function App() {
   useEffect(() => {
     const params = new URLSearchParams();
 
-    if (mode === 'aprender') {
-      params.set('mode', 'aprender');
+    if (mode === 'guia') {
+      params.set('mode', 'guia');
       if (activeTab && activeTab !== 'cadeia') {
         params.set('tab', activeTab);
       }
@@ -138,7 +138,7 @@ export function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [handlePopState]);
 
-  if (mode === 'aprender') {
+  if (mode === 'guia') {
     return (
       <LearnView
         activeTab={activeTab}
@@ -159,13 +159,13 @@ export function App() {
         isLoading={isTelemetryLoading}
         onRefresh={refreshTelemetry}
         onOpenCurve={() => setIsLoadCurveOpen(true)}
+        onOpenLearn={() => setMode('guia')}
       />
 
       {/* 2. Main Full-Viewport Spatial Canvas & HUD Overlays */}
       <div className="flex-1 relative overflow-hidden flex">
         {/* Left Retractable Intelligence Drawer */}
         <ConsoleSidebar
-          onOpenLearn={() => setMode('aprender')}
           isOpen={isSidebarOpen}
           setIsOpen={setIsSidebarOpen}
           voltageFilter={voltageFilter}
@@ -252,7 +252,6 @@ export function App() {
       {/* 3. Bottom Grid Telemetry & Intercâmbio Bar */}
       <ConsoleBottomBar
         telemetry={telemetry}
-        isLive={isLive}
         onOpenCurve={() => setIsLoadCurveOpen(true)}
       />
 

@@ -10,13 +10,11 @@ import {
   Atom,
   Flame,
   Activity,
-  Layers,
-  BookOpen
+  Layers
 } from 'lucide-react';
 import { FilterButton } from './FilterButton';
 
 interface ConsoleSidebarProps {
-  onOpenLearn: () => void;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   voltageFilter: 'all' | '800' | '500';
@@ -32,7 +30,6 @@ interface ConsoleSidebarProps {
 }
 
 export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
-  onOpenLearn,
   isOpen,
   setIsOpen,
   voltageFilter,
@@ -58,17 +55,6 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
         </div>
 
         <div className="flex items-center space-x-1.5 ml-2">
-          <button
-            type="button"
-            onClick={onOpenLearn}
-            className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1.5 rounded border border-slate-800 bg-slate-900/80 text-slate-300 hover:text-emerald-300 hover:border-emerald-500/40 transition cursor-pointer text-[11px] font-mono"
-            title="Ir para o guia do setor elétrico (conteúdo de referência)"
-            aria-label="Abrir guia do setor"
-          >
-            <BookOpen className="w-3.5 h-3.5" />
-            <span className="font-semibold">GUIA</span>
-          </button>
-
           <button
             type="button"
             onClick={() => setIsOpen(false)}
@@ -217,7 +203,13 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                   <span className="text-slate-600">Alta Tensão</span>
                 </div>
                 <div className="space-y-1 max-h-56 overflow-y-auto pr-1">
-                  {majorTransmissionLines.map((line) => (
+                  {majorTransmissionLines
+                    .filter((line) => {
+                      if (voltageFilter === '800') return line.voltageKV === 800;
+                      if (voltageFilter === '500') return line.voltageKV >= 500;
+                      return true;
+                    })
+                    .map((line) => (
                     <div
                       key={line.id}
                       onClick={() => onSelectLine(line)}

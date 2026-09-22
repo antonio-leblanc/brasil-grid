@@ -1,5 +1,5 @@
 import React from 'react';
-import { PanelLeftOpen, PanelLeftClose, Activity, RefreshCw } from 'lucide-react';
+import { PanelLeftOpen, PanelLeftClose, Activity, RefreshCw, BookOpen } from 'lucide-react';
 import type { NationalTelemetrySnapshot } from '../../services/onsApi';
 
 interface ConsoleHeaderProps {
@@ -10,6 +10,7 @@ interface ConsoleHeaderProps {
   isLoading: boolean;
   onRefresh: () => void;
   onOpenCurve: () => void;
+  onOpenLearn: () => void;
 }
 
 export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
@@ -19,7 +20,8 @@ export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
   isLive,
   isLoading,
   onRefresh,
-  onOpenCurve
+  onOpenCurve,
+  onOpenLearn
 }) => {
   return (
     <header className="h-14 bg-[#080b11]/90 backdrop-blur-md border-b border-slate-800/90 flex items-center justify-between px-3 sm:px-4 z-40 relative select-none">
@@ -92,6 +94,18 @@ export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
           aria-label="Atualizar telemetria do ONS"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-cyan-400' : ''}`} />
+        </button>
+
+        {/* Guide Mode Entry (always visible, including mobile) */}
+        <button
+          type="button"
+          onClick={onOpenLearn}
+          className="flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 text-slate-300 hover:text-emerald-300 hover:border-emerald-500/40 hover:bg-emerald-500/10 transition text-[11px]"
+          title="Ir para o guia do setor elétrico (conteúdo de referência)"
+          aria-label="Abrir guia do setor"
+        >
+          <BookOpen className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline font-semibold">GUIA</span>
         </button>
       </div>
     </header>

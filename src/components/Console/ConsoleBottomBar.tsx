@@ -5,13 +5,11 @@ import type { NationalTelemetrySnapshot } from '../../services/onsApi';
 
 interface ConsoleBottomBarProps {
   telemetry: NationalTelemetrySnapshot;
-  isLive: boolean;
   onOpenCurve: () => void;
 }
 
 export const ConsoleBottomBar: React.FC<ConsoleBottomBarProps> = ({
   telemetry,
-  isLive,
   onOpenCurve
 }) => {
   const currentSinLoadGW = (telemetry.currentSinLoadMW / 1000).toFixed(1);
@@ -21,22 +19,6 @@ export const ConsoleBottomBar: React.FC<ConsoleBottomBarProps> = ({
     <footer className="h-10 bg-[#07090e]/95 backdrop-blur-md border-t border-slate-800/80 px-3 sm:px-4 flex items-center justify-between z-20 text-[11px] font-mono text-slate-400 select-none">
       {/* Left: Essential Operational Pulse */}
       <div className="flex items-center space-x-2 sm:space-x-3">
-        {/* Dynamic Telemetry Badge */}
-        <span
-          className={`px-1.5 py-0.5 rounded text-[8px] font-bold tracking-wider border ${
-            isLive
-              ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40'
-              : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-          }`}
-          title={
-            isLive
-              ? `Dados vivos do ONS (atualizado às ${telemetry.latestTimeLabel})`
-              : 'Snapshot estático de referência técnica do SIN'
-          }
-        >
-          {isLive ? 'ONS LIVE' : 'REF'}
-        </span>
-
         {/* Frequency */}
         <div className="flex items-center space-x-1.5" title="Frequência nominal do SIN (estabilidade da rede)">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
