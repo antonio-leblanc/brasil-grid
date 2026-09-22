@@ -4,6 +4,8 @@ import { ConsoleHeader } from './components/Console/ConsoleHeader';
 import { ConsoleSidebar } from './components/Console/ConsoleSidebar';
 import { ConsoleBottomBar } from './components/Console/ConsoleBottomBar';
 import { NodeInspector } from './components/Inspector/NodeInspector';
+import { LoadCurveModal } from './components/Telemetry/LoadCurveModal';
+import { useOnsTelemetry } from './services/onsApi';
 import { majorPowerPlants, majorTransmissionLines } from './data/gridData';
 import type { PowerPlantFeature, TransmissionLineFeature } from './data/gridData';
 
@@ -68,6 +70,15 @@ export function App() {
   const [plantTypeFilter, setPlantTypeFilter] = useState<string>(initialState.type);
   const [showPowerFlow, setShowPowerFlow] = useState<boolean>(true);
   const [showSubsystems, setShowSubsystems] = useState<boolean>(true);
+  const [isLoadCurveOpen, setIsLoadCurveOpen] = useState<boolean>(false);
+
+  // Live ONS Telemetry Hook
+  const {
+    telemetry,
+    isLoading: isTelemetryLoading,
+    isLive,
+    refresh: refreshTelemetry
+  } = useOnsTelemetry();
 
   // Synchronize state with URL search params
   useEffect(() => {
@@ -118,6 +129,11 @@ export function App() {
       <ConsoleHeader
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
+        telemetry={telemetry}
+        isLive={isLive}
+        isLoading={isTelemetryLoading}
+        onRefresh={refreshTelemetry}
+        onOpenCurve={() => setIsLoadCurveOpen(true)}
       />
 
       {/* 2. Main Full-Viewport Spatial Canvas & HUD Overlays */}
@@ -157,6 +173,7 @@ export function App() {
             plantTypeFilter={plantTypeFilter}
             showPowerFlow={showPowerFlow}
             showSubsystems={showSubsystems}
+            telemetry={telemetry}
           />
 
           {/* Floating Subtle Map Legend (Bottom-Left) */}
@@ -209,7 +226,21 @@ export function App() {
       </div>
 
       {/* 3. Bottom Grid Telemetry & Intercâmbio Bar */}
-      <ConsoleBottomBar />
+      <ConsoleBottomBar
+        telemetry={telemetry}
+        isLive={isLive}
+        onOpenCurve={() => setIsLoadCurveOpen(true)}
+      />
+
+      {/* 4. Interactive 24h Load Curve & Duck Curve Modal */}
+      <LoadCurveModal
+        isOpen={isLoadCurveOpen}
+        onClose={() => setIsLoadCurveOpen(false)}
+        telemetry={telemetry}
+        isLive={isLive}
+        isLoading={isTelemetryLoading}
+        onRefresh={refreshTelemetry}
+      />
     </div>
   );
 }

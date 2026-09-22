@@ -12,6 +12,7 @@ import type { FeatureCollection } from 'geojson';
 import { majorPowerPlants, majorTransmissionLines } from '../../data/gridData';
 import { subsystemsGeoJSON } from '../../data/subsystemsGeoData';
 import type { PowerPlantFeature, TransmissionLineFeature } from '../../data/gridData';
+import type { NationalTelemetrySnapshot } from '../../services/onsApi';
 
 // Clean, unwatermarked ESRI Dark Gray Canvas
 const darkMatterStyle: StyleSpecification = {
@@ -65,6 +66,7 @@ interface GridMapProps {
   plantTypeFilter: string;
   showPowerFlow: boolean;
   showSubsystems: boolean;
+  telemetry?: NationalTelemetrySnapshot;
 }
 
 export const GridMap: React.FC<GridMapProps> = ({
@@ -75,7 +77,8 @@ export const GridMap: React.FC<GridMapProps> = ({
   voltageFilter,
   plantTypeFilter,
   showPowerFlow,
-  showSubsystems
+  showSubsystems,
+  telemetry
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
@@ -90,12 +93,14 @@ export const GridMap: React.FC<GridMapProps> = ({
   const onSelectLineRef = useRef(setSelectedLine);
   const showPowerFlowRef = useRef(showPowerFlow);
   const showSubsystemsRef = useRef(showSubsystems);
+  const telemetryRef = useRef<NationalTelemetrySnapshot | undefined>(telemetry);
   useEffect(() => {
     onSelectPlantRef.current = setSelectedPlant;
     onSelectLineRef.current = setSelectedLine;
     showPowerFlowRef.current = showPowerFlow;
     showSubsystemsRef.current = showSubsystems;
-  }, [setSelectedPlant, setSelectedLine, showPowerFlow, showSubsystems]);
+    telemetryRef.current = telemetry;
+  }, [setSelectedPlant, setSelectedLine, showPowerFlow, showSubsystems, telemetry]);
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
@@ -179,18 +184,49 @@ export const GridMap: React.FC<GridMapProps> = ({
             statesStr = String(p?.states || '');
           }
 
+          const currentTelemetry = telemetryRef.current;
+          const subKey = p?.id as 'SE_CO' | 'S' | 'NE' | 'N';
+          const subData = currentTelemetry?.subsystems[subKey];
+          const isLive = currentTelemetry?.source === 'ONS_LIVE';
+
+          const loadDetailsHtml = subData
+            ? `<div class="text-[10px] text-slate-300 pt-1 border-t border-slate-800/80 space-y-0.5">
+                 <div class="flex items-center justify-between">
+                   <span class="text-slate-400">Demanda Atual:</span>
+                   <strong class="text-cyan-300 font-bold">${(subData.currentLoadMW / 1000).toFixed(1)} GW</strong>
+                 </div>
+                 <div class="flex items-center justify-between text-slate-400 text-[9px]">
+                   <span>Pico Diário:</span>
+                   <span class="text-amber-300 font-semibold">${(subData.peakLoadMW / 1000).toFixed(1)} GW (${subData.peakTime})</span>
+                 </div>
+                 ${subData.solarMmgdMW > 0 ? `
+                 <div class="flex items-center justify-between text-slate-400 text-[9px]">
+                   <span>Solar GD (MMGD):</span>
+                   <span class="text-yellow-400 font-semibold">${(subData.solarMmgdMW / 1000).toFixed(1)} GW</span>
+                 </div>` : ''}
+                 <div class="text-slate-500 truncate max-w-[230px] pt-0.5">Estados: ${statesStr}</div>
+               </div>`
+            : `<div class="text-[10px] text-slate-300 pt-1 border-t border-slate-800/80 space-y-0.5">
+                 <div>Participação Carga: <strong class="text-cyan-400 font-bold">${p?.loadShare}</strong></div>
+                 <div class="text-slate-500 truncate max-w-[220px]">Estados: ${statesStr}</div>
+               </div>`;
+
           popupRef.current
             .setLngLat(e.lngLat)
             .setHTML(`
-              <div class="px-3 py-2 rounded-lg bg-[#07090e]/95 border border-slate-700/80 shadow-2xl backdrop-blur-md font-mono text-left select-none pointer-events-none min-w-[190px]">
+              <div class="px-3 py-2 rounded-lg bg-[#07090e]/95 border border-slate-700/80 shadow-2xl backdrop-blur-md font-mono text-left select-none pointer-events-none min-w-[220px]">
                 <div class="flex items-center justify-between gap-2 mb-1">
                   <span class="text-xs font-bold text-white tracking-wide">${p?.name}</span>
-                  <span class="text-[9px] px-1.5 py-0.5 rounded border border-cyan-500/40 bg-cyan-500/15 text-cyan-300 uppercase font-semibold">${p?.shortName}</span>
+                  <div class="flex items-center space-x-1">
+                    <span class="text-[8px] px-1 py-0.2 rounded border ${
+                      isLive ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-300' : 'border-slate-700 bg-slate-800 text-slate-400'
+                    } uppercase font-semibold">
+                      ${isLive ? 'LIVE' : 'REF'}
+                    </span>
+                    <span class="text-[9px] px-1.5 py-0.5 rounded border border-cyan-500/40 bg-cyan-500/15 text-cyan-300 uppercase font-semibold">${p?.shortName}</span>
+                  </div>
                 </div>
-                <div class="text-[10px] text-slate-300 pt-1 border-t border-slate-800/80 space-y-0.5">
-                  <div>Participação Carga: <strong class="text-cyan-400 font-bold">${p?.loadShare}</strong></div>
-                  <div class="text-slate-500 truncate max-w-[220px]">Estados: ${statesStr}</div>
-                </div>
+                ${loadDetailsHtml}
               </div>
             `)
             .addTo(mapInstance);
