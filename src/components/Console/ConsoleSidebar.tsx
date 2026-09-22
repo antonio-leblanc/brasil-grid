@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ValueChainSection } from '../EnergyChain/ValueChainSection';
 import { AcrAclComparison } from '../Market/AcrAclComparison';
 import { MagnitudeRuler } from '../Scales/MagnitudeRuler';
 import { subsystems, majorPowerPlants, majorTransmissionLines } from '../../data/gridData';
 import type { PowerPlantFeature, TransmissionLineFeature } from '../../data/gridData';
-import { X, Filter, Droplet, Sun, Wind, Atom, Flame } from 'lucide-react';
+import { X, Filter, Droplet, Sun, Wind, Atom, Flame, Maximize2, Minimize2 } from 'lucide-react';
 
 interface ConsoleSidebarProps {
   activeTab: string;
@@ -31,15 +31,52 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
   onSelectPlant,
   onSelectLine
 }) => {
+  const [isMaximized, setIsMaximized] = useState(false);
+
+  // Close focus/fullscreen mode with Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isMaximized) {
+        setIsMaximized(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isMaximized]);
+
   if (!isOpen) return null;
 
+  const handleTabClick = (tabId: string) => {
+    setActiveTab(tabId);
+    // Restore sidebar mode automatically when returning to the spatial topology map
+    if (tabId === 'topologia' && isMaximized) {
+      setIsMaximized(false);
+    }
+  };
+
+  const handleSelectPlant = (plant: PowerPlantFeature) => {
+    if (isMaximized) setIsMaximized(false);
+    onSelectPlant(plant);
+  };
+
+  const handleSelectLine = (line: TransmissionLineFeature) => {
+    if (isMaximized) setIsMaximized(false);
+    onSelectLine(line);
+  };
+
   return (
-    <aside className="w-full sm:w-[460px] lg:w-[520px] bg-[#090c13]/95 backdrop-blur-2xl border-r border-slate-800/90 h-full flex flex-col shadow-2xl z-30 animate-in slide-in-from-left duration-200">
+    <aside
+      className={`h-full flex flex-col shadow-2xl z-30 transition-all duration-200 ${
+        isMaximized
+          ? 'absolute inset-0 z-40 bg-[#090c13]/98 backdrop-blur-2xl animate-in fade-in'
+          : 'w-full sm:w-[460px] lg:w-[520px] bg-[#090c13]/95 backdrop-blur-2xl border-r border-slate-800/90 animate-in slide-in-from-left'
+      }`}
+    >
       {/* Top Header of the Drawer */}
-      <div className="p-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+      <div className="p-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-950/70">
         <div className="flex items-center space-x-1 overflow-x-auto text-xs font-mono">
           <button
-            onClick={() => setActiveTab('topologia')}
+            onClick={() => handleTabClick('topologia')}
             className={`px-2.5 py-1.5 rounded transition ${
               activeTab === 'topologia'
                 ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold'
@@ -49,7 +86,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
             01. Topologia
           </button>
           <button
-            onClick={() => setActiveTab('cadeia')}
+            onClick={() => handleTabClick('cadeia')}
             className={`px-2.5 py-1.5 rounded transition ${
               activeTab === 'cadeia'
                 ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold'
@@ -59,7 +96,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
             02. Cadeia SEB
           </button>
           <button
-            onClick={() => setActiveTab('mercado')}
+            onClick={() => handleTabClick('mercado')}
             className={`px-2.5 py-1.5 rounded transition ${
               activeTab === 'mercado'
                 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold'
@@ -69,7 +106,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
             03. Mercado ACL
           </button>
           <button
-            onClick={() => setActiveTab('escalas')}
+            onClick={() => handleTabClick('escalas')}
             className={`px-2.5 py-1.5 rounded transition ${
               activeTab === 'escalas'
                 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold'
@@ -80,17 +117,40 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
           </button>
         </div>
 
-        <button
-          onClick={() => setIsOpen(false)}
-          className="p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition ml-2"
-          title="Fechar painel (ocultar)"
-        >
-          <X className="w-4 h-4" />
-        </button>
+        <div className="flex items-center space-x-1.5 ml-2">
+          {isMaximized && (
+            <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-semibold mr-1">
+              MODO FOCO
+            </span>
+          )}
+
+          <button
+            onClick={() => setIsMaximized(!isMaximized)}
+            className={`p-1.5 rounded border transition ${
+              isMaximized
+                ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50'
+                : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
+            }`}
+            title={isMaximized ? "Restaurar tamanho do painel (Esc)" : "Maximizar painel (Modo Leitura / Tela Cheia)"}
+            aria-label={isMaximized ? "Restaurar tamanho do painel" : "Maximizar painel"}
+          >
+            {isMaximized ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+          </button>
+
+          <button
+            onClick={() => setIsOpen(false)}
+            className="p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition"
+            title="Fechar painel (ocultar)"
+            aria-label="Fechar painel"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Drawer Scrollable Content */}
       <div className="flex-1 overflow-y-auto p-5 space-y-6">
+        <div className={isMaximized ? "max-w-5xl mx-auto w-full py-2 space-y-8" : "w-full space-y-6"}>
         {activeTab === 'topologia' && (
           <div className="space-y-6 text-xs font-mono">
             {/* Layer Controls */}
@@ -176,7 +236,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                   .map((plant) => (
                     <div
                       key={plant.id}
-                      onClick={() => onSelectPlant(plant)}
+                      onClick={() => handleSelectPlant(plant)}
                       className="p-2 rounded bg-slate-950/60 hover:bg-slate-900 border border-slate-800/80 hover:border-cyan-500/40 cursor-pointer flex items-center justify-between transition"
                     >
                       <div>
@@ -199,7 +259,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                 {majorTransmissionLines.map((line) => (
                   <div
                     key={line.id}
-                    onClick={() => onSelectLine(line)}
+                    onClick={() => handleSelectLine(line)}
                     className="p-2 rounded bg-slate-950/60 hover:bg-slate-900 border border-slate-800/80 hover:border-amber-500/40 cursor-pointer flex items-center justify-between transition"
                   >
                     <div>
@@ -247,6 +307,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
             <MagnitudeRuler />
           </div>
         )}
+        </div>
       </div>
     </aside>
   );

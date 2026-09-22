@@ -116,8 +116,6 @@ export function App() {
       <ConsoleHeader
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
       />
 
       {/* 2. Main Full-Viewport Spatial Canvas & HUD Overlays */}

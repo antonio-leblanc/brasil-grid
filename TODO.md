@@ -18,8 +18,8 @@
 
 ## UX / UI & Design System (Lean & Foco)
 
-- [ ] **Header "Lean" & Minimalista:** Deixar o `ConsoleHeader` ultra limpo. Remover os 4 botões redundantes que duplicam os menus do sidebar e despoluir o centro (concentrando dados operacionais no `ConsoleBottomBar`), dando foco total à identidade da plataforma e ao mapa.
-- [ ] **Modo Fullscreen / Foco para o painel de abas:** Permitir que o painel lateral expanda para tela cheia (com toggle Maximizar/Restaurar e layout centralizado de leitura) ao navegar pelas abas densas em conteúdo (*02. Cadeia SEB*, *03. Mercado ACL* e *04. Grandezas*), evitando que o usuário fique lendo tabelas e diagramas espremido em 520px com o mapa no fundo.
+- [x] **Header "Lean" & Minimalista:** Deixar o `ConsoleHeader` ultra limpo. Remover os 4 botões redundantes que duplicam os menus do sidebar e despoluir o centro (concentrando dados operacionais no `ConsoleBottomBar`), dando foco total à identidade da plataforma e ao mapa.
+- [x] **Modo Fullscreen / Foco para o painel de abas:** Permitir que o painel lateral expanda para tela cheia (com toggle Maximizar/Restaurar e layout centralizado de leitura) ao navegar pelas abas densas em conteúdo (*02. Cadeia SEB*, *03. Mercado ACL* e *04. Grandezas*), evitando que o usuário fique lendo tabelas e diagramas espremido em 520px com o mapa no fundo.
 
 ## Roadmap de Funcionalidades & Dados
 
