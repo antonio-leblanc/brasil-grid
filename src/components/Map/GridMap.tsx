@@ -3,11 +3,16 @@ import {
   Map as MapLibreMap,
   NavigationControl,
   Popup,
+  setWorkerUrl,
   type StyleSpecification,
   type MapLayerMouseEvent,
   type FilterSpecification
 } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+
+// Direct MapLibre to the bundled self-contained worker chunk
+setWorkerUrl(workerUrl);
 import type { FeatureCollection } from 'geojson';
 import { majorPowerPlants, majorTransmissionLines } from '../../data/gridData';
 import { subsystemsGeoJSON } from '../../data/subsystemsGeoData';
