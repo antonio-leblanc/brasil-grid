@@ -19,10 +19,17 @@
 
 ## Roadmap de Funcionalidades & Dados
 
-- [x] **Efeito visual de fluxo de potência nas linhas:** Linhas pulsadas/tracejadas animadas em WebGL (30 FPS line-dasharray) indicando visualmente o fluxo de potência entre polos geradores e subsistemas, com toggle na UI.
-- [x] **Polígonos dos 4 Subsistemas do SIN:** Camada vetorial nativa com as fronteiras elétricas (Norte, Nordeste, Sul, Sudeste/Centro-Oeste) simplificadas (Douglas-Peucker) com preenchimento sutil, bordas tracejadas, tooltips no hover e toggle na interface.
-- [ ] **Integração com Dados Abertos do ONS:** Conectar dados de despacho/curva de carga em tempo real com fallback automático para o `referenceGridSnapshot`.
-- [ ] **Calculadora / Simulador de Economia no Mercado Livre (ACL):** Simulador prático onde o usuário simula sua conta cativa vs livre com estimativa de economia e TUSD Fio B.
+- [ ] **[PRIORIDADE 1] Integração com Dados Abertos do ONS (Dividida em 3 Fases):**
+  - **Endpoints homologados:** `https://apicarga.ons.org.br/prd/cargaverificada` e `cargaprogramada` (48 medições semi-horárias/dia, CORS aberto `*`, subsistemas `SECO`, `S`, `NE`, `N` e estados).
+  - **Métricas:** Carga global (`val_cargaglobal`), carga supervisionada SCADA (`val_cargasupervisionada`) e geração solar distribuída (`val_cargammgd`).
+  - [x] **Fase 1 — Serviço & Cache Resiliente (`src/services/onsApi.ts`):** Serviço TypeScript com tipagem completa, consulta paralela aos 4 subsistemas com agregação do SIN, cache em `localStorage` (TTL 15 min), fallback automático para `referenceGridSnapshot` e hook React `useOnsTelemetry()`.
+  - [ ] **Fase 2 — Conexão com a UI:** Substituição da telemetria estática por dados vivos no `ConsoleHeader` e `ConsoleBottomBar`, badge dinâmico `LIVE (ONS API)` vs `REF (Snapshot)` com data/hora da medição, e tooltips dos subsistemas no mapa exibindo carga real em MW.
+  - [ ] **Fase 3 — Modal / Painel da Curva de Carga 24h (Curva do Pato):** Gráfico interativo em SVG puro (sem libs pesadas) com as 48 leituras diárias, seletor de subsistemas (SIN, SE/CO, Sul, NE, Norte), marcadores de pico/vale e camada visual da penetração solar MMGD.
+- [ ] **[PRIORIDADE 2] Calculadora / Simulador de Economia no Mercado Livre (ACL):**
+  - Simulador prático na aba Mercado (`AcrAclComparison.tsx`) onde o usuário simula sua conta cativa vs livre (Grupo A e futuro Grupo B), decompondo TUSD Fio B da distribuidora, energia contratada na CCEE e economia de 15% a 35%.
+- [ ] **[BACKLOG UX] Ferramentas Avançadas do Mapa & Inspetor:**
+  - Comparador de Usinas lado a lado no `NodeInspector` (capacidade, tipo de turbina/módulo, bacia hidrográfica e fator de capacidade).
+  - Botão de Exportação GeoJSON / CSV dos dados filtrados na tela.
 
 ## Concluído recentemente (referência)
 
