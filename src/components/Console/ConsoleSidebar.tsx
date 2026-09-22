@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React from 'react';
 import { subsystems, majorPowerPlants, majorTransmissionLines } from '../../data/gridData';
 import type { PowerPlantFeature, TransmissionLineFeature } from '../../data/gridData';
 import {
@@ -9,35 +9,14 @@ import {
   Wind,
   Atom,
   Flame,
-  Maximize2,
-  Minimize2,
   Activity,
-  Layers
+  Layers,
+  BookOpen
 } from 'lucide-react';
 import { FilterButton } from './FilterButton';
-import { cn } from '../../utils/cn';
-
-// Code-splitting of heavy analytical tabs to keep initial map load instant
-const ValueChainSection = lazy(() =>
-  import('../EnergyChain/ValueChainSection').then((m) => ({ default: m.ValueChainSection }))
-);
-const AcrAclComparison = lazy(() =>
-  import('../Market/AcrAclComparison').then((m) => ({ default: m.AcrAclComparison }))
-);
-const MagnitudeRuler = lazy(() =>
-  import('../Scales/MagnitudeRuler').then((m) => ({ default: m.MagnitudeRuler }))
-);
-
-const TabLoadingFallback: React.FC = () => (
-  <div className="flex flex-col items-center justify-center py-24 text-slate-500 font-mono text-xs space-y-3">
-    <div className="w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
-    <span className="text-slate-400">CARREGANDO MÓDULO ANALÍTICO...</span>
-  </div>
-);
 
 interface ConsoleSidebarProps {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
+  onOpenLearn: () => void;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   voltageFilter: 'all' | '800' | '500';
@@ -53,8 +32,7 @@ interface ConsoleSidebarProps {
 }
 
 export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
-  activeTab,
-  setActiveTab,
+  onOpenLearn,
   isOpen,
   setIsOpen,
   voltageFilter,
@@ -68,125 +46,27 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
   showSubsystems,
   setShowSubsystems
 }) => {
-  const [isMaximized, setIsMaximized] = useState(false);
-
-  // Close focus/fullscreen mode with Escape key
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isMaximized) {
-        setIsMaximized(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isMaximized]);
-
   if (!isOpen) return null;
 
-  const handleTabClick = (tabId: string) => {
-    setActiveTab(tabId);
-    // Restore sidebar mode automatically when returning to the spatial topology map
-    if (tabId === 'topologia' && isMaximized) {
-      setIsMaximized(false);
-    }
-  };
-
-  const handleSelectPlant = (plant: PowerPlantFeature) => {
-    if (isMaximized) setIsMaximized(false);
-    onSelectPlant(plant);
-  };
-
-  const handleSelectLine = (line: TransmissionLineFeature) => {
-    if (isMaximized) setIsMaximized(false);
-    onSelectLine(line);
-  };
-
   return (
-    <aside
-      className={cn(
-        'h-full flex flex-col shadow-2xl z-30 transition-all duration-200',
-        isMaximized
-          ? 'absolute inset-0 z-40 bg-[#090c13]/98 backdrop-blur-2xl animate-in fade-in'
-          : 'w-full sm:w-[460px] lg:w-[520px] bg-[#090c13]/95 backdrop-blur-2xl border-r border-slate-800/90 animate-in slide-in-from-left'
-      )}
-    >
+    <aside className="h-full flex flex-col shadow-2xl z-30 transition-all duration-200 w-full sm:w-[460px] lg:w-[520px] bg-[#090c13]/95 backdrop-blur-2xl border-r border-slate-800/90 animate-in slide-in-from-left">
+
       {/* Top Header of the Drawer */}
       <div className="p-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-950/70">
-        <div className="flex items-center space-x-1 overflow-x-auto text-xs font-mono">
-          <button
-            type="button"
-            onClick={() => handleTabClick('topologia')}
-            aria-label="Aba 01: Topologia do SIN"
-            className={cn(
-              'px-2.5 py-1.5 rounded transition cursor-pointer',
-              activeTab === 'topologia'
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold'
-                : 'text-slate-400 hover:text-white'
-            )}
-          >
-            01. Topologia
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTabClick('cadeia')}
-            aria-label="Aba 02: Cadeia de Valor do SEB"
-            className={cn(
-              'px-2.5 py-1.5 rounded transition cursor-pointer',
-              activeTab === 'cadeia'
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold'
-                : 'text-slate-400 hover:text-white'
-            )}
-          >
-            02. Cadeia SEB
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTabClick('mercado')}
-            aria-label="Aba 03: Mercado ACL e ACR"
-            className={cn(
-              'px-2.5 py-1.5 rounded transition cursor-pointer',
-              activeTab === 'mercado'
-                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold'
-                : 'text-slate-400 hover:text-white'
-            )}
-          >
-            03. Mercado ACL
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTabClick('escalas')}
-            aria-label="Aba 04: Régua de Grandezas"
-            className={cn(
-              'px-2.5 py-1.5 rounded transition cursor-pointer',
-              activeTab === 'escalas'
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold'
-                : 'text-slate-400 hover:text-white'
-            )}
-          >
-            04. Grandezas
-          </button>
+        <div className="flex items-center space-x-2 text-xs font-mono text-cyan-300 font-bold">
+          <span>TOPOLOGIA DO SIN</span>
         </div>
 
         <div className="flex items-center space-x-1.5 ml-2">
-          {isMaximized && (
-            <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-semibold mr-1">
-              MODO FOCO
-            </span>
-          )}
-
           <button
             type="button"
-            onClick={() => setIsMaximized(!isMaximized)}
-            className={cn(
-              'p-1.5 rounded border transition cursor-pointer',
-              isMaximized
-                ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50'
-                : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
-            )}
-            title={isMaximized ? 'Restaurar tamanho do painel (Esc)' : 'Maximizar painel (Modo Leitura / Tela Cheia)'}
-            aria-label={isMaximized ? 'Restaurar tamanho do painel' : 'Maximizar painel em tela cheia'}
+            onClick={onOpenLearn}
+            className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1.5 rounded border border-slate-800 bg-slate-900/80 text-slate-300 hover:text-emerald-300 hover:border-emerald-500/40 transition cursor-pointer text-[11px] font-mono"
+            title="Ir para o guia do setor elétrico (conteúdo de referência)"
+            aria-label="Abrir guia do setor"
           >
-            {isMaximized ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            <BookOpen className="w-3.5 h-3.5" />
+            <span className="font-semibold">GUIA</span>
           </button>
 
           <button
@@ -203,9 +83,8 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
 
       {/* Drawer Scrollable Content */}
       <div className="flex-1 overflow-y-auto p-5 space-y-6">
-        <div className={isMaximized ? 'max-w-5xl mx-auto w-full py-2 space-y-8' : 'w-full space-y-6'}>
-          {activeTab === 'topologia' && (
-            <div className="space-y-6 text-xs font-mono">
+        <div className="w-full space-y-6">
+          <div className="space-y-6 text-xs font-mono">
               {/* Layer Controls */}
               <div className="space-y-3 bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
                 <div className="flex items-center space-x-2 text-cyan-400 uppercase font-bold text-[11px]">
@@ -314,7 +193,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                     .map((plant) => (
                       <div
                         key={plant.id}
-                        onClick={() => handleSelectPlant(plant)}
+                        onClick={() => onSelectPlant(plant)}
                         className="p-2 rounded bg-slate-950/60 hover:bg-slate-900 border border-slate-800/80 hover:border-cyan-500/40 cursor-pointer flex items-center justify-between transition"
                       >
                         <div>
@@ -341,7 +220,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                   {majorTransmissionLines.map((line) => (
                     <div
                       key={line.id}
-                      onClick={() => handleSelectLine(line)}
+                      onClick={() => onSelectLine(line)}
                       className="p-2 rounded bg-slate-950/60 hover:bg-slate-900 border border-slate-800/80 hover:border-amber-500/40 cursor-pointer flex items-center justify-between transition"
                     >
                       <div>
@@ -377,31 +256,6 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                 </div>
               </div>
             </div>
-          )}
-
-          {activeTab === 'cadeia' && (
-            <Suspense fallback={<TabLoadingFallback />}>
-              <div className="animate-in fade-in duration-200">
-                <ValueChainSection />
-              </div>
-            </Suspense>
-          )}
-
-          {activeTab === 'mercado' && (
-            <Suspense fallback={<TabLoadingFallback />}>
-              <div className="animate-in fade-in duration-200">
-                <AcrAclComparison />
-              </div>
-            </Suspense>
-          )}
-
-          {activeTab === 'escalas' && (
-            <Suspense fallback={<TabLoadingFallback />}>
-              <div className="animate-in fade-in duration-200">
-                <MagnitudeRuler />
-              </div>
-            </Suspense>
-          )}
         </div>
       </div>
     </aside>
