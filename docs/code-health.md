@@ -42,14 +42,14 @@
 
 ### Prioridade baixa (polimento)
 
-7. **`any` solto em `GridMap.tsx`**
-   `let lineFilterExpr: any = null;` quebra a tipagem boa do resto do projeto — dá para tipar como `FilterSpecification | null` do próprio `maplibre-gl`.
+7. **`any` solto em `GridMap.tsx`** — ✅ *Concluído*
+   Tipagem estrita com `FilterSpecification | null` nativo do `maplibre-gl`.
 
-8. **Repetição de classes condicionais**
-   Os botões de filtro em `ConsoleSidebar.tsx` repetem o mesmo bloco de classes Tailwind condicionais 5-6 vezes. `clsx` já está instalado mas não é usado — dava para extrair um `<FilterButton active={...}>` pequeno.
+8. **Repetição de classes condicionais** — ✅ *Concluído*
+   Criado o helper `cn()` (`clsx` + `tailwind-merge`) e o componente reutilizável `FilterButton.tsx`, simplificando a interface e eliminando duplicações em `ConsoleSidebar.tsx`.
 
-9. **Acessibilidade**
-   Botões sem `aria-label`, emojis como texto de label (💧☀️💨) em vez de ícones semânticos, sem atenção a navegação por teclado nos markers do mapa. Não bloqueante agora, mas vale revisar se o público for além de uso pessoal/técnico.
+9. **Acessibilidade & Code-Splitting** — ✅ *Concluído*
+   Atributos `aria-label` e títulos semânticos adicionados a botões e controles. Code-splitting no Vite com `React.lazy` e `<Suspense>` para as abas analíticas, gerando chunks isolados e reduzindo o peso do first-load.
 
 ---
 

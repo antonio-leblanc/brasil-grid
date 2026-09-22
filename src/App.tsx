@@ -66,6 +66,8 @@ export function App() {
   const [selectedLine, setSelectedLine] = useState<TransmissionLineFeature | null>(initialState.line);
   const [voltageFilter, setVoltageFilter] = useState<'all' | '800' | '500'>(initialState.voltage);
   const [plantTypeFilter, setPlantTypeFilter] = useState<string>(initialState.type);
+  const [showPowerFlow, setShowPowerFlow] = useState<boolean>(true);
+  const [showSubsystems, setShowSubsystems] = useState<boolean>(true);
 
   // Synchronize state with URL search params
   useEffect(() => {
@@ -138,6 +140,10 @@ export function App() {
             setSelectedLine(line);
             setSelectedPlant(null);
           }}
+          showPowerFlow={showPowerFlow}
+          setShowPowerFlow={setShowPowerFlow}
+          showSubsystems={showSubsystems}
+          setShowSubsystems={setShowSubsystems}
         />
 
         {/* The Core Full-Bleed Map Canvas */}
@@ -149,6 +155,8 @@ export function App() {
             setSelectedLine={setSelectedLine}
             voltageFilter={voltageFilter}
             plantTypeFilter={plantTypeFilter}
+            showPowerFlow={showPowerFlow}
+            showSubsystems={showSubsystems}
           />
 
           {/* Floating Subtle Map Legend (Bottom-Left) */}
@@ -174,6 +182,18 @@ export function App() {
               <span className="w-2 h-2 rounded-full bg-sky-400"></span>
               <span className="text-slate-300">Eólica</span>
             </div>
+            {showPowerFlow && (
+              <div className="hidden sm:flex items-center space-x-1 text-cyan-300 pl-1 border-l border-slate-800">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                <span>Fluxo Ativo</span>
+              </div>
+            )}
+            {showSubsystems && (
+              <div className="hidden sm:flex items-center space-x-1 text-amber-300/90 pl-1 border-l border-slate-800">
+                <span className="w-1.5 h-1.5 rounded-sm bg-amber-500/40 border border-amber-500/60"></span>
+                <span>4 Subsistemas</span>
+              </div>
+            )}
           </div>
         </div>
 

@@ -13,19 +13,20 @@
 - [x] Trocar os markers de usina por camada GeoJSON nativa do MapLibre (`circle`/`symbol`) processada diretamente pela GPU via WebGL, com setFilter instantâneo e tooltips dinâmicos.
 - [x] **CI Automatizado & Deploy GitHub Pages (GitHub Actions):** Workflow `.github/workflows/ci.yml` com `npm run lint` + `npm run build` e pipeline de publicação no GitHub Pages via `actions/deploy-pages` com `base` configurada em `vite.config.ts`.
 - [x] Refletir aba ativa, usina/linha selecionada e filtros na URL com sincronização bidirecional, histórico do navegador (`popstate`), câmera `flyTo` automática e botão "Compartilhar" no inspetor.
-- [ ] Extrair um componente `FilterButton` reutilizável em `ConsoleSidebar.tsx` pra reduzir a repetição de classes Tailwind condicionais (o `clsx` já está instalado como dependência mas não é usado em nenhum lugar do código ainda).
-- [ ] Revisão de acessibilidade: `aria-label` nos botões só-de-ícone, navegação por teclado nos markers do mapa.
+- [x] **Componente `FilterButton` e utilitário `cn`:** Extraído componente reutilizável em `src/components/Console/FilterButton.tsx` combinando `clsx` e `tailwind-merge` para eliminar repetição de classes Tailwind.
+- [x] **Code-Splitting no Vite (`React.lazy`):** Abas analíticas (`ValueChainSection`, `AcrAclComparison`, `MagnitudeRuler`) isoladas sob demanda em chunks dinâmicos com `<Suspense>`, otimizando o carregamento inicial.
+- [x] **Revisão de acessibilidade:** `aria-label` e titles semânticos adicionados em todos os botões de ação e filtros.
 
 ## Roadmap de Funcionalidades & Dados
 
+- [x] **Efeito visual de fluxo de potência nas linhas:** Linhas pulsadas/tracejadas animadas em WebGL (30 FPS line-dasharray) indicando visualmente o fluxo de potência entre polos geradores e subsistemas, com toggle na UI.
+- [x] **Polígonos dos 4 Subsistemas do SIN:** Camada vetorial nativa com as fronteiras elétricas (Norte, Nordeste, Sul, Sudeste/Centro-Oeste) simplificadas (Douglas-Peucker) com preenchimento sutil, bordas tracejadas, tooltips no hover e toggle na interface.
 - [ ] **Integração com Dados Abertos do ONS:** Conectar dados de despacho/curva de carga em tempo real com fallback automático para o `referenceGridSnapshot`.
-- [ ] **Efeito visual de fluxo de potência nas linhas:** Linhas tracejadas animadas (dasharray / WebGL) indicando visualmente o sentido da potência exportada entre subsistemas.
-- [ ] **Polígonos dos 4 Subsistemas do SIN:** Camada vetorial com as fronteiras elétricas (Norte, Nordeste, Sul, Sudeste/Centro-Oeste) e toggle de visualização.
 - [ ] **Calculadora / Simulador de Economia no Mercado Livre (ACL):** Simulador prático onde o usuário simula sua conta cativa vs livre com estimativa de economia e TUSD Fio B.
-- [ ] **Code-Splitting no Vite (`React.lazy`):** Isolar as abas analíticas sob demanda para acelerar o first-load do mapa de 1.3 MB.
 
 ## Concluído recentemente (referência)
 
+- [x] **Fluxo de Potência Animado & Polígonos de Subsistemas:** Renderização nativa WebGL das fronteiras do SIN e animação do sentido da corrente elétrica nos linhões tronco.
 - [x] **UI Lean & Minimalista (Header & Footer):** Header despoluído (marca + botão MENU direto), telemetria vital concentrada no footer com barra segmentada da matriz por fonte geradora.
 - [x] **Modo Fullscreen / Foco para o painel de abas:** Expansão em tela cheia com layout de leitura centralizado (`max-w-5xl`) e toggle Maximizar/Restaurar com atalho `Esc` para abas analíticas.
 - [x] Camada GeoJSON nativa WebGL no MapLibre (GPU) com filtros instantâneos sem overhead no DOM
@@ -36,4 +37,3 @@
 - [x] Emojis trocados por ícones `lucide-react` para consistência visual (`bda8cd2`)
 - [x] Expansão de dado: 11→26 usinas, 7→15 linhas (`939acb4`)
 - [x] Código morto removido (`Header.tsx`/`Footer.tsx`), `any` tipado em `GridMap.tsx`, README sincronizado com o basemap real (`1400f7d`)
-

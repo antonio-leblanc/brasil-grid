@@ -10,6 +10,7 @@ import {
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { FeatureCollection } from 'geojson';
 import { majorPowerPlants, majorTransmissionLines } from '../../data/gridData';
+import { subsystemsGeoJSON } from '../../data/subsystemsGeoData';
 import type { PowerPlantFeature, TransmissionLineFeature } from '../../data/gridData';
 
 // Clean, unwatermarked ESRI Dark Gray Canvas
@@ -53,6 +54,8 @@ const darkMatterStyle: StyleSpecification = {
   ]
 };
 
+
+
 interface GridMapProps {
   selectedPlant: PowerPlantFeature | null;
   setSelectedPlant: (plant: PowerPlantFeature | null) => void;
@@ -60,6 +63,8 @@ interface GridMapProps {
   setSelectedLine: (line: TransmissionLineFeature | null) => void;
   voltageFilter: 'all' | '800' | '500';
   plantTypeFilter: string;
+  showPowerFlow: boolean;
+  showSubsystems: boolean;
 }
 
 export const GridMap: React.FC<GridMapProps> = ({
@@ -68,7 +73,9 @@ export const GridMap: React.FC<GridMapProps> = ({
   selectedLine,
   setSelectedLine,
   voltageFilter,
-  plantTypeFilter
+  plantTypeFilter,
+  showPowerFlow,
+  showSubsystems
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
@@ -81,10 +88,14 @@ export const GridMap: React.FC<GridMapProps> = ({
   // Keep latest handlers in refs to prevent unnecessary re-bindings
   const onSelectPlantRef = useRef(setSelectedPlant);
   const onSelectLineRef = useRef(setSelectedLine);
+  const showPowerFlowRef = useRef(showPowerFlow);
+  const showSubsystemsRef = useRef(showSubsystems);
   useEffect(() => {
     onSelectPlantRef.current = setSelectedPlant;
     onSelectLineRef.current = setSelectedLine;
-  }, [setSelectedPlant, setSelectedLine]);
+    showPowerFlowRef.current = showPowerFlow;
+    showSubsystemsRef.current = showSubsystems;
+  }, [setSelectedPlant, setSelectedLine, showPowerFlow, showSubsystems]);
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
@@ -112,6 +123,84 @@ export const GridMap: React.FC<GridMapProps> = ({
     popupRef.current = popup;
 
     const setupLayers = () => {
+      // 0. Subsystems Vector Layer
+      if (!mapInstance.getSource('subsystems')) {
+        mapInstance.addSource('subsystems', {
+          type: 'geojson',
+          data: subsystemsGeoJSON
+        });
+
+        mapInstance.addLayer({
+          id: 'subsystems-fill',
+          type: 'fill',
+          source: 'subsystems',
+          layout: {
+            visibility: showSubsystemsRef.current ? 'visible' : 'none'
+          },
+          paint: {
+            'fill-color': ['get', 'color'],
+            'fill-opacity': 0.07
+          }
+        });
+
+        mapInstance.addLayer({
+          id: 'subsystems-border',
+          type: 'line',
+          source: 'subsystems',
+          layout: {
+            visibility: showSubsystemsRef.current ? 'visible' : 'none'
+          },
+          paint: {
+            'line-color': ['get', 'color'],
+            'line-width': 1.6,
+            'line-opacity': 0.55,
+            'line-dasharray': [4, 2]
+          }
+        });
+
+        // Subsystems hover interaction
+        mapInstance.on('mouseenter', 'subsystems-fill', (e: MapLayerMouseEvent) => {
+          if (!showSubsystemsRef.current) return;
+          const featuresUnderCursor = mapInstance.queryRenderedFeatures(e.point, {
+            layers: ['plants-main', 'lines-main']
+          });
+          if (featuresUnderCursor && featuresUnderCursor.length > 0) return;
+
+          if (!e.features || !e.features[0] || !popupRef.current) return;
+          const p = e.features[0].properties;
+          let statesStr = '';
+          try {
+            if (Array.isArray(p?.states)) {
+              statesStr = p.states.join(', ');
+            } else if (typeof p?.states === 'string') {
+              statesStr = JSON.parse(p.states).join(', ');
+            }
+          } catch {
+            statesStr = String(p?.states || '');
+          }
+
+          popupRef.current
+            .setLngLat(e.lngLat)
+            .setHTML(`
+              <div class="px-3 py-2 rounded-lg bg-[#07090e]/95 border border-slate-700/80 shadow-2xl backdrop-blur-md font-mono text-left select-none pointer-events-none min-w-[190px]">
+                <div class="flex items-center justify-between gap-2 mb-1">
+                  <span class="text-xs font-bold text-white tracking-wide">${p?.name}</span>
+                  <span class="text-[9px] px-1.5 py-0.5 rounded border border-cyan-500/40 bg-cyan-500/15 text-cyan-300 uppercase font-semibold">${p?.shortName}</span>
+                </div>
+                <div class="text-[10px] text-slate-300 pt-1 border-t border-slate-800/80 space-y-0.5">
+                  <div>Participação Carga: <strong class="text-cyan-400 font-bold">${p?.loadShare}</strong></div>
+                  <div class="text-slate-500 truncate max-w-[220px]">Estados: ${statesStr}</div>
+                </div>
+              </div>
+            `)
+            .addTo(mapInstance);
+        });
+
+        mapInstance.on('mouseleave', 'subsystems-fill', () => {
+          popupRef.current?.remove();
+        });
+      }
+
       // 1. Transmission Lines GeoJSON
       const linesGeoJSON: FeatureCollection = {
         type: 'FeatureCollection',
@@ -172,6 +261,30 @@ export const GridMap: React.FC<GridMapProps> = ({
             ],
             'line-width': ['match', ['get', 'voltageKV'], 800, 3.5, 500, 2.2, 1.6],
             'line-opacity': 0.95
+          }
+        });
+
+        // 1c. Animated Power Flow Pulse (WebGL)
+        mapInstance.addLayer({
+          id: 'lines-flow',
+          type: 'line',
+          source: 'transmission-lines',
+          layout: {
+            'line-cap': 'round',
+            'line-join': 'round',
+            visibility: showPowerFlowRef.current ? 'visible' : 'none'
+          },
+          paint: {
+            'line-color': [
+              'match',
+              ['get', 'voltageKV'],
+              800, '#ffffff',
+              500, '#e0f2fe',
+              '#fae8ff'
+            ],
+            'line-width': ['match', ['get', 'voltageKV'], 800, 2.8, 500, 2.0, 1.6],
+            'line-opacity': 0.85,
+            'line-dasharray': [4, 2.5]
           }
         });
 
@@ -412,6 +525,32 @@ export const GridMap: React.FC<GridMapProps> = ({
     };
   }, []);
 
+
+
+  // Sync power flow visibility
+  useEffect(() => {
+    if (!map.current || !isLoaded) return;
+    if (map.current.getLayer('lines-flow')) {
+      map.current.setLayoutProperty(
+        'lines-flow',
+        'visibility',
+        showPowerFlow ? 'visible' : 'none'
+      );
+    }
+  }, [showPowerFlow, isLoaded]);
+
+  // Sync subsystems layers visibility
+  useEffect(() => {
+    if (!map.current || !isLoaded) return;
+    const visibility = showSubsystems ? 'visible' : 'none';
+    if (map.current.getLayer('subsystems-fill')) {
+      map.current.setLayoutProperty('subsystems-fill', 'visibility', visibility);
+    }
+    if (map.current.getLayer('subsystems-border')) {
+      map.current.setLayoutProperty('subsystems-border', 'visibility', visibility);
+    }
+  }, [showSubsystems, isLoaded]);
+
   // Sync selected plant focus and HUD target ring
   useEffect(() => {
     if (!map.current || !isLoaded) return;
@@ -483,10 +622,12 @@ export const GridMap: React.FC<GridMapProps> = ({
       lineFilterExpr = ['>=', ['get', 'voltageKV'], 500];
     }
 
-    if (map.current.getLayer('lines-main')) {
-      map.current.setFilter('lines-main', lineFilterExpr);
-      map.current.setFilter('lines-glow', lineFilterExpr);
-    }
+    const lineLayers = ['lines-main', 'lines-glow', 'lines-flow'];
+    lineLayers.forEach((layerId) => {
+      if (map.current?.getLayer(layerId)) {
+        map.current.setFilter(layerId, lineFilterExpr);
+      }
+    });
   }, [voltageFilter, isLoaded]);
 
   // Update plant type filter in WebGL GPU layers
