@@ -37,9 +37,13 @@
   - **Osciloscópio Strip-Chart em Canvas 2D (`src/components/Simulator/FrequencyStripChart.tsx`):** Registrador gráfico contínuo a 60 FPS com trilhas sincronizadas de frequência $f(t)$ e balanço de potência ($P_{ger}$ vs $P_{carga}$), com zero dependências externas de gráficos.
   - **Mesa de Despacho Operativo (`src/components/Simulator/DispatchControlDesk.tsx`):** Sliders de setpoint com restrições físicas de usinas (rampa rápida para hidros, mínimo técnico e rampa lenta para térmicas, curtailment ativo para eólicas e solares, custo horário R$/h e emissões de CO₂).
   - **Sala de Controle SCADA & Cenários (`src/components/Simulator/DispatchSimulatorModal.tsx`):** Modal integrado com seletor de cenários (Curva do Pato às 17h30, Trip de Usina Estruturante N-2 de 2.800 MW, Meio-dia de Alta Penetração Renovável e Sandbox Livre), controle de relógio operativo (Pausa, 1x, 2x, 5x, 10x), feed de alertas SCADA, deep-linking via URL (`?sim=1`) e code-splitting sob demanda via `React.lazy` (~42 kB isolado).
+- [x] **[PRIORIDADE 4] Limites de Intercâmbio & Gargalos Regionais (Fronteiras ONS):**
+  - **Modelagem de Domínio & Dados Oficiais (`src/data/interchangeData.ts`):** 4 interfaces estruturantes do SIN (F-NE/SECO com teto de 13,5 GW, F-N/SECO com bipolos UHVDC e teto de 14,5 GW, F-N/NE com inversão sazonal de 5,2 GW e F-S/SECO com limites de 8,5 GW / 6,0 GW); perfis diários de 24h calibrados com medições ONS 2026; cálculo em tempo real de saturação (% do limite), margens livres e balanço líquido regional de importação/exportação.
+  - **Camada Cartográfica WebGL no MapLibre (`src/components/Map/GridMap.tsx`):** Renderização vetorial acelerada por GPU dos corredores de intercâmbio com glow neon, espessura dinâmica, cor SCADA de saturação (verde < 70%, âmbar 70-90%, vermelho neon > 90%), marcadores pontuais nas fronteiras com badges flutuantes, popups informativos e sincronização do toggle de visibilidade.
+  - **Painel SCADA & Análise de Gargalos (`src/components/Interchange/InterchangeModal.tsx`):** Modal analítico com tacômetros de carregamento, balanço líquido por subsistema, gráfico comparativo de 24h em SVG nativo (com indicação da zona crítica de *curtailment* e hover crosshair) e dossiê técnico de engenharia (causas elétricas N-1, impactos e mitigação com compensadores síncronos e BESS).
+  - **Integração de UI & Deep Linking (`App.tsx`, `ConsoleSidebar.tsx`, `ConsoleBottomBar.tsx`):** Toggle visual na barra lateral, botão de acesso direto no footer, deep linking via URL (`?interchange=NE_SECO`) e code-splitting isolado via `React.lazy` (~19 kB).
 - [ ] **[BACKLOG TÉCNICO] Ferramentas Avançadas do Mapa:**
   - Exportação GeoJSON / CSV dos dados vetoriais filtrados na tela (linhas e usinas estruturantes).
-  - Visualização de limites de intercâmbio e gargalos de fluxo entre subsistemas (SE/CO ↔ NE ↔ S ↔ N).
 
 ## Concluído recentemente (referência)
 

@@ -9,9 +9,14 @@ import { LearnView } from './components/Learn/LearnView';
 import { useOnsTelemetry } from './services/onsApi';
 import { majorPowerPlants, majorTransmissionLines } from './data/gridData';
 import type { PowerPlantFeature, TransmissionLineFeature } from './data/gridData';
+import type { InterchangeId } from './data/interchangeData';
 
 const DispatchSimulatorModal = lazy(() =>
   import('./components/Simulator/DispatchSimulatorModal').then((m) => ({ default: m.DispatchSimulatorModal }))
+);
+
+const InterchangeModal = lazy(() =>
+  import('./components/Interchange/InterchangeModal').then((m) => ({ default: m.InterchangeModal }))
 );
 
 type AppMode = 'mapa' | 'guia';
@@ -19,6 +24,7 @@ type AppMode = 'mapa' | 'guia';
 const LEARN_TABS = ['cadeia', 'dossies', 'escalas', 'mercado'];
 const VALID_VOLTAGES: ('all' | '800' | '500')[] = ['all', '800', '500'];
 const VALID_PLANT_TYPES = ['all', 'hidro', 'solar', 'eolica', 'nuclear', 'termica'];
+const VALID_INTERCHANGES: InterchangeId[] = ['NE_SECO', 'N_SECO', 'N_NE', 'S_SECO'];
 
 interface UrlState {
   mode: AppMode;
@@ -28,6 +34,7 @@ interface UrlState {
   voltage: 'all' | '800' | '500';
   type: string;
   sim: boolean;
+  interchange: InterchangeId | null;
 }
 
 function parseUrlState(): UrlState {
@@ -39,7 +46,8 @@ function parseUrlState(): UrlState {
       line: null,
       voltage: 'all',
       type: 'all',
-      sim: false
+      sim: false,
+      interchange: null
     };
   }
 
@@ -69,8 +77,10 @@ function parseUrlState(): UrlState {
   const line = !plant && lineParam
     ? majorTransmissionLines.find((l) => l.id.toLowerCase() === lineParam.toLowerCase()) || null
     : null;
+  const icParam = params.get('interchange') as InterchangeId | null;
+  const interchange = icParam && VALID_INTERCHANGES.includes(icParam) ? icParam : null;
 
-  return { mode, tab, plant, line, voltage, type, sim: simParam };
+  return { mode, tab, plant, line, voltage, type, sim: simParam, interchange };
 }
 
 export function App() {
@@ -89,8 +99,11 @@ export function App() {
   const [plantTypeFilter, setPlantTypeFilter] = useState<string>(initialState.type);
   const [showPowerFlow, setShowPowerFlow] = useState<boolean>(true);
   const [showSubsystems, setShowSubsystems] = useState<boolean>(true);
+  const [showInterchanges, setShowInterchanges] = useState<boolean>(true);
   const [isLoadCurveOpen, setIsLoadCurveOpen] = useState<boolean>(false);
   const [isSimulatorOpen, setIsSimulatorOpen] = useState<boolean>(initialState.sim);
+  const [isInterchangeOpen, setIsInterchangeOpen] = useState<boolean>(!!initialState.interchange);
+  const [selectedInterchangeId, setSelectedInterchangeId] = useState<InterchangeId | null>(initialState.interchange);
 
   // Live ONS Telemetry Hook
   const {
@@ -124,6 +137,9 @@ export function App() {
     if (isSimulatorOpen) {
       params.set('sim', '1');
     }
+    if (isInterchangeOpen && selectedInterchangeId) {
+      params.set('interchange', selectedInterchangeId);
+    }
 
     const searchStr = params.toString();
     const newSearch = searchStr ? `?${searchStr}` : '';
@@ -132,7 +148,7 @@ export function App() {
     if (window.location.search !== newSearch) {
       window.history.replaceState(null, '', newTarget);
     }
-  }, [mode, activeTab, selectedPlant, selectedLine, voltageFilter, plantTypeFilter, isSimulatorOpen]);
+  }, [mode, activeTab, selectedPlant, selectedLine, voltageFilter, plantTypeFilter, isSimulatorOpen, isInterchangeOpen, selectedInterchangeId]);
 
   // Handle browser navigation (back/forward)
   const handlePopState = useCallback(() => {
@@ -144,6 +160,8 @@ export function App() {
     setVoltageFilter(next.voltage);
     setPlantTypeFilter(next.type);
     setIsSimulatorOpen(next.sim);
+    setIsInterchangeOpen(!!next.interchange);
+    setSelectedInterchangeId(next.interchange);
   }, []);
 
   useEffect(() => {
@@ -198,6 +216,12 @@ export function App() {
           setShowPowerFlow={setShowPowerFlow}
           showSubsystems={showSubsystems}
           setShowSubsystems={setShowSubsystems}
+          showInterchanges={showInterchanges}
+          setShowInterchanges={setShowInterchanges}
+          onOpenInterchangeModal={(id) => {
+            if (id) setSelectedInterchangeId(id);
+            setIsInterchangeOpen(true);
+          }}
         />
 
         {/* The Core Full-Bleed Map Canvas */}
@@ -211,6 +235,11 @@ export function App() {
             plantTypeFilter={plantTypeFilter}
             showPowerFlow={showPowerFlow}
             showSubsystems={showSubsystems}
+            showInterchanges={showInterchanges}
+            onOpenInterchangeModal={(id) => {
+              if (id) setSelectedInterchangeId(id);
+              setIsInterchangeOpen(true);
+            }}
             telemetry={telemetry}
           />
 
@@ -249,6 +278,12 @@ export function App() {
                 <span>4 Subsistemas</span>
               </div>
             )}
+            {showInterchanges && (
+              <div className="hidden sm:flex items-center space-x-1 text-sky-400 pl-1 border-l border-slate-800">
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+                <span>Fronteiras ONS</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -267,6 +302,7 @@ export function App() {
       <ConsoleBottomBar
         telemetry={telemetry}
         onOpenCurve={() => setIsLoadCurveOpen(true)}
+        onOpenInterchanges={() => setIsInterchangeOpen(true)}
       />
 
       {/* 4. Interactive 24h Load Curve & Duck Curve Modal */}
@@ -285,6 +321,19 @@ export function App() {
           <DispatchSimulatorModal
             isOpen={isSimulatorOpen}
             onClose={() => setIsSimulatorOpen(false)}
+          />
+        </Suspense>
+      )}
+
+      {/* 6. Regional Interchanges & Bottlenecks SCADA Modal */}
+      {isInterchangeOpen && (
+        <Suspense fallback={null}>
+          <InterchangeModal
+            isOpen={isInterchangeOpen}
+            onClose={() => setIsInterchangeOpen(false)}
+            telemetry={telemetry}
+            selectedInterchangeId={selectedInterchangeId}
+            onSelectInterchange={(id) => setSelectedInterchangeId(id)}
           />
         </Suspense>
       )}

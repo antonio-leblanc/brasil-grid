@@ -1,16 +1,18 @@
 import React from 'react';
-import { Sun, Activity } from 'lucide-react';
+import { Sun, Activity, ArrowRightLeft } from 'lucide-react';
 import { referenceGridSnapshot } from '../../data/gridData';
 import type { NationalTelemetrySnapshot } from '../../services/onsApi';
 
 interface ConsoleBottomBarProps {
   telemetry: NationalTelemetrySnapshot;
   onOpenCurve: () => void;
+  onOpenInterchanges?: () => void;
 }
 
 export const ConsoleBottomBar: React.FC<ConsoleBottomBarProps> = ({
   telemetry,
-  onOpenCurve
+  onOpenCurve,
+  onOpenInterchanges
 }) => {
   const currentSinLoadGW = (telemetry.currentSinLoadMW / 1000).toFixed(1);
   const currentSolarGW = (telemetry.currentSolarMmgdMW / 1000).toFixed(1);
@@ -33,7 +35,7 @@ export const ConsoleBottomBar: React.FC<ConsoleBottomBarProps> = ({
         {/* Live Carga SIN with Curva Trigger */}
         <button
           onClick={onOpenCurve}
-          className="flex items-center space-x-1 hover:text-cyan-300 transition group text-left"
+          className="flex items-center space-x-1 hover:text-cyan-300 transition group text-left cursor-pointer"
           title="Demanda instantânea do SIN (Clique para abrir a Curva de Carga 24h)"
           aria-label="Abrir Curva de Carga 24h"
         >
@@ -64,6 +66,26 @@ export const ConsoleBottomBar: React.FC<ConsoleBottomBarProps> = ({
           <span className="text-slate-500">RENOVÁVEL:</span>
           <strong className="text-cyan-400 font-bold">{referenceGridSnapshot.renewableSharePct}%</strong>
         </div>
+
+        {/* Regional Interchange Trigger */}
+        {onOpenInterchanges && (
+          <>
+            <span className="text-slate-700 hidden lg:inline">|</span>
+            <button
+              onClick={onOpenInterchanges}
+              className="hidden lg:flex items-center space-x-1.5 hover:text-cyan-300 transition group text-left cursor-pointer"
+              title="Transferências entre Subsistemas & Gargalos (Clique para abrir painel SCADA)"
+              aria-label="Abrir Painel de Intercâmbios"
+            >
+              <ArrowRightLeft className="w-3 h-3 text-slate-500 group-hover:text-cyan-400" />
+              <span className="text-slate-500 group-hover:text-cyan-400">INTERCÂMBIO:</span>
+              <strong className="text-white font-bold group-hover:text-cyan-300">4 ROTAS</strong>
+              <span className="text-[9px] px-1 py-0.2 rounded bg-amber-500/15 border border-amber-500/30 text-amber-400 font-semibold">
+                GARGALO NE
+              </span>
+            </button>
+          </>
+        )}
       </div>
 
       {/* Right: Sleek Segmented Matrix Bar */}

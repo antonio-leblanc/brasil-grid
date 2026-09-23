@@ -2,6 +2,12 @@ import React from 'react';
 import { subsystems, majorPowerPlants, majorTransmissionLines } from '../../data/gridData';
 import type { PowerPlantFeature, TransmissionLineFeature } from '../../data/gridData';
 import {
+  regionalInterchanges,
+  getInterchangeStatus,
+  getStatusTheme,
+  type InterchangeId
+} from '../../data/interchangeData';
+import {
   X,
   Filter,
   Droplet,
@@ -10,7 +16,8 @@ import {
   Atom,
   Flame,
   Activity,
-  Layers
+  Layers,
+  ArrowRightLeft
 } from 'lucide-react';
 import { FilterButton } from './FilterButton';
 
@@ -27,6 +34,9 @@ interface ConsoleSidebarProps {
   setShowPowerFlow: (show: boolean) => void;
   showSubsystems: boolean;
   setShowSubsystems: (show: boolean) => void;
+  showInterchanges?: boolean;
+  setShowInterchanges?: (show: boolean) => void;
+  onOpenInterchangeModal?: (id?: InterchangeId) => void;
 }
 
 export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
@@ -41,7 +51,10 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
   showPowerFlow,
   setShowPowerFlow,
   showSubsystems,
-  setShowSubsystems
+  setShowSubsystems,
+  showInterchanges = true,
+  setShowInterchanges,
+  onOpenInterchangeModal
 }) => {
   if (!isOpen) return null;
 
@@ -139,31 +152,93 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                   </div>
                 </div>
 
-                {/* Visual Layers WebGL Toggle (Animated Power Flow & Subsystems) */}
+                {/* Visual Layers WebGL Toggle (Animated Power Flow, Subsystems & Interchanges) */}
                 <div className="space-y-2 pt-2 border-t border-slate-800/50">
                   <span className="text-slate-500 text-[10px] uppercase block">CAMADAS VISUAIS (WEBGL):</span>
-                  <div className="grid grid-cols-2 gap-1.5">
+                  <div className="grid grid-cols-3 gap-1.5">
                     <FilterButton
                       active={showPowerFlow}
                       colorScheme="cyan"
                       icon={Activity}
                       onClick={() => setShowPowerFlow(!showPowerFlow)}
-                      className="text-[10px] uppercase"
+                      className="text-[9px] uppercase px-1"
                       aria-label="Alternar animação de fluxo de potência"
                     >
-                      {showPowerFlow ? 'Fluxo: Ativo' : 'Fluxo: Oculto'}
+                      {showPowerFlow ? 'Fluxo: ON' : 'Fluxo: OFF'}
                     </FilterButton>
                     <FilterButton
                       active={showSubsystems}
                       colorScheme="amber"
                       icon={Layers}
                       onClick={() => setShowSubsystems(!showSubsystems)}
-                      className="text-[10px] uppercase"
+                      className="text-[9px] uppercase px-1"
                       aria-label="Alternar polígonos dos 4 subsistemas do SIN"
                     >
                       {showSubsystems ? 'Subsistemas: ON' : 'Subsistemas: OFF'}
                     </FilterButton>
+                    {setShowInterchanges && (
+                      <FilterButton
+                        active={!!showInterchanges}
+                        colorScheme="cyan"
+                        icon={ArrowRightLeft}
+                        onClick={() => setShowInterchanges(!showInterchanges)}
+                        className="text-[9px] uppercase px-1"
+                        aria-label="Alternar corredores de intercâmbio regional"
+                      >
+                        {showInterchanges ? 'Fronteiras: ON' : 'Fronteiras: OFF'}
+                      </FilterButton>
+                    )}
                   </div>
+                </div>
+              </div>
+
+              {/* Regional Interchanges Quick Section */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-[11px] text-slate-400">
+                  <div className="flex items-center space-x-1.5 text-cyan-400 font-bold uppercase text-[10px]">
+                    <ArrowRightLeft className="w-3.5 h-3.5" />
+                    <span>FRONTEIRAS & GARGALOS (4)</span>
+                  </div>
+                  {onOpenInterchangeModal && (
+                    <button
+                      type="button"
+                      onClick={() => onOpenInterchangeModal()}
+                      className="text-cyan-400 hover:text-cyan-300 text-[10px] font-semibold cursor-pointer"
+                    >
+                      Painel SCADA →
+                    </button>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {regionalInterchanges.map((ic) => {
+                    const status = getInterchangeStatus(ic.nominalFlowMW, ic.maxExportLimitMW);
+                    const theme = getStatusTheme(status);
+                    return (
+                      <div
+                        key={ic.id}
+                        onClick={() => onOpenInterchangeModal?.(ic.id)}
+                        className="p-2 rounded bg-slate-950/60 hover:bg-slate-900 border border-slate-800/80 hover:border-cyan-500/40 cursor-pointer flex flex-col justify-between transition"
+                      >
+                        <div className="flex items-center justify-between">
+                          <strong className="text-white text-xs">{ic.shortCode}</strong>
+                          <span
+                            className="text-[8px] px-1 py-0.2 rounded font-bold uppercase"
+                            style={{
+                              color: theme.color,
+                              backgroundColor: `${theme.color}15`,
+                              border: `1px solid ${theme.color}40`
+                            }}
+                          >
+                            {status}
+                          </span>
+                        </div>
+                        <div className="text-[10px] text-slate-400 mt-1 flex items-baseline justify-between">
+                          <span>Fluxo:</span>
+                          <strong className="text-white">{(ic.nominalFlowMW / 1000).toFixed(1)} GW</strong>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
