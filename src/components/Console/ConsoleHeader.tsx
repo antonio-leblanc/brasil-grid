@@ -1,5 +1,5 @@
 import React from 'react';
-import { PanelLeftOpen, PanelLeftClose, Activity, RefreshCw, BookOpen } from 'lucide-react';
+import { PanelLeftOpen, PanelLeftClose, Activity, RefreshCw, BookOpen, Gauge } from 'lucide-react';
 import type { NationalTelemetrySnapshot } from '../../services/onsApi';
 
 interface ConsoleHeaderProps {
@@ -10,6 +10,7 @@ interface ConsoleHeaderProps {
   isLoading: boolean;
   onRefresh: () => void;
   onOpenCurve: () => void;
+  onOpenSimulator: () => void;
   onOpenLearn: () => void;
 }
 
@@ -21,6 +22,7 @@ export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
   isLoading,
   onRefresh,
   onOpenCurve,
+  onOpenSimulator,
   onOpenLearn
 }) => {
   return (
@@ -83,6 +85,17 @@ export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
         >
           <Activity className="w-3.5 h-3.5 text-cyan-400" />
           <span className="hidden sm:inline font-semibold">CURVA 24H</span>
+        </button>
+
+        {/* 60 Hz Dispatch Simulator Modal Button */}
+        <button
+          onClick={onOpenSimulator}
+          className="flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 text-slate-300 hover:text-cyan-300 hover:border-cyan-500/50 hover:bg-cyan-500/10 transition text-[11px]"
+          title="Abrir Simulador de Despacho e Estabilidade 60 Hz (Mini-ONS)"
+          aria-label="Abrir Simulador de Despacho 60 Hz"
+        >
+          <Gauge className="w-3.5 h-3.5 text-cyan-400" />
+          <span className="hidden sm:inline font-semibold">SIMULADOR</span>
         </button>
 
         {/* Refresh Button */}

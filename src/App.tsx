@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { GridMap } from './components/Map/GridMap';
 import { ConsoleHeader } from './components/Console/ConsoleHeader';
 import { ConsoleSidebar } from './components/Console/ConsoleSidebar';
@@ -9,6 +9,10 @@ import { LearnView } from './components/Learn/LearnView';
 import { useOnsTelemetry } from './services/onsApi';
 import { majorPowerPlants, majorTransmissionLines } from './data/gridData';
 import type { PowerPlantFeature, TransmissionLineFeature } from './data/gridData';
+
+const DispatchSimulatorModal = lazy(() =>
+  import('./components/Simulator/DispatchSimulatorModal').then((m) => ({ default: m.DispatchSimulatorModal }))
+);
 
 type AppMode = 'mapa' | 'guia';
 
@@ -23,6 +27,7 @@ interface UrlState {
   line: TransmissionLineFeature | null;
   voltage: 'all' | '800' | '500';
   type: string;
+  sim: boolean;
 }
 
 function parseUrlState(): UrlState {
@@ -33,7 +38,8 @@ function parseUrlState(): UrlState {
       plant: null,
       line: null,
       voltage: 'all',
-      type: 'all'
+      type: 'all',
+      sim: false
     };
   }
 
@@ -44,6 +50,7 @@ function parseUrlState(): UrlState {
   const lineParam = params.get('line');
   const vParam = params.get('v');
   const typeParam = params.get('type');
+  const simParam = params.get('sim') === '1' || params.get('sim') === 'true';
 
   const rawTab = tabParam && LEARN_TABS.includes(tabParam) ? tabParam : 'cadeia';
   const tab = rawTab === 'mercado' ? 'dossies' : rawTab;
@@ -63,7 +70,7 @@ function parseUrlState(): UrlState {
     ? majorTransmissionLines.find((l) => l.id.toLowerCase() === lineParam.toLowerCase()) || null
     : null;
 
-  return { mode, tab, plant, line, voltage, type };
+  return { mode, tab, plant, line, voltage, type, sim: simParam };
 }
 
 export function App() {
@@ -83,6 +90,7 @@ export function App() {
   const [showPowerFlow, setShowPowerFlow] = useState<boolean>(true);
   const [showSubsystems, setShowSubsystems] = useState<boolean>(true);
   const [isLoadCurveOpen, setIsLoadCurveOpen] = useState<boolean>(false);
+  const [isSimulatorOpen, setIsSimulatorOpen] = useState<boolean>(initialState.sim);
 
   // Live ONS Telemetry Hook
   const {
@@ -113,6 +121,9 @@ export function App() {
     if (plantTypeFilter && plantTypeFilter !== 'all') {
       params.set('type', plantTypeFilter);
     }
+    if (isSimulatorOpen) {
+      params.set('sim', '1');
+    }
 
     const searchStr = params.toString();
     const newSearch = searchStr ? `?${searchStr}` : '';
@@ -121,7 +132,7 @@ export function App() {
     if (window.location.search !== newSearch) {
       window.history.replaceState(null, '', newTarget);
     }
-  }, [mode, activeTab, selectedPlant, selectedLine, voltageFilter, plantTypeFilter]);
+  }, [mode, activeTab, selectedPlant, selectedLine, voltageFilter, plantTypeFilter, isSimulatorOpen]);
 
   // Handle browser navigation (back/forward)
   const handlePopState = useCallback(() => {
@@ -132,6 +143,7 @@ export function App() {
     setSelectedLine(next.line);
     setVoltageFilter(next.voltage);
     setPlantTypeFilter(next.type);
+    setIsSimulatorOpen(next.sim);
   }, []);
 
   useEffect(() => {
@@ -160,6 +172,7 @@ export function App() {
         isLoading={isTelemetryLoading}
         onRefresh={refreshTelemetry}
         onOpenCurve={() => setIsLoadCurveOpen(true)}
+        onOpenSimulator={() => setIsSimulatorOpen(true)}
         onOpenLearn={() => setMode('guia')}
       />
 
@@ -265,6 +278,16 @@ export function App() {
         isLoading={isTelemetryLoading}
         onRefresh={refreshTelemetry}
       />
+
+      {/* 5. Interactive 60 Hz Dispatch & Stability Simulator Modal (Mini-ONS) */}
+      {isSimulatorOpen && (
+        <Suspense fallback={null}>
+          <DispatchSimulatorModal
+            isOpen={isSimulatorOpen}
+            onClose={() => setIsSimulatorOpen(false)}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }
