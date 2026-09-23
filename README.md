@@ -1,5 +1,5 @@
 # ⚡ Brasil Grid (`brasil-grid`)
-> **Explorador Visual, Topológico e Regulatório do Sistema Interligado Nacional (SIN) & Setor Elétrico Brasileiro (SEB)**
+> **Laboratório Educativo Aberto & Simulador Interativo do Sistema Interligado Nacional (SIN) & Setor Elétrico Brasileiro (SEB)**
 
 [![React](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178c6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
@@ -10,11 +10,14 @@
 
 ---
 
-## 🧭 Visão Geral
+## 🧭 Visão Geral & Propósito Educativo
 
-O **Brasil Grid** é uma aplicação web interativa em **Dark Mode (estética SCADA / Sala de Controle ONS)** projetada para desmistificar a engenharia de alta tensão, a geografia das renováveis e as transformações de mercado do setor elétrico no Brasil.
+O **Brasil Grid** é um **laboratório aberto de aprendizado e exploração técnica**, construído para decodificar a física, a operação e a regulação do maior sistema elétrico interligado e renovável do planeta.
 
-Construído 100% sobre tecnologias de código aberto (sem dependência de tokens proprietários como Mapbox), o projeto conecta **geoprocessamento vetorial interativo (MapLibre/WebGL)**, **modelos mentais físicos de energia** e **análise regulatória do Mercado Livre (ACL)** em uma interface ultra-rápida.
+Em vez de ferramentas comerciais ou relatórios estáticos em PDF de centenas de páginas (ONS, EPE, ANEEL), o projeto traduz a dinâmica do setor em uma interface interativa de alta performance com estética de sala de controle (SCADA):
+* **Física da Rede & Estabilidade:** Entenda inércia mecânica, frequência (60 Hz), despacho hidrotérmico e contingências.
+* **Gargalos & Geografia:** Visualize como dezenas de gigawatts escoam entre subsistemas e por que ocorrem cortes de geração (*curtailment*).
+* **Modelos Mentais:** Aprenda a diferença real entre potência e energia, e como a água armazenada nos reservatórios define o preço da eletricidade no Brasil.
 
 ---
 

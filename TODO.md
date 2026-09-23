@@ -26,11 +26,16 @@
   - [x] **Fase 1 — Serviço & Cache Resiliente (`src/services/onsApi.ts`):** Serviço TypeScript com tipagem completa, consulta paralela aos 4 subsistemas com agregação do SIN, cache em `localStorage` (TTL 15 min), fallback automático para `referenceGridSnapshot` e hook React `useOnsTelemetry()`.
   - [x] **Fase 2 — Conexão com a UI:** Substituição da telemetria estática por dados vivos no `ConsoleHeader` e `ConsoleBottomBar`, badge dinâmico `LIVE (ONS API)` vs `REF (Snapshot)` com data/hora da medição, e tooltips dos subsistemas no mapa exibindo carga real em MW.
   - [x] **Fase 3 — Modal / Painel da Curva de Carga 24h (Curva do Pato):** Gráfico interativo em SVG puro (sem libs pesadas) com as 48 leituras diárias, seletor de subsistemas (SIN, SE/CO, Sul, NE, Norte), marcadores de pico/vale e camada visual da penetração solar MMGD (`LoadCurveModal.tsx`).
-- [ ] **[PRIORIDADE 2] Calculadora / Simulador de Economia no Mercado Livre (ACL):**
-  - Simulador prático na aba Mercado (`AcrAclComparison.tsx`) onde o usuário simula sua conta cativa vs livre (Grupo A e futuro Grupo B), decompondo TUSD Fio B da distribuidora, energia contratada na CCEE e economia de 15% a 35%.
-- [ ] **[BACKLOG UX] Ferramentas Avançadas do Mapa & Inspetor:**
-  - Comparador de Usinas lado a lado no `NodeInspector` (capacidade, tipo de turbina/módulo, bacia hidrográfica e fator de capacidade).
-  - Botão de Exportação GeoJSON / CSV dos dados filtrados na tela.
+- [ ] **[PRIORIDADE 2] Simulador Interativo de Despacho & Estabilidade ("Mini-ONS"):**
+  - Painel interativo demonstrando o desafio em tempo real de manter 60.0 Hz diante da rampa solar (Curva do Pato às 18h).
+  - Controle de despacho de usinas flexíveis (hidrelétricas) vs inflexíveis (térmicas a gás) vs corte de renováveis (*curtailment*) vs intercâmbio regional entre subsistemas.
+  - Alerta de atuação do ERAC (Esquema Regional de Alívio de Carga) caso a frequência caia abaixo de 59.5 Hz.
+- [ ] **[PRIORIDADE 3] Dossiês Interativos no Modo Guia (`src/components/Learn/`):**
+  - **Anatomia do Apagão de 15 de Agosto de 2023:** Análise passo a passo da perda de inércia com IBRs (inversores de parques solares/eólicos), desarme da linha Quixadá-Fortaleza e atuação do ERAC nacional.
+  - **O Custo Futuro da Água & Formação do Preço (PLD):** Decomposição didática de como modelos matemáticos (NEWAVE/DECOMP) precificam a água acumulada nos reservatórios.
+- [ ] **[BACKLOG TÉCNICO] Ferramentas Avançadas do Mapa:**
+  - Exportação GeoJSON / CSV dos dados vetoriais filtrados na tela (linhas e usinas estruturantes).
+  - Visualização de limites de intercâmbio e gargalos de fluxo entre subsistemas (SE/CO ↔ NE ↔ S ↔ N).
 
 ## Concluído recentemente (referência)
 
