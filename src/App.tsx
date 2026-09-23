@@ -12,7 +12,7 @@ import type { PowerPlantFeature, TransmissionLineFeature } from './data/gridData
 
 type AppMode = 'mapa' | 'guia';
 
-const LEARN_TABS = ['cadeia', 'mercado', 'escalas'];
+const LEARN_TABS = ['cadeia', 'dossies', 'escalas', 'mercado'];
 const VALID_VOLTAGES: ('all' | '800' | '500')[] = ['all', '800', '500'];
 const VALID_PLANT_TYPES = ['all', 'hidro', 'solar', 'eolica', 'nuclear', 'termica'];
 
@@ -45,7 +45,8 @@ function parseUrlState(): UrlState {
   const vParam = params.get('v');
   const typeParam = params.get('type');
 
-  const tab = tabParam && LEARN_TABS.includes(tabParam) ? tabParam : 'cadeia';
+  const rawTab = tabParam && LEARN_TABS.includes(tabParam) ? tabParam : 'cadeia';
+  const tab = rawTab === 'mercado' ? 'dossies' : rawTab;
   // "aprender" is a legacy alias kept for old links; new links use "guia".
   const mode: AppMode = modeParam === 'guia' || modeParam === 'aprender' || (!modeParam && tabParam && LEARN_TABS.includes(tabParam))
     ? 'guia'

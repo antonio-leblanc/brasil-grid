@@ -101,28 +101,28 @@ export const energyChainStages: ValueChainStage[] = [
     id: 'comercializacao',
     number: '04',
     name: 'Comercialização',
-    subtitle: 'O Mercado & A Inteligência do Cliente',
+    subtitle: 'Mercado Livre, Contratos & Liquidação CCEE',
     voltage: 'Negociação financeira e de dados (independente da tensão)',
-    description: 'A compra e venda de energia como produto financeiro e de gestão. No Mercado Livre (ACL), comercializadoras viabilizam a compra de energia mais barata, previsível e limpa para indústrias, comércios e condomínios.',
-    revenueModel: 'Margem de comercialização (spread), taxas de gestão de carteira e serviços de eficiência/telemetria.',
+    description: 'A comercialização viabiliza o casamento financeiro entre oferta e demanda por meio de contratos bilaterais (PPAs) e liquidação de diferenças no mercado spot (PLD). No ACL, grandes consumidores contratam energia livremente, enquanto no ACR as distribuidoras atendem o mercado cativo via leilões públicos.',
+    revenueModel: 'Spread de comercialização, gestão de risco de preços (hedge), estruturação de PPAs e serviços de inteligência/telemetria de carga.',
     regulator: 'CCEE (registro e liquidação financeira de contratos) e ANEEL.',
     mainCompanies: [
       { name: 'Comerc Energia', tag: 'Pioneira em gestão e comercialização livre' },
       { name: 'Raízen Power', tag: 'Braço de energia e comercialização do grupo Cosan/Shell' },
       { name: 'Auren Energia', tag: 'Gigante em comercialização de energia limpa' },
       { name: 'Matrix Energia', tag: 'Joint venture focada em mercado livre e baterias' },
-      { name: '2W Ecobank', tag: 'Foco na digitalização do varejo e PMEs' }
+      { name: 'Eletrobras Comercialização', tag: 'Maior portfólio de descontratação do país' }
     ],
     keyMetrics: [
-      { label: 'Economia Típica ACL', value: '15% a 35%' },
-      { label: 'Consumidores no ACL', value: '50.000+ unidades' },
-      { label: 'Volume Negociado no ACL', value: '~40% da energia do Brasil' },
-      { label: 'Fronteira 2024+', value: 'Migração integral do Grupo A' }
+      { label: 'Volume Negociado no ACL', value: '~40% da carga nacional' },
+      { label: 'Preço Spot de Referência', value: 'PLD Horário (CCEE)' },
+      { label: 'Contratos Registrados', value: '100.000+ na CCEE' },
+      { label: 'Fronteira Regulatória', value: 'Separação Lastro × Energia' }
     ],
     highlights: [
-      'Onde a inovação acontece: telemetria em tempo real com smart meters (IoT na borda) substitui a leitura manual de relógio por dados minuto a minuto.',
-      'Abertura de mercado: em jan/2024 todas as empresas de média/alta tensão foram liberadas para escolher fornecedor. O próximo passo é o residencial.',
-      'A convergência entre comercialização e IoT na borda: medição inteligente e plataformas de dados contínuos são a nova fronteira de controle de custo e sustentabilidade no ACL.'
+      'A CCEE contabiliza a cada hora o descompasso entre a energia física gerada/consumida e a energia contratada, liquidando as sobras e déficits ao PLD.',
+      'A telemetria de alta frequência (medidores SCADA/IoT nos clientes livres) é essencial para a contabilização semi-horária e para a resposta da demanda.',
+      'A separação estrutural entre Lastro (capacidade de potência garantida para segurança do SIN) e Energia (volume de MWh consumido) é o pilar da modernização regulatória do SEB.'
     ]
   }
 ];

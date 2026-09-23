@@ -1,13 +1,13 @@
 import React, { Suspense, lazy } from 'react';
-import { ArrowLeft, Link2, ArrowRightLeft, Ruler } from 'lucide-react';
+import { ArrowLeft, Link2, BookOpen, Ruler } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
 // Code-splitting keeps these out of the initial map bundle.
 const ValueChainSection = lazy(() =>
   import('../EnergyChain/ValueChainSection').then((m) => ({ default: m.ValueChainSection }))
 );
-const AcrAclComparison = lazy(() =>
-  import('../Market/AcrAclComparison').then((m) => ({ default: m.AcrAclComparison }))
+const SinDossiersSection = lazy(() =>
+  import('../Dossiers/SinDossiersSection').then((m) => ({ default: m.SinDossiersSection }))
 );
 const MagnitudeRuler = lazy(() =>
   import('../Scales/MagnitudeRuler').then((m) => ({ default: m.MagnitudeRuler }))
@@ -15,7 +15,7 @@ const MagnitudeRuler = lazy(() =>
 
 const LEARN_SECTIONS = [
   { id: 'cadeia', label: 'Cadeia de Valor do SEB', icon: Link2 },
-  { id: 'mercado', label: 'Mercado ACL x ACR', icon: ArrowRightLeft },
+  { id: 'dossies', label: 'Dossiês do SIN', icon: BookOpen },
   { id: 'escalas', label: 'Régua de Grandezas', icon: Ruler }
 ] as const;
 
@@ -33,7 +33,8 @@ interface LearnViewProps {
 }
 
 export const LearnView: React.FC<LearnViewProps> = ({ activeTab, setActiveTab, onBack }) => {
-  const currentSection = LEARN_SECTIONS.find((s) => s.id === activeTab) ?? LEARN_SECTIONS[0];
+  const effectiveTab = activeTab === 'mercado' ? 'dossies' : activeTab;
+  const currentSection = LEARN_SECTIONS.find((s) => s.id === effectiveTab) ?? LEARN_SECTIONS[0];
 
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col bg-[#07090e] text-slate-100 font-sans">
@@ -43,7 +44,7 @@ export const LearnView: React.FC<LearnViewProps> = ({ activeTab, setActiveTab, o
           <button
             type="button"
             onClick={onBack}
-            className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-300 hover:text-cyan-300 hover:border-cyan-500/50 transition text-xs font-mono"
+            className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-300 hover:text-cyan-300 hover:border-cyan-500/50 transition text-xs font-mono cursor-pointer"
             title="Voltar ao mapa do SIN"
             aria-label="Voltar ao mapa"
           >
@@ -63,7 +64,7 @@ export const LearnView: React.FC<LearnViewProps> = ({ activeTab, setActiveTab, o
         <nav className="w-16 sm:w-56 shrink-0 border-r border-slate-800/90 bg-[#090c13]/95 py-4 px-2 sm:px-3 space-y-1 overflow-y-auto">
           {LEARN_SECTIONS.map((section) => {
             const Icon = section.icon;
-            const isActive = section.id === activeTab;
+            const isActive = section.id === effectiveTab;
             return (
               <button
                 key={section.id}
@@ -89,7 +90,7 @@ export const LearnView: React.FC<LearnViewProps> = ({ activeTab, setActiveTab, o
           <div className="max-w-4xl mx-auto px-5 sm:px-8 py-10">
             <Suspense fallback={<SectionLoadingFallback />}>
               {currentSection.id === 'cadeia' && <ValueChainSection />}
-              {currentSection.id === 'mercado' && <AcrAclComparison />}
+              {currentSection.id === 'dossies' && <SinDossiersSection />}
               {currentSection.id === 'escalas' && <MagnitudeRuler />}
             </Suspense>
           </div>
