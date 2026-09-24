@@ -71,28 +71,35 @@ Cada entidade de dados ganhou `sources: SourceRef[]`, exibido na UI (`SourcesLis
 7. ✅ **`strict: true` ligado** (zero erros).
 8. **Cobertura de testes restrita ao motor físico.** O Vitest está configurado e roda na CI; `onsApi` (parse, fallback, datas) é o próximo alvo natural.
 
-## 🟠 P1 — Bundle
+## 🟠 P1 — Auditoria Cadastral & Operacional (Prioridade Máxima)
 
-9. **JS principal com ~1,5 MB.** Culpados:
-   - [subsystemsGeoData.ts](../src/data/subsystemsGeoData.ts): 18 mil linhas de GeoJSON num módulo TS, que vai inteiro para o bundle e é interpretado em toda carga. Mover para `public/*.geojson` e buscar com `fetch` (cacheável e fora do parse do JS).
-   - `maplibre-gl` fora de chunk dedicado. Aplicar `build.rollupOptions.output.manualChunks`.
+A credibilidade de um laboratório educacional do SIN depende da exatidão dos ativos e restrições elétricas. Performance de milissegundos é secundária diante de dados incorretos.
 
-## 🟡 P2 — Arquitetura
+8. **Auditoria das 72 Usinas ([`powerPlantsData.ts`](../src/data/powerPlantsData.ts)):**
+   - Validar capacidade outorgada/fiscalizada (MW) e coordenadas geográficas contra o SIGA (Sistema de Informações de Geração da ANEEL).
+   - Atualizar razão social e controladores pós-privatização (ex.: Eletrobras → Axia Energia, vendas de SPEs).
+   - Preencher `sources: SourceRef[]` para cada usina (eliminando o status opcional).
 
-10. **Componentes que concentram coisa demais.** [GridMap.tsx](../src/components/Map/GridMap.tsx) (≈950 linhas), [InterchangeModal.tsx](../src/components/Interchange/InterchangeModal.tsx) (≈830), [App.tsx](../src/App.tsx) (16 `useState` + roteamento de URL à mão). Extrair um hook `useUrlState` e dividir o mapa em camadas/hooks.
-11. **Re-render a 60 Hz.** O loop do simulador chama `setSimState` a cada quadro, o que re-renderiza a modal inteira. Desacoplar a física (passo fixo, ref ou Worker) da UI (atualização a 10–15 Hz).
+9. **Intercâmbios Regionais & Limites ONS ([`interchangeData.ts`](../src/data/interchangeData.ts)):**
+   - Adotar a nomenclatura operativa oficial do ONS (FNESE, FNEN, FSECO, RSUL).
+   - Validar limites dinâmicos de exportação e referências dos Procedimentos de Rede (Submódulo 23.3).
+   - Atualizar snapshot de referência de carga com o recorde do SIN (106.532 MW em 26/02/2025).
 
-## 🟡 P2 — Camada ONS ([onsApi.ts](../src/services/onsApi.ts))
+## 🟡 P2 — Camada ONS & Robustez
 
-12. **Datas calculadas em UTC (`toISOString`), não em Brasília.** Depois das 21h de Brasília, "hoje" já é o dia seguinte em UTC. Hoje funciona por acidente, via fallback de "ontem".
-13. **Estado de erro nunca é preenchido.** `fetchOnsTelemetry` nunca lança exceção (sempre devolve o fallback), então o `error` do hook nunca é populado. Expor o motivo do fallback na UI.
-14. **Dependência de CORS da `apicarga.ons.org.br`.** Se os cabeçalhos mudarem, o site passa a exibir dado sintético para sempre, sem alarme. Considerar um snapshot gerado na CI (GitHub Action agendada → JSON estático) como fonte primária ou secundária.
+10. **Datas calculadas em UTC (`toISOString`), não em Brasília.** Depois das 21h de Brasília, "hoje" já é o dia seguinte em UTC no [`onsApi.ts`](../src/services/onsApi.ts). Hoje funciona por acidente, via fallback de "ontem".
+11. **Estado de erro nunca é preenchido.** `fetchOnsTelemetry` nunca lança exceção (sempre devolve o fallback), então o `error` do hook nunca é populado. Expor o motivo do fallback na UI.
+12. **Dependência de CORS da `apicarga.ons.org.br`.** Se os cabeçalhos mudarem, o site passa a exibir dado sintético para sempre, sem alarme. Considerar um snapshot gerado na CI (GitHub Action agendada → JSON estático) como fonte primária ou secundária.
+13. **Re-render a 60 Hz no simulador.** O loop do simulador chama `setSimState` a cada quadro, o que re-renderiza a modal inteira. Desacoplar a física (passo fixo, ref ou Worker) da UI (atualização a 10–15 Hz).
 
-## ⚪ P3 — Consistência e procedência
+## ⚪ P3 — Dívida de DX, Bundle e Arquitetura
 
-15. **Comentários que repetem o código** (`// 1. Dynamic weather`, `// Total generation`, `// Ignora erro de parse`) e JSDoc genérico, contrariando o `AGENTS.md` ("Comments are strictly for WHY").
-16. **Procedência dos dados não documentada.** [gridData.ts](../src/data/gridData.ts) tem ≈2.300 linhas curadas à mão sem fonte citada por usina ou linha (SIGEL/ANEEL, PAR/PEL/ONS). Num projeto educacional, a fonte faz parte do produto.
-17. **Tiles da ESRI:** gratuitos, mas com termos de uso e limites. Alternativa sem esse risco: Protomaps/PMTiles hospedado no próprio Pages.
+14. **Bundle de ~1,5 MB (432 kB gzipped):**
+    - O aviso do Vite (`> 500 kB`) é cosmético para o usuário final: 432 kB gzipped carrega em menos de 0,5s em qualquer banda larga ou 4G, e o `maplibre-gl` sozinho responde por boa parte disso.
+    - Impacto real é na IDE: [`subsystemsGeoData.ts`](../src/data/subsystemsGeoData.ts) (18k linhas de GeoJSON estático em módulo TS) onera o Language Server e polui buscas globais de texto.
+    - Resolução quando conveniente: extrair para `public/geo/subsystems.geojson` com `fetch` assíncrono.
+15. **Componentes extensos:** [`GridMap.tsx`](../src/components/Map/GridMap.tsx) (≈950 linhas), [`InterchangeModal.tsx`](../src/components/Interchange/InterchangeModal.tsx) (≈830 linhas). Extrair hooks dedicados para camadas do mapa e controle de URL.
+16. **Tiles da ESRI:** gratuitos, mas com termos de uso e limites. Alternativa futura: PMTiles próprio hospedado no GitHub Pages.
 
 ---
 
@@ -100,11 +107,13 @@ Cada entidade de dados ganhou `sources: SourceRef[]`, exibido na UI (`SourcesLis
 
 | # | Item | Por quê primeiro |
 |---|------|------------------|
-| ~~1~~ | ~~P0 (1–6) + testes de física~~ | ✅ Concluído |
-| 2 | `strict: true` | Barato agora, caro depois |
-| 3 | GeoJSON para `public/` + chunk do MapLibre | Maior ganho de first-load com menor esforço |
-| 4 | Passo fixo + desacoplamento UI/física | Pré-requisito para cenários mais ricos (ex.: 15/08/2023) |
-| 5 | Procedência dos dados | Diferencial de um laboratório educacional sério |
+| ~~1~~ | ~~P0 (1–6) + testes de física~~ | ✅ Concluído (equação de swing e ERAC alinhados) |
+| ~~2~~ | ~~`strict: true` no TypeScript~~ | ✅ Concluído (zero erros) |
+| ~~3~~ | ~~Dossiês, PLD 2026 e malha tronco (16 linhas)~~ | ✅ Concluído (fontes exibidas na UI) |
+| 4 | **Auditoria das 72 usinas (SIGA/ANEEL)** | Elimina o risco de desinformação em ativos estratégicos |
+| 5 | **Limites e códigos ONS de intercâmbio** | Dá precisão técnica à análise de gargalos e curtailment |
+| 6 | Fuso horário de Brasília em `onsApi.ts` | Evita chaveamento anômalo de telemetria após as 21h |
+| 7 | Otimização de DX / GeoJSON para `public/` | Reduz consumo de memória da IDE (não bloqueante) |
 
 ## ❓ Decisões em aberto
 
