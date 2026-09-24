@@ -1,58 +1,93 @@
 # 🩺 Code Health — Brasil Grid
 
-> Revisão pontual do estado do projeto no estágio de MVP: o que está bem resolvido, o que vale ajustar antes de crescer, e qual é o próximo passo de maior impacto.
+> **Revisão:** 2026-09-24 · **Estágio:** MVP funcional (≈32 commits, 3 dias de desenvolvimento)
 >
-> **Status:** projeto em estágio de MVP, funcional e com boa base. Nenhum item abaixo é bloqueante — são melhorias incrementais.
+> **Tese:** produto e UX acima da média para um MVP; a base de engenharia (tipos, testes, bundle) é frágil; e o simulador tem erros de física que comprometem a proposta de "laboratório de alta fidelidade". Para um projeto educacional, física errada custa mais caro que qualquer dívida técnica.
 
 ---
 
 ## ✅ O que está bem resolvido
 
-- **Escopo coerente:** os 4 pilares (topologia, cadeia de valor, ACR/ACL, régua de grandezas) formam uma narrativa clara e o `docs/spec.md` documenta motivação e arquitetura — raro em projeto recém-criado.
-- **Stack adequada ao problema:** Vite + React 19 + TypeScript para uma SPA client-side estática, sem necessidade de SSR/backend nesse estágio.
-- **MapLibre GL em vez de Mapbox:** evita vendor lock-in e chave paga, é a ferramenta certa para mapa técnico/WebGL.
-- **Zero backend / dados estáticos embutidos:** decisão correta para MVP — não construir infraestrutura antes de precisar dela.
-- **Organização por domínio:** `Console/`, `Map/`, `Inspector/`, `Market/`, `EnergyChain/`, `Scales/` é uma estrutura legível e fácil de navegar.
+- **Nicho real e escopo protegido.** Não existe ferramenta aberta e interativa que explique inércia, ERAC, curva do pato e intercâmbios do SIN. O `AGENTS.md` define explicitamente os anti-padrões (SaaS comercial, CRUD de usinas, dashboard inchado).
+- **Stack adequada ao problema.** SPA estática (Vite + React 19 + TS), zero backend, deploy no GitHub Pages. Poucas dependências em runtime; gráficos em SVG/Canvas nativos, sem biblioteca de charting.
+- **MapLibre GL em vez de Mapbox.** Sem vendor lock-in e sem token pago. Usinas renderizadas como camada GeoJSON nativa (`circle`/`symbol`) com `setFilter`, sem markers no DOM.
+- **Motor físico como função pura.** `stepSimulation(state, dt) → state` ([gridPhysics.ts](../src/services/gridPhysics.ts)) é o desenho certo: testável, portátil para Web Worker, desacoplado do React.
+- **Telemetria resiliente e honesta.** Cadeia cache (TTL 15 min) → API ONS ao vivo → cache vencido → snapshot sintético, com selo `REF` quando o dado não é real.
+- **Estado na URL.** `?plant`, `?line`, `?tab`, `?v`, `?type`, `?sim`, `?interchange` + `popstate`: simulações e ativos compartilháveis por link.
+- **Code-splitting das modais pesadas** (`React.lazy` + `Suspense`) e **CI** com `oxlint` + `tsc -b && vite build` + deploy automatizado.
+- **Organização por domínio** (`Map/`, `Simulator/`, `Interchange/`, `Telemetry/`, `Dossiers/`…), legível e navegável.
+
+### Resolvido desde a revisão anterior
+
+Boilerplate removido (`Header`/`Footer`), `liveGridTelemetry` → `referenceGridSnapshot`, README alinhado com ESRI, `any` eliminado do `GridMap`, helper `cn()` + `FilterButton`, `aria-label` nos controles, e a telemetria real do ONS (antigo "próximo passo de maior impacto") já integrada.
 
 ---
 
-## 🔧 Pontos de melhoria
+## ✅ P0 — Fidelidade física do simulador (resolvido em 2026-09-24)
 
-### Prioridade alta (rápidos e com risco de confundir usuário/contribuidor)
+Referência: [gridPhysics.ts](../src/services/gridPhysics.ts) · coberto por [gridPhysics.test.ts](../src/services/gridPhysics.test.ts) (17 testes, Vitest, rodando na CI).
 
-1. **Código morto do template inicial**
-   `src/components/Header.tsx` e `Footer.tsx` não são importados em lugar nenhum — o app real usa `ConsoleHeader`/`ConsoleBottomBar`. Sobraram do boilerplate. Remover.
+| # | Problema | Correção |
+|---|----------|----------|
+| 1 | ERAC em 59,5 / 59,3 / 59,1 Hz e colapso em 58,5 Hz | Tabela `ERAC_STAGES` com os ajustes uniformizados do ONS: 58,5 / 58,2 / 57,9 / 57,7 / 57,5 Hz, cortando 5 / 6 / 7 / 8 / 9% (35% no total). Fonte: [ONS — Análise do desempenho do ERAC, 15/08/2023](https://www.ons.org.br/AcervoDigitalDocumentosEPublicacoes/Apresenta%C3%A7%C3%A3o%20ERAC%2015-08-2023.pdf). Colapso didático em 56,5 Hz |
+| 2 | Amortecimento fora do termo 1/2H | `df/dt = f0·(P_ger − P_carga·(1 + D·Δf/f0)) / (2·E_k)` |
+| 3 | `toFixed(3)` no estado congelava desvios lentos | Estado em precisão total; arredondamento só na exibição |
+| 4 | Passo variável, acoplado ao frame rate | `advanceSimulation`: passo fixo de 10 ms, acumulador e sub-passos; trajetória idêntica a 60 e 144 Hz |
+| 5 | H_eq sobre base fixa de 100 GVA | Energia cinética `E_k = Σ H·P_síncrona` (MW·s); H_eq é exibido sobre a base de geração |
+| 6 | Corte de 80% nos inversores sem reset | Curva P(f) contínua acima de 60,2 Hz (estatismo de 5%), que se libera sozinha quando a frequência volta |
 
-2. **Nome enganoso em `src/data/gridData.ts`** — ✅ *Concluído*
-   `liveGridTelemetry` renomeado para `referenceGridSnapshot` com tipagem explícita `GridSnapshot`, metadados de referência técnica e compatibilidade legada. A UI estampa o selo `Ref. Técnica` no ticker (`ConsoleHeader`) e `REF` nos intercâmbios/matriz (`ConsoleBottomBar`), com documentação sincronizada no README.
+**Bugs pré-existentes encontrados durante a correção:**
+- `calculateLoadAtTime` estava invertida (o "pico das 19h30" era o vale). Substituída por um perfil horário interpolado, com pico às 19h.
+- Os cenários começavam desbalanceados (potencial solar/eólico divergente da geração inicial): o "trip Itaipu" perdia 6 GW antes de qualquer evento e a "curva do pato" colapsava por sobrefrequência.
+- O trip devolvia a potência sozinho, porque o setpoint continuava intacto e a usina voltava na rampa. Agora `applyGeneratorTrip` remove também a capacidade e a reserva das unidades.
+- Havia uma condição de corrida entre os comandos do operador e o loop de física. O `stateRef` passou a ser a fonte da verdade (`updateSim`).
 
-3. **Doc e código dessincronizados**
-   O README descreve o basemap como "CARTO Dark Matter", mas `GridMap.tsx` usa tiles raster do **ESRI ArcGIS Online** (`World_Dark_Gray_Base`). Além de corrigir a doc, vale checar os termos de uso desse serviço gratuito da Esri — costuma ter limite de volume/uso comercial, o que é um risco real se o tráfego crescer.
+**Comportamento resultante (cenário livre, 80 GW):** a perda de 2,8 GW dá nadir ≈ 58,9 Hz, sem ERAC, e regime ≈ 59,83 Hz com a regulação primária. A perda de 6,3 GW (porte de um bipolo de Itaipu) dispara o estágio 1. No cenário de alta renovável (H ≈ 1 s), a mesma perda de 2,8 GW produz RoCoF ≈ −1,4 Hz/s, cerca de 4× maior.
 
-### Prioridade média (qualidade e escalabilidade)
+**Simplificações conscientes:** barramento único, sem temporização dos relés do ERAC, e regulador de velocidade representado por estatismo limitado por rampa (sem o efeito de coluna d'água da turbina).
 
-4. **Markers de usinas via `innerHTML` manual** — ✅ *Concluído*
-   Migrado para camada nativa GeoJSON no MapLibre (`circle`/`symbol`) processada via WebGL/GPU com filtragem instantânea via `setFilter` e zero overhead no DOM.
+## 🟠 P1 — Rede de segurança de engenharia
 
-5. **Sem testes e sem CI** — ✅ *Concluído*
-   Workflow `.github/workflows/ci.yml` configurado com `oxlint` e `tsc -b && vite build`. Deploy contínuo e automatizado no GitHub Pages implementado via `actions/deploy-pages` com `base: /brasil-grid/` dinâmico em `vite.config.ts`.
+7. **O TypeScript não está em modo estrito.** Falta `"strict": true` em [tsconfig.app.json](../tsconfig.app.json), o que contradiz o `AGENTS.md` ("TypeScript (strict)").
+8. **Cobertura de testes restrita ao motor físico.** O Vitest está configurado e roda na CI; `onsApi` (parse, fallback, datas) é o próximo alvo natural.
 
-6. **Estado não reflete na URL** — ✅ *Concluído*
-   Sincronização bidirecional de URL implementada (`?plant`, `?line`, `?tab`, `?v`, `?type`), suporte a navegação por histórico (`popstate`), câmera `flyTo`/`fitBounds` e botão de cópia de link no inspetor.
+## 🟠 P1 — Bundle
 
-### Prioridade baixa (polimento)
+9. **JS principal com ~1,5 MB.** Culpados:
+   - [subsystemsGeoData.ts](../src/data/subsystemsGeoData.ts): 18 mil linhas de GeoJSON num módulo TS, que vai inteiro para o bundle e é interpretado em toda carga. Mover para `public/*.geojson` e buscar com `fetch` (cacheável e fora do parse do JS).
+   - `maplibre-gl` fora de chunk dedicado. Aplicar `build.rollupOptions.output.manualChunks`.
 
-7. **`any` solto em `GridMap.tsx`** — ✅ *Concluído*
-   Tipagem estrita com `FilterSpecification | null` nativo do `maplibre-gl`.
+## 🟡 P2 — Arquitetura
 
-8. **Repetição de classes condicionais** — ✅ *Concluído*
-   Criado o helper `cn()` (`clsx` + `tailwind-merge`) e o componente reutilizável `FilterButton.tsx`, simplificando a interface e eliminando duplicações em `ConsoleSidebar.tsx`.
+10. **Componentes que concentram coisa demais.** [GridMap.tsx](../src/components/Map/GridMap.tsx) (≈950 linhas), [InterchangeModal.tsx](../src/components/Interchange/InterchangeModal.tsx) (≈830), [App.tsx](../src/App.tsx) (16 `useState` + roteamento de URL à mão). Extrair um hook `useUrlState` e dividir o mapa em camadas/hooks.
+11. **Re-render a 60 Hz.** O loop do simulador chama `setSimState` a cada quadro, o que re-renderiza a modal inteira. Desacoplar a física (passo fixo, ref ou Worker) da UI (atualização a 10–15 Hz).
 
-9. **Acessibilidade & Code-Splitting** — ✅ *Concluído*
-   Atributos `aria-label` e títulos semânticos adicionados a botões e controles. Code-splitting no Vite com `React.lazy` e `<Suspense>` para as abas analíticas, gerando chunks isolados e reduzindo o peso do first-load.
+## 🟡 P2 — Camada ONS ([onsApi.ts](../src/services/onsApi.ts))
+
+12. **Datas calculadas em UTC (`toISOString`), não em Brasília.** Depois das 21h de Brasília, "hoje" já é o dia seguinte em UTC. Hoje funciona por acidente, via fallback de "ontem".
+13. **Estado de erro nunca é preenchido.** `fetchOnsTelemetry` nunca lança exceção (sempre devolve o fallback), então o `error` do hook nunca é populado. Expor o motivo do fallback na UI.
+14. **Dependência de CORS da `apicarga.ons.org.br`.** Se os cabeçalhos mudarem, o site passa a exibir dado sintético para sempre, sem alarme. Considerar um snapshot gerado na CI (GitHub Action agendada → JSON estático) como fonte primária ou secundária.
+
+## ⚪ P3 — Consistência e procedência
+
+15. **Comentários que repetem o código** (`// 1. Dynamic weather`, `// Total generation`, `// Ignora erro de parse`) e JSDoc genérico, contrariando o `AGENTS.md` ("Comments are strictly for WHY").
+16. **Procedência dos dados não documentada.** [gridData.ts](../src/data/gridData.ts) tem ≈2.300 linhas curadas à mão sem fonte citada por usina ou linha (SIGEL/ANEEL, PAR/PEL/ONS). Num projeto educacional, a fonte faz parte do produto.
+17. **Tiles da ESRI:** gratuitos, mas com termos de uso e limites. Alternativa sem esse risco: Protomaps/PMTiles hospedado no próprio Pages.
 
 ---
 
-## 🚀 Próximo passo de maior impacto
+## 🚀 Sequência recomendada
 
-O salto de valor real não é técnico, é de **dado**: hoje tudo é estático. ONS e ANEEL (SIGEL) têm portais de dados abertos de verdade — trocar ao menos a telemetria (frequência, carga, intercâmbio) por uma chamada real ao portal de dados abertos do ONS transformaria o projeto de "infográfico bonito" para "explorador de dado real", que é a proposta original do Brasil Grid. Não precisa de backend próprio — pode começar como fetch client-side com cache simples.
+| # | Item | Por quê primeiro |
+|---|------|------------------|
+| ~~1~~ | ~~P0 (1–6) + testes de física~~ | ✅ Concluído |
+| 2 | `strict: true` | Barato agora, caro depois |
+| 3 | GeoJSON para `public/` + chunk do MapLibre | Maior ganho de first-load com menor esforço |
+| 4 | Passo fixo + desacoplamento UI/física | Pré-requisito para cenários mais ricos (ex.: 15/08/2023) |
+| 5 | Procedência dos dados | Diferencial de um laboratório educacional sério |
+
+## ❓ Decisões em aberto
+
+- **Nível de modelo do simulador:** barramento único agregado (atual) vs 4 subsistemas com limites de intercâmbio. Este segundo modelo é necessário para reproduzir o 15/08/2023 (abertura de interligação N/NE → SE).
+- **Fonte primária da telemetria:** fetch no cliente (atual) vs snapshot gerado por Action agendada.
+- **Basemap:** manter ESRI ou migrar para PMTiles próprio.
