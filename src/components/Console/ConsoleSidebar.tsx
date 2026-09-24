@@ -120,7 +120,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                       className="flex-1 text-xs"
                       aria-label="Filtrar linhas de 500 kV ou superior"
                     >
-                      ≥ 500 kV CA
+                      ≥ 500 kV
                     </FilterButton>
                   </div>
                 </div>

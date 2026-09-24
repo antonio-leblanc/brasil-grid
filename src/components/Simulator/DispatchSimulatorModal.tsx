@@ -215,7 +215,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
                   SALA DE OPERAÇÃO & ESTABILIDADE 60 HZ
                 </h2>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full font-bold uppercase bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-                  MINI-ONS
+                  LAB 60 HZ
                 </span>
               </div>
               <p className="text-[11px] text-slate-400 font-mono mt-0.5 flex items-center space-x-2">
@@ -360,7 +360,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
 
           <div className="text-[11px] text-slate-400 shrink-0 hidden md:block">
             {scenarioId === 'pato' && 'Compense a queda solar das 17h30 com rampas hidroelétricas.'}
-            {scenarioId === 'trip_itaipu' && 'Teste a reação inercial e acionamento de reserva primária.'}
+            {scenarioId === 'trip_itaipu' && 'Teste a resposta inercial e a reserva primária após perder 2.800 MW de UHEs (ilustrativo).'}
             {scenarioId === 'alta_renovavel' && 'Controle o excesso e a alta volatilidade aplicando curtailment.'}
             {scenarioId === 'livre' && 'Controle total sem roteiro predefinido.'}
           </div>
@@ -464,10 +464,10 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
                 <code className="text-cyan-300 font-mono text-[10px] bg-slate-900 px-1 py-0.5 rounded">
                   df/dt = f0 · (P_ger − P_carga(f)) / (2 · Σ H·S)
                 </code>
-                , em que Σ H·S é a energia cinética das máquinas síncronas (MW·s). Quando a geração de hidrelétricas síncronas é substituída por solar/eólica (fontes baseadas em inversores IBR), a inércia mecânica real cai de ~4.5s para ~1.5s, dobrando o RoCoF e a sensibilidade a qualquer degrau de carga.
+                , em que Σ H·S é a energia cinética das máquinas síncronas (MW·s). O H de cada máquina não muda; quando hidrelétricas síncronas são deslocadas por solar/eólica (recursos baseados em inversores, IBR, sem inércia mecânica acoplada à rede), cai a inércia equivalente do sistema na base da geração total (H_eq). Neste simulador, H_eq vai de ~3 s (cenários com despacho hidrotérmico típico) a ~1 s (cenário de alta renovável): para o mesmo degrau de potência, o RoCoF inicial fica cerca de 3 vezes maior.
               </p>
               <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-900">
-                <span>Norma ONS: Faixa normal 59.90 Hz - 60.10 Hz</span>
+                <span>Regime permanente: 59,9–60,1 Hz (PRODIST Mód. 8/ANEEL)</span>
                 <span>ERAC: {ERAC_STAGES[0].thresholdHz.toFixed(1)}–{ERAC_STAGES[ERAC_STAGES.length - 1].thresholdHz.toFixed(1)} Hz (5 estágios, até −35% da carga)</span>
               </div>
             </div>
@@ -478,7 +478,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
         <div className="px-4 py-2.5 border-t border-slate-800/80 bg-slate-950/70 flex items-center justify-between text-xs font-mono text-slate-400">
           <div className="flex items-center space-x-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Simulador de Alta Fidelidade (SIN 60 Hz) • ONS Educational Lab</span>
+            <span>Modelo didático de barra única (SIN 60 Hz) • Brasil Grid Educational Lab</span>
           </div>
           <button
             type="button"

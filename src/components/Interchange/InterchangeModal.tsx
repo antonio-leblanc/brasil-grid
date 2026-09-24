@@ -21,6 +21,7 @@ import type {
   InterchangeId,
   RegionalInterchange
 } from '../../data/interchangeData';
+import { SourcesList } from '../Sources/SourcesList';
 import type { NationalTelemetrySnapshot } from '../../services/onsApi';
 
 interface InterchangeModalProps {
@@ -36,7 +37,6 @@ type ActiveViewTab = 'fronteiras' | 'curvas24h' | 'dossie';
 export const InterchangeModal: React.FC<InterchangeModalProps> = ({
   isOpen,
   onClose,
-  telemetry,
   selectedInterchangeId: externalSelectedId,
   onSelectInterchange
 }) => {
@@ -153,9 +153,7 @@ export const InterchangeModal: React.FC<InterchangeModalProps> = ({
                   FONTE DOS DADOS:
                 </span>
                 <span className="text-emerald-400 font-semibold text-[11px]">
-                  {telemetry?.source === 'ONS_LIVE'
-                    ? 'ONS API (VIVO)'
-                    : 'ONS 2026 (CALIBRADO)'}
+                  SNAPSHOT DE REFERÊNCIA (ESTÁTICO)
                 </span>
               </div>
             </div>
@@ -469,7 +467,7 @@ export const InterchangeModal: React.FC<InterchangeModalProps> = ({
                       </span>
                     </h3>
                     <p className="text-[11px] text-slate-500">
-                      Perfil horário de fluxo ativo vs limites operativos do ONS (24 leituras horárias)
+                      Perfil horário de referência do fluxo ativo vs limite operativo (24 pontos)
                     </p>
                   </div>
 
@@ -801,6 +799,7 @@ export const InterchangeModal: React.FC<InterchangeModalProps> = ({
                     </div>
                   ))}
                 </div>
+                <SourcesList sources={activeInterchange.sources} />
               </div>
             </div>
           )}
@@ -810,7 +809,7 @@ export const InterchangeModal: React.FC<InterchangeModalProps> = ({
         <footer className="px-5 py-3 border-t border-slate-800/80 bg-slate-950/80 flex items-center justify-between text-xs font-mono text-slate-500 shrink-0">
           <div className="flex items-center space-x-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span>Topologia ONS 2026 // Critérios de Operação N-1</span>
+            <span>Fluxos e limites: snapshot de referência, não telemetria em tempo real</span>
           </div>
 
           <div className="flex items-center space-x-3">

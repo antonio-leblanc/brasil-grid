@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { energyChainStages } from '../../data/energyChainData';
+import { SourcesList } from '../Sources/SourcesList';
 import { Zap, ArrowRight, Building2, TrendingUp, ShieldAlert, CheckCircle2 } from 'lucide-react';
 
 export const ValueChainSection: React.FC = () => {
@@ -149,6 +150,8 @@ export const ValueChainSection: React.FC = () => {
                 ))}
               </div>
             </div>
+
+            <SourcesList sources={activeStage.sources} />
           </div>
         </div>
       </div>

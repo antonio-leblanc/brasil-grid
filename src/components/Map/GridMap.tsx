@@ -133,7 +133,7 @@ export const GridMap: React.FC<GridMapProps> = ({
       minZoom: 3.5,
       maxZoom: 11,
       pitch: 0,
-      attributionControl: false
+      attributionControl: { compact: true }
     });
 
     mapInstance.addControl(new NavigationControl({ showCompass: true }), 'bottom-right');

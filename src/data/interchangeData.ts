@@ -1,3 +1,5 @@
+import type { SourceRef } from './sources';
+
 // Modelagem de Dados Operacionais e Físicos dos Intercâmbios Regionais do SIN (ONS)
 // Calibrado com os limites de fluxo controlado e medições consolidadas do ONS 2026
 
@@ -38,6 +40,8 @@ export interface RegionalInterchange {
   interfaceCoordinates: [number, number]; // [lon, lat] Ponto central geográfico da fronteira
   pathCoordinates: [number, number][]; // Polilinha que representa o corredor no mapa
   bottleneck: BottleneckDetail;
+  // Optional until the interchange audit is finished; see docs/code-health.md
+  sources?: SourceRef[];
   hourlyProfile24h: HourlyInterchangePoint[];
 }
 

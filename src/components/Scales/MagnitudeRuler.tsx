@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { scaleLevels, powerVsEnergyExplainer } from '../../data/scaleData';
+import { SourcesList } from '../Sources/SourcesList';
 import { Gauge, HelpCircle } from 'lucide-react';
 
 export const MagnitudeRuler: React.FC = () => {
@@ -123,6 +124,7 @@ export const MagnitudeRuler: React.FC = () => {
               </div>
             ))}
           </div>
+          <SourcesList sources={currentLevel.sources} className="mt-4" />
         </div>
       </div>
     </section>

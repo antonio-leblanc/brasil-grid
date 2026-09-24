@@ -186,7 +186,7 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
             />
             <div className="flex justify-between text-[9px] text-slate-500">
               <span>0% (Pleno)</span>
-              <span>Corte Sobrefrequência</span>
+              <span>Razão Energética</span>
               <span>100% (Corte Total)</span>
             </div>
           </div>
@@ -200,7 +200,7 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
               <span className="font-bold text-xs uppercase tracking-wide">EOL (Eólica)</span>
             </div>
             <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
-              H = 0s (Inversor Tipo 4)
+              H = 0s (Conversor, sem inércia)
             </span>
           </div>
 
@@ -298,7 +298,7 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
             type="button"
             onClick={onTriggerGeneratorTrip}
             className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-red-500/40 bg-red-500/10 text-red-300 hover:bg-red-500/20 hover:border-red-500/60 transition text-xs cursor-pointer font-bold"
-            title="Simula a perda súbita e simultânea de 2 unidades geradoras (2.800 MW)"
+            title="Simula o desligamento intempestivo de 2.800 MW de unidades hidrelétricas síncronas (ordem de grandeza de 4 UGs de 700 MW de Itaipu; valor ilustrativo)"
           >
             <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
             <span>Trip Usina (-2.8 GW)</span>

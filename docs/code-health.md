@@ -46,9 +46,29 @@ Referência: [gridPhysics.ts](../src/services/gridPhysics.ts) · coberto por [gr
 
 **Simplificações conscientes:** barramento único, sem temporização dos relés do ERAC, e regulador de velocidade representado por estatismo limitado por rampa (sem o efeito de coluna d'água da turbina).
 
+## 🔴 P0 — Auditoria factual dos dados (em andamento, 2026-09-24)
+
+Cada entidade de dados ganhou `sources: SourceRef[]`, exibido na UI (`SourcesList`).
+
+| Arquivo | Status |
+|---------|--------|
+| `sinDossiersData.ts` | ✅ Auditado. 15/08/2023 reescrito conforme o RAP final: ~23.368 MW interrompidos (≈32%); causa foi o desempenho do controle de tensão de eólicas e solares abaixo dos modelos, não a inércia; PLD 2026 corrigido |
+| `energyChainData.ts`, `scaleData.ts` | ✅ Auditados (EPE Anuário 2026, Procel, ANEEL) |
+| `transmissionLinesData.ts` | ✅ Auditado: 52 → 16 linhas. 36 corredores eram fictícios ou tinham tensão errada e foram removidos |
+| Textos de UI, README, spec | ✅ Auditados. Atribuição Esri reativada; selo "MINI-ONS" → "LAB 60 HZ" |
+| `powerPlantsData.ts` (72 usinas) | ⏳ **Não auditado.** `sources` opcional até a conclusão |
+| `interchangeData.ts`, `referenceGridSnapshot`, `subsystems` (loadShare) | ⏳ **Não auditado.** `sources` opcional até a conclusão |
+
+**Pendências para retomar:**
+- Usinas: capacidade, proprietário atual (Eletrobras → Axia Energia; vendas de ativos), coordenadas e unidades, com ANEEL SIGA como fonte primária.
+- Intercâmbios: limites (nomenclatura ONS: FNESE, FNEN, RSE etc.), referências de submódulo e perfis horários (rotular como ilustrativos). Snapshot: recorde de demanda = 106.532 MW (26/02/2025).
+- Linhas não representadas: circuitos 2 e 3 da Norte–Sul, Tucuruí–Imperatriz–Presidente Dutra, elos com o Uruguai (Rivera, Melo).
+- Algumas linhas usam Wikipedia como uma das fontes; trocar por fonte primária quando possível.
+- ERAC: no dia 15/08/2023, o SE/CO ainda usava os ajustes antigos (7% por estágio). O simulador usa os ajustes novos, uniformizados.
+
 ## 🟠 P1 — Rede de segurança de engenharia
 
-7. **O TypeScript não está em modo estrito.** Falta `"strict": true` em [tsconfig.app.json](../tsconfig.app.json), o que contradiz o `AGENTS.md` ("TypeScript (strict)").
+7. ✅ **`strict: true` ligado** (zero erros).
 8. **Cobertura de testes restrita ao motor físico.** O Vitest está configurado e roda na CI; `onsApi` (parse, fallback, datas) é o próximo alvo natural.
 
 ## 🟠 P1 — Bundle

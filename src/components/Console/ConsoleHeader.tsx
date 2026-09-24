@@ -91,7 +91,7 @@ export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
         <button
           onClick={onOpenSimulator}
           className="flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 text-slate-300 hover:text-cyan-300 hover:border-cyan-500/50 hover:bg-cyan-500/10 transition text-[11px]"
-          title="Abrir Simulador de Despacho e Estabilidade 60 Hz (Mini-ONS)"
+          title="Abrir Simulador de Despacho e Estabilidade 60 Hz (modelo didático)"
           aria-label="Abrir Simulador de Despacho 60 Hz"
         >
           <Gauge className="w-3.5 h-3.5 text-cyan-400" />

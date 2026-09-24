@@ -9,6 +9,7 @@ import {
   BookOpen,
   Info
 } from 'lucide-react';
+import { SourcesList } from '../Sources/SourcesList';
 import { cn } from '../../utils/cn';
 
 export const SinDossiersSection: React.FC = () => {
@@ -57,7 +58,7 @@ export const SinDossiersSection: React.FC = () => {
           Engenharia de Sistemas, Física & Despacho
         </h2>
         <p className="text-sm sm:text-base text-slate-400">
-          Investigações aprofundadas sobre eventos críticos, modelos computacionais e a operação em tempo real da maior rede elétrica síncrona renovável do planeta.
+          Investigações aprofundadas sobre eventos críticos, modelos computacionais e a operação em tempo real de um dos maiores sistemas elétricos interligados do mundo, de matriz predominantemente renovável.
         </p>
       </div>
 
@@ -266,6 +267,7 @@ export const SinDossiersSection: React.FC = () => {
               </div>
             ))}
           </div>
+          <SourcesList sources={activeDossier.sources} className="mt-4" />
         </div>
       </div>
     </section>

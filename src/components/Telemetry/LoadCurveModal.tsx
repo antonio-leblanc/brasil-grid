@@ -325,11 +325,11 @@ export const LoadCurveModal: React.FC<LoadCurveModalProps> = ({
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-1.5">
                   <span className="w-3 h-0.5 bg-cyan-400 rounded"></span>
-                  <span className="text-slate-300">Carga Global Total</span>
+                  <span className="text-slate-300">Carga Global (inclui MMGD)</span>
                 </div>
                 <div className="flex items-center space-x-1.5">
                   <span className="w-3 h-0.5 bg-indigo-400 rounded stroke-dasharray"></span>
-                  <span className="text-slate-400">Carga Rede Básica (SCADA)</span>
+                  <span className="text-slate-400">Carga Supervisionada (SSC/ONS)</span>
                 </div>
                 <div className="flex items-center space-x-1.5">
                   <span className="w-3 h-2 bg-yellow-500/30 border border-yellow-500/60 rounded-xs"></span>
@@ -536,7 +536,7 @@ export const LoadCurveModal: React.FC<LoadCurveModalProps> = ({
                 </div>
                 <div className="flex items-center space-x-4">
                   <span className="text-slate-400">
-                    Rede Básica (SCADA): <strong className="text-indigo-300">{(activePoint.scadaLoadMW / 1000).toFixed(1)} GW</strong>
+                    Supervisionada: <strong className="text-indigo-300">{(activePoint.scadaLoadMW / 1000).toFixed(1)} GW</strong>
                   </span>
                   <span className="text-yellow-400">
                     Solar GD: <strong>{(activePoint.solarMmgdMW / 1000).toFixed(1)} GW</strong>
@@ -557,7 +557,7 @@ export const LoadCurveModal: React.FC<LoadCurveModalProps> = ({
               <span>O que é o "Efeito Pato" (Duck Curve) no Sistema Interligado Nacional?</span>
             </div>
             <p className="text-[12px] text-slate-400 leading-relaxed">
-              Com mais de 30 GW de micro e minigeração solar distribuída (MMGD) instalada nos telhados brasileiros, a curva de carga da rede básica sofre uma depressão acentuada entre 10h e 15h (o "corpo" do pato). No entardecer (17h-19h), a geração solar cessa exatamente quando o consumo residencial atinge o pico, exigindo que hidrelétricas e térmicas realizem rampas ultrarrápidas de geração (o "pescoço" do pato) para preservar a estabilidade da frequência em 60 Hz.
+              Com mais de 40 GW de micro e minigeração distribuída (MMGD, quase toda solar) conectados às distribuidoras, a carga que o ONS enxerga nas usinas supervisionadas sofre uma depressão acentuada entre ~10h e 15h (a "barriga" do pato). No entardecer (17h-19h), a geração solar desaparece enquanto a carga ainda está elevada, e o pico da carga líquida se desloca para o início da noite. Isso exige rampas rápidas de tomada de carga, no SIN atendidas sobretudo pelas hidrelétricas (o "pescoço" do pato), para manter o balanço carga-geração e a frequência em 60 Hz. Desde 29/04/2023 o ONS incorpora à carga global uma estimativa da MMGD baseada em dados meteorológicos.
             </p>
           </div>
         </div>
@@ -565,7 +565,7 @@ export const LoadCurveModal: React.FC<LoadCurveModalProps> = ({
         {/* Modal Footer */}
         <div className="px-5 py-3 border-t border-slate-800/80 bg-slate-950/60 flex items-center justify-between text-xs font-mono text-slate-400">
           <span className="truncate">
-            Fonte: API Dados Abertos ONS (Módulo de Carga Verificada e Programada)
+            Fonte: API Dados Abertos ONS (Carga Verificada semi-horária)
           </span>
           <button
             onClick={onClose}

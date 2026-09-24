@@ -248,11 +248,11 @@ export function App() {
             <span className="text-slate-500 uppercase font-bold">REDE:</span>
             <div className="flex items-center space-x-1">
               <span className="w-2.5 h-0.5 rounded bg-amber-400"></span>
-              <span className="text-slate-300">±800 kV CC</span>
+              <span className="text-slate-300">CC ±600/±800 · CA 765 kV</span>
             </div>
             <div className="flex items-center space-x-1">
               <span className="w-2.5 h-0.5 rounded bg-cyan-400"></span>
-              <span className="text-slate-300">500 kV CA</span>
+              <span className="text-slate-300">500–525 kV CA</span>
             </div>
             <div className="flex items-center space-x-1">
               <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
@@ -315,7 +315,7 @@ export function App() {
         onRefresh={refreshTelemetry}
       />
 
-      {/* 5. Interactive 60 Hz Dispatch & Stability Simulator Modal (Mini-ONS) */}
+      {/* 5. Interactive 60 Hz Dispatch & Stability Simulator Modal */}
       {isSimulatorOpen && (
         <Suspense fallback={null}>
           <DispatchSimulatorModal

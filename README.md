@@ -12,11 +12,11 @@
 
 ## 🧭 Visão Geral & Propósito Educativo
 
-O **Brasil Grid** é um **laboratório aberto de aprendizado e exploração técnica**, construído para decodificar a física, a operação e a regulação do maior sistema elétrico interligado e renovável do planeta.
+O **Brasil Grid** é um **laboratório aberto de aprendizado e exploração técnica**, construído para decodificar a física, a operação e a regulação de um dos maiores sistemas elétricos interligados do mundo, de matriz predominantemente renovável.
 
 Em vez de ferramentas comerciais ou relatórios estáticos em PDF de centenas de páginas (ONS, EPE, ANEEL), o projeto traduz a dinâmica do setor em uma interface interativa de alta performance com estética de sala de controle (SCADA):
 * **Física da Rede & Estabilidade:** Entenda inércia mecânica, frequência (60 Hz), despacho hidrotérmico e contingências.
-* **Gargalos & Geografia:** Visualize como dezenas de gigawatts escoam entre subsistemas e por que ocorrem cortes de geração (*curtailment*).
+* **Gargalos & Geografia:** Visualize como blocos de vários gigawatts escoam entre subsistemas e por que ocorrem cortes de geração (*curtailment*).
 * **Modelos Mentais:** Aprenda a diferença real entre potência e energia, e como a água armazenada nos reservatórios define o preço da eletricidade no Brasil.
 
 ---
@@ -24,12 +24,13 @@ Em vez de ferramentas comerciais ou relatórios estáticos em PDF de centenas de
 ## 🏛️ Os 4 Pilares da Aplicação
 
 ### 1. 🗺️ Mapa Topológico do SIN (MapLibre GL + WebGL)
-* **Motor:** MapLibre GL JS acelerado por GPU com basemap *ESRI Dark Gray Canvas* baseado em dados OpenStreetMap.
+* **Motor:** MapLibre GL JS acelerado por GPU com basemap *Esri World Dark Gray Canvas* (sem token de API; exige atribuição Esri).
 * **Malha de Transmissão:**
-  * **±800 kV UHVDC (Corrente Contínua):** Os superlinhões de Belo Monte (Xingu ➔ Rio de Janeiro e Xingu ➔ Estreito) com ~2.500 km de extensão.
-  * **500 kV / 765 kV (Malha Tronco CA):** A espinha dorsal interligando Norte, Nordeste, Sudeste/Centro-Oeste e Sul.
-  * **230 kV:** Linhas regionais de escoamento.
-* **Polos de Geração:** Itaipu (14 GW), Belo Monte (11.2 GW), Tucuruí (8.3 GW), Angra (1.9 GW), complexos eólicos e fazendas solares fotovoltaicas com auras pulsantes proporcionais à capacidade nominal.
+  * **±800 kV UHVDC (Corrente Contínua):** Os bipolos de Belo Monte (Xingu ➔ Estreito/MG e Xingu ➔ Terminal Rio/RJ), com mais de 2.000 km cada (Xingu–Terminal Rio: ~2.540 km).
+  * **±600 kV HVDC:** Bipolos do Madeira (Porto Velho ➔ Araraquara) e de Itaipu (Foz do Iguaçu ➔ Ibiúna).
+  * **500 kV / 525 kV / 765 kV (Malha Tronco CA):** A espinha dorsal interligando Norte, Nordeste, Sudeste/Centro-Oeste e Sul.
+  * **230 kV / 440 kV:** Linhas regionais selecionadas.
+* **Polos de Geração:** Itaipu (14 GW), Belo Monte (11,2 GW), Tucuruí (8,4 GW), Angra 1 + 2 (2,0 GW), complexos eólicos e fazendas solares fotovoltaicas com auras pulsantes proporcionais à capacidade nominal.
 * **Controles Interativos:** Filtros dinâmicos por nível de tensão e fonte de energia, tooltips com dados de concessionária/rio, e câmeras cinematográficas pré-calibradas.
 
 ### 2. ⚡ A Cadeia de Valor (Geração ➔ Transmissão ➔ Distribuição ➔ Comercialização)
@@ -37,14 +38,14 @@ Em vez de ferramentas comerciais ou relatórios estáticos em PDF de centenas de
 * Análise comparativa de modelos de remuneração (Leilões ANEEL, RAP, TUSD e Contratos Bilaterais).
 * Mapeamento dos grandes players nacionais (Eletrobras, Engie, Taesa, ISA CTEEP, Light, Enel, Equatorial, Comerc, Auren).
 
-### 3. 📊 Estrutura de Mercado: ACR (Cativo) vs. ACL (Mercado Livre)
-* Matriz interativa detalhando a abertura do mercado elétrico.
-* Regulação da CCEE e cronograma de desregulamentação (migração integral do Grupo A em jan/2024 e o futuro Grupo B residencial).
-* **Smart Metering & IoT na Borda:** Como os medidores digitais e a telemetria em alta frequência transformam a gestão de faturas, a detecção de anomalias e a curva de carga no ACL.
+### 3. 📚 Dossiês Técnicos do SIN
+* Anatomia da perturbação de 15/08/2023 (abertura da LT 500 kV Quixadá–Fortaleza II, desempenho do controle de tensão de parques eólicos/solares abaixo do previsto nos modelos, separação do SIN e atuação do ERAC).
+* O custo futuro da água e a formação de CMO/PLD pela cadeia de modelos NEWAVE, DECOMP e DESSEM.
+* Complementados pelo **Simulador 60 Hz** (equação de swing agregada, regulação primária, ERAC e curva P(f) de IBRs), pela **Curva de Carga 24h** (Dados Abertos ONS) e pelo painel de **Intercâmbios Regionais**.
 
 ### 4. 📐 Régua de Grandezas: Desmistificando Watts (W a TWh)
 * Esclarecimento conceitual entre **Potência** (kW, MW, GW — taxa instantânea) e **Energia** (kWh, MWh, GWh — volume acumulado no tempo).
-* Comparador de escalas do dia a dia: do chuveiro elétrico (~5.5 kW) e conta residencial (~200 kWh/mês) ao pico do SIN brasileiro (~105 GW) e consumo anual do país (~540 TWh).
+* Comparador de escalas do dia a dia: do chuveiro elétrico (~5,5 kW) e consumo residencial médio (~177 kWh/mês por unidade, EPE 2024) ao recorde de demanda instantânea do SIN (106.532 MW, 26/02/2025) e ao consumo anual do país (~567 TWh, EPE 2025).
 
 > Para a visão detalhada, motivação e arquitetura completa, consulte [`docs/spec.md`](./docs/spec.md).
 
@@ -89,7 +90,7 @@ npm run build
 * [ANEEL — Agência Nacional de Energia Elétrica](https://www.gov.br/aneel) (SIGEL — Sistema de Informações Georreferenciadas do Setor Elétrico)
 * [EPE — Empresa de Pesquisa Energética](https://www.epe.gov.br) (Balanço Energético Nacional - BEN)
 
-> ℹ️ **Transparência de Telemetria:** Os indicadores operacionais do console (frequência, carga instantânea, intercâmbios e geração da matriz) são **snapshots estáticos de referência técnica** baseados em regimes típicos do SIN para fins educacionais e de visualização, não constituindo telemetria em tempo real conectada ao SCADA das concessionárias.
+> ℹ️ **Transparência de Telemetria:** A curva de carga (carga global, supervisionada e MMGD) é lida da API de Dados Abertos do ONS (Carga Verificada, com cache e *fallback* para um snapshot sintético quando a API está indisponível). Frequência, intercâmbios e composição da matriz exibidos no console são **snapshots de referência** para fins educacionais, não telemetria em tempo real. O simulador 60 Hz é um modelo didático de barra única, com parâmetros ilustrativos.
 
 ---
 

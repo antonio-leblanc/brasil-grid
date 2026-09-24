@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { PowerPlantFeature, TransmissionLineFeature } from '../../data/gridData';
+import { SourcesList } from '../Sources/SourcesList';
 import { X, Share2, Check } from 'lucide-react';
 
 interface NodeInspectorProps {
@@ -126,6 +127,7 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant, line, onClo
                 </div>
               </div>
             )}
+            <SourcesList sources={plant.sources} />
           </>
         )}
 
@@ -151,7 +153,7 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant, line, onClo
               <div className="bg-slate-900/80 border border-slate-800/80 p-3 rounded-lg">
                 <span className="text-slate-500 block text-[10px]">CONCESSIONÁRIA (RAP)</span>
                 <strong className="text-slate-200 text-xs truncate block mt-0.5">{line.concessionaire}</strong>
-                <span className="text-emerald-400 block text-[10px]">Contrato ANEEL 30a</span>
+                <span className="text-emerald-400 block text-[10px]">Concessão ANEEL</span>
               </div>
             </div>
 
@@ -196,6 +198,7 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant, line, onClo
                 </div>
               </div>
             )}
+            <SourcesList sources={line.sources} />
           </>
         )}
       </div>

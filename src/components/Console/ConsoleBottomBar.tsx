@@ -50,7 +50,7 @@ export const ConsoleBottomBar: React.FC<ConsoleBottomBarProps> = ({
             <span className="text-slate-700 hidden sm:inline">|</span>
             <div
               className="hidden sm:flex items-center space-x-1 text-yellow-400"
-              title="Geração solar distribuída estimada em telhados (MMGD)"
+              title="Micro e minigeração distribuída (MMGD) estimada pelo ONS a partir de dados meteorológicos"
             >
               <Sun className="w-3 h-3 text-yellow-400" />
               <span className="text-slate-500">SOLAR GD:</span>
