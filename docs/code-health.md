@@ -78,11 +78,13 @@ A credibilidade de um laboratório educacional do SIN depende da exatidão dos a
 8. **Auditoria das 72 Usinas ([`powerPlantsData.ts`](../src/data/powerPlantsData.ts)):**
    - Validar capacidade outorgada/fiscalizada (MW) e coordenadas geográficas contra o SIGA (Sistema de Informações de Geração da ANEEL).
    - Atualizar razão social e controladores pós-privatização (ex.: Eletrobras → Axia Energia, vendas de SPEs).
-   - Preencher `sources: SourceRef[]` para cada usina (eliminando o status opcional).
+   - Preencher `sources: SourceRef[]` para cada usina com `accessedAt: 'YYYY-MM-DD'` (eliminando o status opcional).
+   - Registrar cada validação no log de proveniência ([`docs/data-audit-log.md`](data-audit-log.md)) para blindar o projeto contra re-auditorias e dados alucinados ("AI slop").
 
 9. **Intercâmbios Regionais & Limites ONS ([`interchangeData.ts`](../src/data/interchangeData.ts)):**
    - Adotar a nomenclatura operativa oficial do ONS (FNESE, FNEN, FSECO, RSUL).
    - Validar limites dinâmicos de exportação e referências dos Procedimentos de Rede (Submódulo 23.3).
+   - Registrar a data de extração (`accessedAt`) e fontes no [`docs/data-audit-log.md`](data-audit-log.md).
    - Atualizar snapshot de referência de carga com o recorde do SIN (106.532 MW em 26/02/2025).
 
 ## 🟡 P2 — Camada ONS & Robustez
