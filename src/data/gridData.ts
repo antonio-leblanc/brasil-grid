@@ -71,7 +71,7 @@ export interface GridSnapshot {
 export const referenceGridSnapshot: GridSnapshot = {
   frequencyHz: 60.00,
   instantaneousLoadMW: 85420,
-  peakRecordMW: 105150,
+  peakRecordMW: 106532,
   renewableSharePct: 84.8,
   systemStatus: 'NOMINAL // SNAPSHOT DE REFERÊNCIA SIN',
   referenceNote: 'Dados estáticos de referência técnica representativos da operação do SIN',

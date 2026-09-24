@@ -467,14 +467,14 @@ export const InterchangeModal: React.FC<InterchangeModalProps> = ({
                       </span>
                     </h3>
                     <p className="text-[11px] text-slate-500">
-                      Perfil horário de referência do fluxo ativo vs limite operativo (24 pontos)
+                      Perfil horário ilustrativo de referência típica vs limite operativo ONS (24h)
                     </p>
                   </div>
 
                   <div className="flex items-center space-x-4 text-[11px]">
                     <div className="flex items-center space-x-1.5">
                       <span className="w-3 h-1 bg-cyan-400 rounded-sm" />
-                      <span className="text-slate-400">Fluxo Verificado (MW)</span>
+                      <span className="text-slate-400">Fluxo de Referência (MW)</span>
                     </div>
                     <div className="flex items-center space-x-1.5">
                       <span className="w-3 h-0.5 border-t border-dashed border-red-400" />

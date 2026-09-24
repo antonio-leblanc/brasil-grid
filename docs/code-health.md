@@ -56,12 +56,11 @@ Cada entidade de dados ganhou `sources: SourceRef[]`, exibido na UI (`SourcesLis
 | `energyChainData.ts`, `scaleData.ts` | ✅ Auditados (EPE Anuário 2026, Procel, ANEEL) |
 | `transmissionLinesData.ts` | ✅ Auditado: 52 → 16 linhas. 36 corredores eram fictícios ou tinham tensão errada e foram removidos |
 | Textos de UI, README, spec | ✅ Auditados. Atribuição Esri reativada; selo "MINI-ONS" → "LAB 60 HZ" |
+| `interchangeData.ts`, `referenceGridSnapshot` | ✅ Auditado. 4 fronteiras com nomenclatura oficial ONS (FNESE, FNSE, FNEN, FSSE), fontes primárias com `accessedAt`, perfis horários rotulados como ilustrativos e recorde de demanda do SIN atualizado para 106.532 MW (26/02/2025) |
 | `powerPlantsData.ts` (72 usinas) | ⏳ **Não auditado.** `sources` opcional até a conclusão |
-| `interchangeData.ts`, `referenceGridSnapshot`, `subsystems` (loadShare) | ⏳ **Não auditado.** `sources` opcional até a conclusão |
 
 **Pendências para retomar:**
 - Usinas: capacidade, proprietário atual (Eletrobras → Axia Energia; vendas de ativos), coordenadas e unidades, com ANEEL SIGA como fonte primária.
-- Intercâmbios: limites (nomenclatura ONS: FNESE, FNEN, RSE etc.), referências de submódulo e perfis horários (rotular como ilustrativos). Snapshot: recorde de demanda = 106.532 MW (26/02/2025).
 - Linhas não representadas: circuitos 2 e 3 da Norte–Sul, Tucuruí–Imperatriz–Presidente Dutra, elos com o Uruguai (Rivera, Melo).
 - Algumas linhas usam Wikipedia como uma das fontes; trocar por fonte primária quando possível.
 - ERAC: no dia 15/08/2023, o SE/CO ainda usava os ajustes antigos (7% por estágio). O simulador usa os ajustes novos, uniformizados.
@@ -69,27 +68,21 @@ Cada entidade de dados ganhou `sources: SourceRef[]`, exibido na UI (`SourcesLis
 ## 🟠 P1 — Rede de segurança de engenharia
 
 7. ✅ **`strict: true` ligado** (zero erros).
-8. **Cobertura de testes restrita ao motor físico.** O Vitest está configurado e roda na CI; `onsApi` (parse, fallback, datas) é o próximo alvo natural.
+8. ✅ **Cobertura de testes expandida.** O Vitest está configurado e roda na CI; cobre o motor físico ([`gridPhysics.test.ts`](../src/services/gridPhysics.test.ts) — 17 testes) e o cálculo de fuso de Brasília ([`onsApi.test.ts`](../src/services/onsApi.test.ts) — 3 testes).
 
 ## 🟠 P1 — Auditoria Cadastral & Operacional (Prioridade Máxima)
 
 A credibilidade de um laboratório educacional do SIN depende da exatidão dos ativos e restrições elétricas. Performance de milissegundos é secundária diante de dados incorretos.
 
-8. **Auditoria das 72 Usinas ([`powerPlantsData.ts`](../src/data/powerPlantsData.ts)):**
+9. **Auditoria das 72 Usinas ([`powerPlantsData.ts`](../src/data/powerPlantsData.ts)):**
    - Validar capacidade outorgada/fiscalizada (MW) e coordenadas geográficas contra o SIGA (Sistema de Informações de Geração da ANEEL).
    - Atualizar razão social e controladores pós-privatização (ex.: Eletrobras → Axia Energia, vendas de SPEs).
    - Preencher `sources: SourceRef[]` para cada usina com `accessedAt: 'YYYY-MM-DD'` (eliminando o status opcional).
    - Registrar cada validação no log de proveniência ([`docs/data-audit-log.md`](data-audit-log.md)) para blindar o projeto contra re-auditorias e dados alucinados ("AI slop").
 
-9. **Intercâmbios Regionais & Limites ONS ([`interchangeData.ts`](../src/data/interchangeData.ts)):**
-   - Adotar a nomenclatura operativa oficial do ONS (FNESE, FNEN, FSECO, RSUL).
-   - Validar limites dinâmicos de exportação e referências dos Procedimentos de Rede (Submódulo 23.3).
-   - Registrar a data de extração (`accessedAt`) e fontes no [`docs/data-audit-log.md`](data-audit-log.md).
-   - Atualizar snapshot de referência de carga com o recorde do SIN (106.532 MW em 26/02/2025).
-
 ## 🟡 P2 — Camada ONS & Robustez
 
-10. **Datas calculadas em UTC (`toISOString`), não em Brasília.** Depois das 21h de Brasília, "hoje" já é o dia seguinte em UTC no [`onsApi.ts`](../src/services/onsApi.ts). Hoje funciona por acidente, via fallback de "ontem".
+10. ✅ **Datas calculadas no fuso de Brasília (America/Sao_Paulo).** Função `getBrasiliaDateStr` implementada no [`onsApi.ts`](../src/services/onsApi.ts), blindando a aplicação contra a virada de dia às 21h BRT e coberta por testes unitários.
 11. **Estado de erro nunca é preenchido.** `fetchOnsTelemetry` nunca lança exceção (sempre devolve o fallback), então o `error` do hook nunca é populado. Expor o motivo do fallback na UI.
 12. **Dependência de CORS da `apicarga.ons.org.br`.** Se os cabeçalhos mudarem, o site passa a exibir dado sintético para sempre, sem alarme. Considerar um snapshot gerado na CI (GitHub Action agendada → JSON estático) como fonte primária ou secundária.
 13. **Re-render a 60 Hz no simulador.** O loop do simulador chama `setSimState` a cada quadro, o que re-renderiza a modal inteira. Desacoplar a física (passo fixo, ref ou Worker) da UI (atualização a 10–15 Hz).

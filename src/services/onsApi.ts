@@ -80,13 +80,21 @@ const SUBSYSTEMS_META: { code: SubsystemCode; key: 'SE_CO' | 'S' | 'NE' | 'N'; n
 ];
 
 /**
+ * Retorna a data no fuso horário oficial de Brasília (America/Sao_Paulo) no formato YYYY-MM-DD.
+ * Evita o bug de virada de dia às 21h BRT (00h UTC), quando toISOString() gerava a data de amanhã.
+ */
+export function getBrasiliaDateStr(date: Date = new Date()): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(date);
+}
+
+/**
  * Constrói um snapshot de fallback técnico baseado no referenceGridSnapshot.
  * Usado se a API do ONS estiver inacessível, com CORS bloqueado ou usuário offline.
  */
 export function createFallbackSnapshot(): NationalTelemetrySnapshot {
   const baseLoad = referenceGridSnapshot.instantaneousLoadMW;
   const now = new Date();
-  const dateStr = now.toISOString().split('T')[0];
+  const dateStr = getBrasiliaDateStr(now);
 
   // Gera uma curva diária de referência sintética de 48 pontos semi-horários
   const sinCurve: CurvePoint[] = [];
@@ -351,10 +359,10 @@ export async function fetchOnsTelemetry(forceRefresh = false): Promise<NationalT
     }
   }
 
-  // 2. Determinar datas alvo (hoje e ontem como fallback de transição noturna)
+  // 2. Determinar datas alvo no fuso de Brasília (hoje e ontem como fallback de transição noturna)
   const now = new Date();
-  const todayStr = now.toISOString().split('T')[0];
-  const yesterdayStr = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const todayStr = getBrasiliaDateStr(now);
+  const yesterdayStr = getBrasiliaDateStr(new Date(now.getTime() - 24 * 60 * 60 * 1000));
 
   try {
     let dateUsed = todayStr;

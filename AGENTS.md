@@ -1,6 +1,6 @@
 # AGENT INSTRUCTIONS — BRASIL GRID (`brasil-grid`)
 
-**Última atualização:** 2026-09-22
+**Última atualização:** 2026-09-24
 
 > **Platform Note:** Windows/PowerShell and Linux. Always consider cross-platform conventions.
 
@@ -46,3 +46,10 @@ Every significant feature requires a concise plan (goal, technical approach, fil
 - **Signal-to-Noise (Mandatory):** No fluff, no filler phrases. Direct technical rationale.
 - **Critical Feedback:** Challenge weak ideas, propose the technically superior alternative.
 - **File Links:** Always reference files using clickable links (`file:///...`).
+
+### 5.4. Rigor Físico, Engenharia de Potência & Anti-Alucinação ("Zero Vibe-Coding")
+- **Validação Dimensional e Teórica:** Nenhuma equação dinâmica do simulador (swing equation, regulação primária/estatismo $R$, amortecimento de carga $D$, alívio de carga por subfrequência ERAC) pode ser implementada por "intuição" ou aproximações empíricas ad-hoc. Devem seguir formulações canônicas de dinâmica de sistemas de potência (Kundur) e os Procedimentos de Rede do ONS (Submódulo 23.3).
+- **Checagem Dupla Prévia (Double-Check):** Antes de propor ou alterar parâmetros do simulador ou constantes da rede, calcular manualmente o comportamento dinâmico esperado (ex.: RoCoF inicial $\frac{df}{dt} = \frac{f_0 \cdot \Delta P}{2 E_k}$, nadir de frequência esperado, tempos de atuação e degraus de corte) para garantir convergência com o comportamento do SIN real.
+- **Tolerância Zero a Números Estimados:** Potências (MW), comprimentos de linha, níveis nominais de tensão (kV), coordenadas geográficas e limites de intercâmbio devem vir de fontes primárias oficiais (ANEEL SIGA/SIGEL, ONS RAP/PAR, CCEE, EPE). Proibido inventar ou aproximar grandezas elétricas e geográficas.
+- **Rastreabilidade Mandatória:** Toda adição ou retificação cadastral exige preenchimento do atributo `sources: SourceRef[]` com `accessedAt` (formato ISO YYYY-MM-DD) no código TypeScript e inclusão da entrada auditada no livro de proveniência (`docs/data-audit-log.md`).
+

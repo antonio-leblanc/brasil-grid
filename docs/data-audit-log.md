@@ -22,6 +22,7 @@
 | **2026-09-24** | Limites Regulatórios PLD (`sinDossiersData.ts`) | [CCEE / ANEEL — Preços e Limites PLD 2026](https://www.ccee.org.br/mercado/precos/historico-de-precos) | PLD Máximo Estrutural (R$ 697,41/MWh), PLD Mínimo (R$ 61,07/MWh) | ✅ Aprovado (valores de 2026 validados) | `562a346` |
 | **2026-09-24** | Cadeia de Valor & Escalas (`energyChainData.ts`, `scaleData.ts`) | [EPE — Anuário Estatístico da Energia Elétrica 2025](https://www.epe.gov.br/) & Procel | Consumo nacional (≈530 TWh), perdas de rede (≈16%), geração per capita e emissões (≈0,08 tCO2/MWh) | ✅ Aprovado (alinhado com publicações oficiais) | `562a346` |
 | **2026-09-24** | Linhas Tronco (`transmissionLinesData.ts`) | ONS, ANEEL, Concessionárias (XRTE, BMTE, Axia, Taesa) | 16 linhas verificadas, coordenadas dos terminais, tensão nominal (kV) e tecnologia (CC vs CA) | ✅ Aprovado (expurgados 36 corredores fictícios) | `562a346` |
+| **2026-09-24** | Intercâmbios Regionais & Gargalos (`interchangeData.ts`, `gridData.ts`) | ONS — Procedimentos de Rede (Submódulos 23.3, 23.4, 23.5) & Dados Abertos | 4 fronteiras auditadas (FNESE, FNEN, FNSE, FSSE), limites dinâmicos/nominais, fontes primárias com `accessedAt`, perfis rotulados como ilustrativos e recorde histórico de 106.532 MW | ✅ Aprovado (nomenclatura operativa oficial ONS padronizada) | `HEAD` |
 
 ---
 
@@ -36,10 +37,3 @@
   - [ ] Ano de comissionamento e bacia hidrográfica / região.
   - [ ] Adição do atributo `sources: [{ label: 'ANEEL SIGA - CEG ...', url: '...', accessedAt: 'YYYY-MM-DD' }]`.
 
-### 2. Intercâmbios Regionais & Gargalos (`src/data/interchangeData.ts`)
-- **Fonte Obrigatória:** ONS — Procedimentos de Rede (Submódulo 23.3) & Relatórios de Planejamento da Operação.
-- **Checklist:**
-  - [ ] Nomenclatura operativa padronizada (FNESE, FNEN, FSECO, RSUL).
-  - [ ] Limites sazonais e operativos nominais em MW.
-  - [ ] Snapshot histórico de demanda: recorde do SIN em 106.532 MW (26/02/2025).
-  - [ ] Adição de `sources` com `accessedAt`.

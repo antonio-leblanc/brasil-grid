@@ -40,8 +40,7 @@ export interface RegionalInterchange {
   interfaceCoordinates: [number, number]; // [lon, lat] Ponto central geográfico da fronteira
   pathCoordinates: [number, number][]; // Polilinha que representa o corredor no mapa
   bottleneck: BottleneckDetail;
-  // Optional until the interchange audit is finished; see docs/code-health.md
-  sources?: SourceRef[];
+  sources: SourceRef[];
   hourlyProfile24h: HourlyInterchangePoint[];
 }
 
@@ -58,7 +57,7 @@ export const regionalInterchanges: RegionalInterchange[] = [
   {
     id: 'NE_SECO',
     name: 'Fronteira Nordeste → Sudeste / Centro-Oeste',
-    shortCode: 'F-NE/SE',
+    shortCode: 'FNESE',
     fromSubsystem: 'NE',
     fromName: 'Nordeste',
     toSubsystem: 'SE_CO',
@@ -89,6 +88,18 @@ export const regionalInterchanges: RegionalInterchange[] = [
       mitigation: 'Construção de novos corredores de 500 kV leiloados (Lote 1 e 2 dos leilões de transmissão ONS/ANEEL), instalação de Compensadores Síncronos em subestações estratégicas do NE para sustentação de curto-circuito e BESS (Sistemas de Baterias) em grande escala.',
       technicalStandard: 'Procedimentos de Rede ONS — Submódulo 23.3 (Critérios de Estabilidade e Limites de Intercâmbio).'
     },
+    sources: [
+      {
+        label: 'ONS — Submódulo 23.3: Critérios para Estudos Elétricos e Limites de Intercâmbio',
+        url: 'https://www.ons.org.br/paginas/sobre-o-ons/procedimentos-de-rede/vigentes',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'ONS — Plano da Operação Elétrica do SIN (PAR/PEL)',
+        url: 'https://www.ons.org.br/AcervoDigitalDocumentosEPublicacoes/Plano%20da%20Operacao%20Eletrica_2024-2028.pdf',
+        accessedAt: '2026-09-24'
+      }
+    ],
     hourlyProfile24h: [
       { hour: 0, timeLabel: '00:00', flowMW: 4850, limitMW: 12500, saturationPct: 38.8 },
       { hour: 1, timeLabel: '01:00', flowMW: 4720, limitMW: 12500, saturationPct: 37.8 },
@@ -119,7 +130,7 @@ export const regionalInterchanges: RegionalInterchange[] = [
   {
     id: 'N_SECO',
     name: 'Fronteira Norte → Sudeste / Centro-Oeste',
-    shortCode: 'F-N/SE',
+    shortCode: 'FNSE',
     fromSubsystem: 'N',
     fromName: 'Norte',
     toSubsystem: 'SE_CO',
@@ -150,6 +161,18 @@ export const regionalInterchanges: RegionalInterchange[] = [
       mitigation: 'Controle de modulação de potência ativa nos conversores HVDC, sistemas de amortecimento de oscilações interárea (POD) e terceiro elo de transmissão planejado.',
       technicalStandard: 'Procedimentos de Rede ONS — Submódulo 23.4 (Operação de Bipolos de Corrente Contínua).'
     },
+    sources: [
+      {
+        label: 'ONS — Submódulo 23.4: Requisitos e Operação de Elos em Corrente Contínua',
+        url: 'https://www.ons.org.br/paginas/sobre-o-ons/procedimentos-de-rede/vigentes',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'ONS — Dados Abertos: Linhas de Transmissão e Bipolos de Belo Monte',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-24'
+      }
+    ],
     hourlyProfile24h: [
       { hour: 0, timeLabel: '00:00', flowMW: 7200, limitMW: 14000, saturationPct: 51.4 },
       { hour: 1, timeLabel: '01:00', flowMW: 7100, limitMW: 14000, saturationPct: 50.7 },
@@ -180,7 +203,7 @@ export const regionalInterchanges: RegionalInterchange[] = [
   {
     id: 'N_NE',
     name: 'Fronteira Norte ↔ Nordeste',
-    shortCode: 'F-N/NE',
+    shortCode: 'FNEN',
     fromSubsystem: 'N',
     fromName: 'Norte',
     toSubsystem: 'NE',
@@ -210,6 +233,18 @@ export const regionalInterchanges: RegionalInterchange[] = [
       mitigation: 'Compensação série capacitiva (FSC) nas linhas de 500 kV e sistemas automáticos de controle de tensão para absorção de reativo capacitivo em baixa carga.',
       technicalStandard: 'Procedimentos de Rede ONS — Diretrizes de Operação Interligação Norte-Nordeste.'
     },
+    sources: [
+      {
+        label: 'ONS — Submódulo 23.3: Critérios Operativos da Interligação Norte-Nordeste',
+        url: 'https://www.ons.org.br/paginas/sobre-o-ons/procedimentos-de-rede/vigentes',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'ONS — Relatório de Análise da Operação Interligação Norte-Nordeste',
+        url: 'https://dados.ons.org.br/dataset/intercambio-nacional',
+        accessedAt: '2026-09-24'
+      }
+    ],
     hourlyProfile24h: [
       { hour: 0, timeLabel: '00:00', flowMW: 1800, limitMW: 4800, saturationPct: 37.5 },
       { hour: 1, timeLabel: '01:00', flowMW: 1950, limitMW: 4800, saturationPct: 40.6 },
@@ -240,7 +275,7 @@ export const regionalInterchanges: RegionalInterchange[] = [
   {
     id: 'S_SECO',
     name: 'Fronteira Sul ↔ Sudeste / Centro-Oeste',
-    shortCode: 'F-S/SE',
+    shortCode: 'FSSE',
     fromSubsystem: 'S',
     fromName: 'Sul',
     toSubsystem: 'SE_CO',
@@ -271,6 +306,18 @@ export const regionalInterchanges: RegionalInterchange[] = [
       mitigation: 'Estabilizadores de Sistemas de Potência (PSS) ajustados nas UHEs de grande porte (Itaipu, Salto Caxias, Segredo, Itá) para amortecimento de oscilações, e novos circuitos 500 kV conectando o Paraná a São Paulo.',
       technicalStandard: 'Procedimentos de Rede ONS — Submódulo 23.5 (Interligação Sul-Sudeste).'
     },
+    sources: [
+      {
+        label: 'ONS — Submódulo 23.5: Interligação Sul-Sudeste e Controle de Oscilações Interárea',
+        url: 'https://www.ons.org.br/paginas/sobre-o-ons/procedimentos-de-rede/vigentes',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'ONS — Limites de Intercâmbio Operativo Recebimento Sul (RSUL / FSSE)',
+        url: 'https://dados.ons.org.br/dataset/intercambio-nacional',
+        accessedAt: '2026-09-24'
+      }
+    ],
     hourlyProfile24h: [
       { hour: 0, timeLabel: '00:00', flowMW: 1450, limitMW: 8000, saturationPct: 18.1 },
       { hour: 1, timeLabel: '01:00', flowMW: 2450, limitMW: 8000, saturationPct: 30.6 },
