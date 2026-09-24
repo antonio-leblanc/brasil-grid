@@ -39,7 +39,7 @@ export const sinDossiers: SinDossier[] = [
       },
       {
         label: 'Atuação do ERAC (Alívio de Carga)',
-        formula: 'f < 59.50 Hz  →  Corte escalonado de 5% a 25% da carga em 5 estágios',
+        formula: 'f ≤ 58,5 / 58,2 / 57,9 / 57,7 / 57,5 Hz  →  cortes de 5 / 6 / 7 / 8 / 9% (até 35% da carga)',
         explanation:
           'Quando a frequência cruza os limiares de segurança, os relés de subfrequência do ERAC desconectam alimentadores de distribuição automaticamente em menos de 200 ms para salvar o sistema de um colapso completo (blackout total).'
       }

@@ -35,7 +35,7 @@ export const FrequencyStripChart: React.FC<FrequencyStripChartProps> = ({
     ctx.scale(dpr, dpr);
 
     // Layout partitioning:
-    // Top 60%: Frequency scope (58.5 Hz to 61.5 Hz)
+    // Top 60%: Frequency scope (57.0 Hz to 61.0 Hz)
     // Bottom 40%: Power balance scope (Gen vs Load in GW)
     const padLeft = 45;
     const padRight = 15;
@@ -54,18 +54,17 @@ export const FrequencyStripChart: React.FC<FrequencyStripChartProps> = ({
     ctx.fillRect(0, 0, width, height);
 
     // Draw Frequency Grid (Top)
-    const freqMin = 58.5;
-    const freqMax = 61.5;
+    // Skewed low because underfrequency (ERAC) is the dominant failure mode; overfrequency is capped by P(f)
+    const freqMin = 57.0;
+    const freqMax = 61.0;
     const getFreqY = (hz: number) => padTop + freqH - ((hz - freqMin) / (freqMax - freqMin)) * freqH;
 
     const freqLevels = [
-      { hz: 61.0, color: '#475569', dash: [2, 3], label: '61.0' },
       { hz: 60.5, color: '#f59e0b', dash: [3, 3], label: '60.5' },
-      { hz: 60.1, color: '#334155', dash: [2, 2], label: '60.1' },
       { hz: 60.0, color: '#10b981', dash: [], label: '60.00' },
-      { hz: 59.9, color: '#334155', dash: [2, 2], label: '59.9' },
-      { hz: 59.5, color: '#ef4444', dash: [4, 3], label: '59.50 (ERAC)' },
-      { hz: 59.0, color: '#475569', dash: [2, 3], label: '59.0' }
+      { hz: 59.5, color: '#475569', dash: [2, 3], label: '59.5' },
+      { hz: 58.5, color: '#ef4444', dash: [4, 3], label: '58.5 (ERAC)' },
+      { hz: 57.5, color: '#ef4444', dash: [2, 3], label: '57.5' }
     ];
 
     ctx.font = '9px monospace';
@@ -81,7 +80,7 @@ export const FrequencyStripChart: React.FC<FrequencyStripChartProps> = ({
       ctx.lineTo(padLeft + availableW, y);
       ctx.stroke();
 
-      ctx.fillStyle = lvl.hz === 60.0 ? '#10b981' : lvl.hz === 59.5 ? '#ef4444' : '#64748b';
+      ctx.fillStyle = lvl.hz === 60.0 ? '#10b981' : lvl.hz <= 58.5 ? '#ef4444' : '#64748b';
       ctx.fillText(lvl.label, padLeft - 6, y + 3);
     }
     ctx.setLineDash([]);

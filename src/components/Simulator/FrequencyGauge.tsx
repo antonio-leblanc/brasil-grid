@@ -1,5 +1,5 @@
 import React from 'react';
-import { F_NOMINAL } from '../../services/gridPhysics';
+import { ERAC_STAGES, F_NOMINAL, OVERFREQUENCY_ALERT_HZ } from '../../services/gridPhysics';
 
 interface FrequencyGaugeProps {
   frequencyHz: number;
@@ -18,9 +18,9 @@ export const FrequencyGauge: React.FC<FrequencyGaugeProps> = ({
   isBlackout,
   isOverfrequencyAlert
 }) => {
-  // Gauge scale: 58.00 Hz to 62.00 Hz (4.00 Hz total span)
-  const minF = 58.0;
-  const maxF = 62.0;
+  // Symmetric around 60 Hz and wide enough to show every ERAC stage down to the collapse zone
+  const minF = 57.0;
+  const maxF = 63.0;
   const clampedF = Math.max(minF, Math.min(maxF, frequencyHz));
 
   // Semicircle geometry: -135deg (minF) to +135deg (maxF) -> 270deg total
@@ -53,11 +53,20 @@ export const FrequencyGauge: React.FC<FrequencyGaugeProps> = ({
   const hzToAngle = (hz: number) => minAngle + ((hz - minF) / (maxF - minF)) * angleSpan;
 
   // Arc segments
-  const arcErac = describeArc(cx, cy, r, hzToAngle(58.0), hzToAngle(59.5)); // Red
-  const arcWarnLow = describeArc(cx, cy, r, hzToAngle(59.5), hzToAngle(59.9)); // Amber
-  const arcNormal = describeArc(cx, cy, r, hzToAngle(59.9), hzToAngle(60.1)); // Emerald
-  const arcWarnHigh = describeArc(cx, cy, r, hzToAngle(60.1), hzToAngle(60.5)); // Amber
-  const arcOver = describeArc(cx, cy, r, hzToAngle(60.5), hzToAngle(62.0)); // Red
+  const eracStartHz = ERAC_STAGES[0].thresholdHz;
+  const arcErac = describeArc(cx, cy, r, hzToAngle(minF), hzToAngle(eracStartHz));
+  const arcWarnLow = describeArc(cx, cy, r, hzToAngle(eracStartHz), hzToAngle(59.9));
+  const arcNormal = describeArc(cx, cy, r, hzToAngle(59.9), hzToAngle(60.1));
+  const arcWarnHigh = describeArc(cx, cy, r, hzToAngle(60.1), hzToAngle(OVERFREQUENCY_ALERT_HZ));
+  const arcOver = describeArc(cx, cy, r, hzToAngle(OVERFREQUENCY_ALERT_HZ), hzToAngle(maxF));
+
+  const scaleLabels = [
+    { hz: 57.5, className: 'fill-red-400' },
+    { hz: eracStartHz, className: 'fill-red-400' },
+    { hz: 60.0, className: 'fill-emerald-300 font-bold' },
+    { hz: 61.5, className: 'fill-amber-400' },
+    { hz: 62.5, className: 'fill-red-400' }
+  ];
 
   // Needle tip
   const needleTip = polarToCartesian(cx, cy, r - 12, angle);
@@ -113,7 +122,7 @@ export const FrequencyGauge: React.FC<FrequencyGaugeProps> = ({
           <path d={arcOver} fill="none" stroke="#ef4444" strokeWidth="8" strokeOpacity="0.8" />
 
           {/* Reference Ticks */}
-          {[58.5, 59.0, 59.5, 60.0, 60.5, 61.0, 61.5].map((tick) => {
+          {[57.5, 58.0, 58.5, 59.0, 59.5, 60.0, 60.5, 61.0, 61.5, 62.0, 62.5].map((tick) => {
             const pInner = polarToCartesian(cx, cy, r - 7, hzToAngle(tick));
             const pOuter = polarToCartesian(cx, cy, r + 7, hzToAngle(tick));
             const isCenter = tick === 60.0;
@@ -132,21 +141,14 @@ export const FrequencyGauge: React.FC<FrequencyGaugeProps> = ({
           })}
 
           {/* Scale Numeric Labels */}
-          <text x="32" y="150" textAnchor="middle" className="text-[9px] fill-red-400 font-mono">
-            58.5
-          </text>
-          <text x="65" y="65" textAnchor="middle" className="text-[9px] fill-amber-400 font-mono">
-            59.5
-          </text>
-          <text x="120" y="24" textAnchor="middle" className="text-[10px] fill-emerald-300 font-bold font-mono">
-            60.0
-          </text>
-          <text x="175" y="65" textAnchor="middle" className="text-[9px] fill-amber-400 font-mono">
-            60.5
-          </text>
-          <text x="208" y="150" textAnchor="middle" className="text-[9px] fill-red-400 font-mono">
-            61.5
-          </text>
+          {scaleLabels.map(({ hz, className }) => {
+            const p = polarToCartesian(cx, cy, r + 17, hzToAngle(hz));
+            return (
+              <text key={hz} x={p.x} y={p.y + 3} textAnchor="middle" className={`text-[9px] font-mono ${className}`}>
+                {hz.toFixed(1)}
+              </text>
+            );
+          })}
 
           {/* Needle */}
           <line

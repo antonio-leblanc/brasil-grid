@@ -14,8 +14,10 @@ import type {
   HistoryPoint
 } from '../../services/gridPhysics';
 import {
+  ERAC_STAGES,
+  advanceSimulation,
+  applyGeneratorTrip,
   createInitialSimulation,
-  stepSimulation,
   formatSimClock
 } from '../../services/gridPhysics';
 import { FrequencyGauge } from './FrequencyGauge';
@@ -35,12 +37,14 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
   const [simState, setSimState] = useState<GridSimulationState>(() => createInitialSimulation('pato'));
   const [history, setHistory] = useState<HistoryPoint[]>([]);
 
-  // Simulation physics loop refs
+  // The ref is the source of truth; React state only mirrors it, so operator commands issued between
+  // frames are never overwritten by a physics step computed from a stale snapshot
   const stateRef = useRef<GridSimulationState>(simState);
 
-  useEffect(() => {
-    stateRef.current = simState;
-  }, [simState]);
+  const updateSim = useCallback((update: (prev: GridSimulationState) => GridSimulationState) => {
+    stateRef.current = update(stateRef.current);
+    setSimState(stateRef.current);
+  }, []);
 
   const lastFrameTimeRef = useRef<number>(0);
   const animFrameIdRef = useRef<number | null>(null);
@@ -60,8 +64,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
   // Reset simulation function
   const handleReset = useCallback((scenario: GridSimulationState['scenarioId'] = scenarioId) => {
     const fresh = createInitialSimulation(scenario);
-    setSimState(fresh);
-    stateRef.current = fresh;
+    updateSim(() => fresh);
     setHistory([
       {
         timeSeconds: fresh.simTimeSeconds,
@@ -73,7 +76,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
         inertiaH: fresh.equivalentInertiaH
       }
     ]);
-  }, [scenarioId]);
+  }, [scenarioId, updateSim]);
 
   // Handle scenario switch
   const handleSelectScenario = (newScenario: GridSimulationState['scenarioId']) => {
@@ -83,7 +86,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
 
   // Speed multiplier update
   const handleSetSpeed = (speed: number) => {
-    setSimState((prev) => ({
+    updateSim((prev) => ({
       ...prev,
       speedMultiplier: speed
     }));
@@ -91,64 +94,42 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
 
   // Dispatch adjustments
   const handleUpdateHydroTarget = (targetMW: number) => {
-    setSimState((prev) => ({
+    updateSim((prev) => ({
       ...prev,
       hydro: { ...prev.hydro, targetMW }
     }));
   };
 
   const handleUpdateThermalTarget = (targetMW: number) => {
-    setSimState((prev) => ({
+    updateSim((prev) => ({
       ...prev,
       thermal: { ...prev.thermal, targetMW }
     }));
   };
 
   const handleUpdateSolarCurtailment = (percent: number) => {
-    setSimState((prev) => ({
+    updateSim((prev) => ({
       ...prev,
       solar: { ...prev.solar, curtailmentPercent: percent }
     }));
   };
 
   const handleUpdateWindCurtailment = (percent: number) => {
-    setSimState((prev) => ({
+    updateSim((prev) => ({
       ...prev,
       wind: { ...prev.wind, curtailmentPercent: percent }
     }));
   };
 
   const handleTogglePrimaryControl = () => {
-    setSimState((prev) => ({
+    updateSim((prev) => ({
       ...prev,
       isPrimaryControlEnabled: !prev.isPrimaryControlEnabled
     }));
   };
 
-  // Sudden trip event (-2800 MW instantaneous drop)
   const handleTriggerGeneratorTrip = () => {
-    setSimState((prev) => {
-      const cutMW = 2800;
-      const hydroNewActual = Math.max(0, prev.hydro.actualMW - cutMW);
-      const events = [
-        {
-          id: `trip_manual_${Date.now()}`,
-          timestampSeconds: prev.simTimeSeconds,
-          timeLabel: formatSimClock(prev.simTimeSeconds),
-          type: 'critical' as const,
-          message: `EVENTO DE CONTINGÊNCIA N-2: Trip repentino de 2.800 MW nas usinas hidroelétricas estruturantes!`
-        },
-        ...prev.events
-      ];
-      return {
-        ...prev,
-        hydro: {
-          ...prev.hydro,
-          actualMW: hydroNewActual
-        },
-        events: events.slice(0, 40)
-      };
-    });
+    updateSim((prev) => applyGeneratorTrip(prev, 2800));
   };
 
   // Continuous physics engine ticker (runs only when modal is open)
@@ -162,11 +143,8 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
       const deltaMs = now - lastFrameTimeRef.current;
       lastFrameTimeRef.current = now;
 
-      // Cap deltaMs to avoid simulation explosions on tab switch
-      const dtSeconds = Math.min(deltaMs / 1000, 0.1);
-
-      if (dtSeconds > 0 && stateRef.current.speedMultiplier > 0 && !stateRef.current.isBlackout) {
-        const nextState = stepSimulation(stateRef.current, dtSeconds);
+      if (stateRef.current.speedMultiplier > 0 && !stateRef.current.isBlackout) {
+        const nextState = advanceSimulation(stateRef.current, deltaMs / 1000);
         stateRef.current = nextState;
         setSimState(nextState);
 
@@ -484,13 +462,13 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
               <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
                 A aceleração do rotor de todo o parque gerador é regida por:{' '}
                 <code className="text-cyan-300 font-mono text-[10px] bg-slate-900 px-1 py-0.5 rounded">
-                  df/dt = (f0 / 2*Heq) * ((P_ger - P_carga)/S_base)
+                  df/dt = f0 · (P_ger − P_carga(f)) / (2 · Σ H·S)
                 </code>
-                . Quando a geração de hidrelétricas síncronas é substituída por solar/eólica (fontes baseadas em inversores IBR), a inércia mecânica real cai de ~4.5s para ~1.5s, dobrando o RoCoF e a sensibilidade a qualquer degrau de carga.
+                , em que Σ H·S é a energia cinética das máquinas síncronas (MW·s). Quando a geração de hidrelétricas síncronas é substituída por solar/eólica (fontes baseadas em inversores IBR), a inércia mecânica real cai de ~4.5s para ~1.5s, dobrando o RoCoF e a sensibilidade a qualquer degrau de carga.
               </p>
               <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-900">
                 <span>Norma ONS: Faixa normal 59.90 Hz - 60.10 Hz</span>
-                <span>ERAC 1: 59.50 Hz (-5% Carga)</span>
+                <span>ERAC: {ERAC_STAGES[0].thresholdHz.toFixed(1)}–{ERAC_STAGES[ERAC_STAGES.length - 1].thresholdHz.toFixed(1)} Hz (5 estágios, até −35% da carga)</span>
               </div>
             </div>
           </div>

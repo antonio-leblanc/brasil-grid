@@ -26,17 +26,21 @@ export interface PlantFleetState {
 export interface GridSimulationState {
   // Simulation clock in seconds from midnight (e.g. 17.5 * 3600 = 17:30)
   simTimeSeconds: number;
-  // Real clock delta elapsed
+  // Simulated seconds since scenario start
   elapsedSeconds: number;
   // Speed multiplier: 0 (paused), 1x, 2x, 5x, 10x
   speedMultiplier: number;
+  // Carries sub-step time between frames so trajectories do not depend on display refresh rate
+  integratorRemainderSeconds: number;
 
   // Active frequency in Hz
   frequencyHz: number;
   // Rate of Change of Frequency in Hz/s
   rocofHzS: number;
-  // Equivalent inertia constant H_eq in seconds
+  // Equivalent inertia constant H_eq in seconds, on the total generation base
   equivalentInertiaH: number;
+  // Rotating kinetic energy of synchronous machines in MW·s
+  kineticEnergyMWs: number;
 
   // Generation fleet state
   hydro: PlantFleetState;
@@ -50,10 +54,11 @@ export interface GridSimulationState {
   shedLoadMW: number; // Cut by ERAC
 
   // Protection & stability
-  eracStage: 0 | 1 | 2 | 3;
+  eracStage: number;
   isBlackout: boolean;
   blackoutReason?: string;
   isOverfrequencyAlert: boolean;
+  isIbrFrequencyWattActive: boolean;
 
   // Primary Frequency Control (Droop Governor) toggle
   isPrimaryControlEnabled: boolean;
@@ -83,10 +88,56 @@ export interface HistoryPoint {
   inertiaH: number;
 }
 
-// Nominal Constants
-export const F_NOMINAL = 60.00;
-export const SYSTEM_BASE_MVA = 100000; // 100 GW SIN reference base
-export const LOAD_DAMPING_D = 1.5; // 1.5% load damping per Hz deviation (0.015 p.u./Hz)
+export const F_NOMINAL = 60.0;
+// Load self-regulation: 1% frequency drop reduces load by D%
+export const LOAD_DAMPING_D = 1.5;
+
+export const SIM_STEP_SECONDS = 0.01;
+// Caps a single frame so a backgrounded tab does not dump minutes of simulation at once
+export const MAX_FRAME_SECONDS = 0.1;
+
+export const GOVERNOR_DROOP_R = 0.05;
+// Share of the hydro fleet under free governor regulation; the rest runs on fixed setpoints
+export const GOVERNOR_PARTICIPATION = 0.6;
+export const PRIMARY_RESERVE_UP_MW = 6000;
+export const PRIMARY_RESERVE_DOWN_MW = 5000;
+
+// Grid-code P(f) curtailment: inverters shed active power above this threshold
+export const IBR_FREQUENCY_WATT_START_HZ = 60.2;
+export const IBR_FREQUENCY_WATT_DROOP = 0.05;
+
+export interface EracStage {
+  thresholdHz: number;
+  shedPercent: number;
+}
+
+// ONS uniform ERAC settings (SE/CO, S, NE), "Análise do desempenho do ERAC — Perturbação de 15/08/2023", ONS.
+// Stage timers (~100–200 ms relay pickup) are not modelled.
+export const ERAC_STAGES: readonly EracStage[] = [
+  { thresholdHz: 58.5, shedPercent: 5 },
+  { thresholdHz: 58.2, shedPercent: 6 },
+  { thresholdHz: 57.9, shedPercent: 7 },
+  { thresholdHz: 57.7, shedPercent: 8 },
+  { thresholdHz: 57.5, shedPercent: 9 }
+];
+
+// Didactic collapse limits: below the last ERAC stage, thermal and hydro unit protections trip in cascade
+export const UNDERFREQUENCY_COLLAPSE_HZ = 56.5;
+export const OVERFREQUENCY_COLLAPSE_HZ = 62.5;
+export const OVERFREQUENCY_ALERT_HZ = 60.5;
+
+export function eracShedPercent(stage: number): number {
+  return ERAC_STAGES.slice(0, stage).reduce((sum, s) => sum + s.shedPercent, 0);
+}
+
+export function computeKineticEnergyMWs(hydro: PlantFleetState, thermal: PlantFleetState): number {
+  // Aggregate fleets are assumed committed at nominal loading, so online MVA tracks dispatched MW
+  return hydro.actualMW * hydro.inertiaH + thermal.actualMW * thermal.inertiaH;
+}
+
+function totalGeneration(fleet: Pick<GridSimulationState, 'hydro' | 'thermal' | 'solar' | 'wind'>): number {
+  return fleet.hydro.actualMW + fleet.thermal.actualMW + fleet.solar.actualMW + fleet.wind.actualMW;
+}
 
 // Initial fleet configurations
 export function createInitialFleet(): {
@@ -171,20 +222,19 @@ export function calculateSolarPotentialAtTime(timeSeconds: number, maxCapacityMW
   return Math.min(maxCapacityMW, maxCapacityMW * 0.95 * bell);
 }
 
+// Hourly load shape normalized to the daily peak: overnight valley at 04h, afternoon plateau, evening peak at 19h
+const LOAD_PROFILE: readonly [hour: number, factor: number][] = [
+  [0, 0.78], [4, 0.66], [7, 0.76], [10, 0.89], [14, 0.95], [17, 0.94], [19, 1.0], [21, 0.95], [24, 0.78]
+];
+
 export function calculateLoadAtTime(timeSeconds: number, basePeakMW = 88000): number {
   const hours = ((timeSeconds % 86400) + 86400) % 86400 / 3600;
-  // 24h Brazilian load profile: valley at 04h (~58 GW), afternoon dip (~78 GW), peak at 19h30 (~88 GW)
-  const valley = basePeakMW * 0.65;
-  const eveningPeak = basePeakMW;
-  const normSin = Math.sin(((hours - 4) / 15.5) * Math.PI);
-  let load = valley + (eveningPeak - valley) * Math.max(0, normSin);
-
-  // Peak evening surge 17:30 to 20:30 (residential + commerce overlap)
-  if (hours >= 17.5 && hours <= 21.5) {
-    const eveningBoost = Math.sin(((hours - 17.5) / 4) * Math.PI) * (basePeakMW * 0.08);
-    load += eveningBoost;
-  }
-  return Math.round(load);
+  const upper = LOAD_PROFILE.findIndex(([h]) => h > hours);
+  const [h0, f0] = LOAD_PROFILE[upper - 1];
+  const [h1, f1] = LOAD_PROFILE[upper];
+  // Cosine interpolation keeps the curve's derivative continuous at each anchor hour
+  const t = (1 - Math.cos(((hours - h0) / (h1 - h0)) * Math.PI)) / 2;
+  return Math.round(basePeakMW * (f0 + (f1 - f0) * t));
 }
 
 export function createInitialSimulation(scenario: GridSimulationState['scenarioId'] = 'pato'): GridSimulationState {
@@ -195,12 +245,13 @@ export function createInitialSimulation(scenario: GridSimulationState['scenarioI
 
   if (scenario === 'pato') {
     simTimeSeconds = 17.5 * 3600; // 17:30:00
-    baseLoadMW = 78000;
+    baseLoadMW = calculateLoadAtTime(simTimeSeconds, 88000);
     const solarPot = calculateSolarPotentialAtTime(simTimeSeconds, fleet.solar.maxCapacityMW);
     fleet.solar.weatherPotentialMW = solarPot;
     fleet.solar.actualMW = solarPot;
     fleet.solar.targetMW = solarPot;
 
+    fleet.wind.weatherPotentialMW = 11000;
     fleet.wind.actualMW = 11000;
     fleet.wind.targetMW = 11000;
     fleet.thermal.actualMW = 10000;
@@ -218,8 +269,10 @@ export function createInitialSimulation(scenario: GridSimulationState['scenarioI
   } else if (scenario === 'trip_itaipu') {
     simTimeSeconds = 14.0 * 3600; // 14:00:00
     baseLoadMW = 82000;
+    fleet.solar.weatherPotentialMW = 20000;
     fleet.solar.actualMW = 20000;
     fleet.solar.targetMW = 20000;
+    fleet.wind.weatherPotentialMW = 10000;
     fleet.wind.actualMW = 10000;
     fleet.wind.targetMW = 10000;
     fleet.thermal.actualMW = 10000;
@@ -257,7 +310,7 @@ export function createInitialSimulation(scenario: GridSimulationState['scenarioI
       timestampSeconds: simTimeSeconds,
       timeLabel: formatSimClock(simTimeSeconds),
       type: 'alert',
-      message: 'Cenário Crítico: 78% da matriz em IBR (Solar/Eólica). Inércia do SIN reduzida para ~1.4s. Risco de alta volatilidade.'
+      message: 'Cenário Crítico: 78% da matriz em IBR (Solar/Eólica). Inércia equivalente do SIN reduzida para ~1,0 s. Risco de alta volatilidade.'
     });
   } else {
     // Livre / Sandbox
@@ -267,8 +320,10 @@ export function createInitialSimulation(scenario: GridSimulationState['scenarioI
     fleet.hydro.targetMW = 48000;
     fleet.thermal.actualMW = 10000;
     fleet.thermal.targetMW = 10000;
+    fleet.solar.weatherPotentialMW = 12000;
     fleet.solar.actualMW = 12000;
     fleet.solar.targetMW = 12000;
+    fleet.wind.weatherPotentialMW = 10000;
     fleet.wind.actualMW = 10000;
     fleet.wind.targetMW = 10000;
 
@@ -281,19 +336,18 @@ export function createInitialSimulation(scenario: GridSimulationState['scenarioI
     });
   }
 
-  // Calculate initial inertia
-  const totalGen = fleet.hydro.actualMW + fleet.thermal.actualMW + fleet.solar.actualMW + fleet.wind.actualMW;
-  const eqH = totalGen > 0
-    ? (fleet.hydro.actualMW * fleet.hydro.inertiaH + fleet.thermal.actualMW * fleet.thermal.inertiaH) / totalGen
-    : 4.0;
+  const kineticEnergyMWs = computeKineticEnergyMWs(fleet.hydro, fleet.thermal);
+  const totalGen = totalGeneration(fleet);
 
   return {
     simTimeSeconds,
     elapsedSeconds: 0,
     speedMultiplier: 1,
+    integratorRemainderSeconds: 0,
     frequencyHz: F_NOMINAL,
     rocofHzS: 0,
-    equivalentInertiaH: Number(eqH.toFixed(2)),
+    equivalentInertiaH: totalGen > 0 ? kineticEnergyMWs / totalGen : 0,
+    kineticEnergyMWs,
     hydro: fleet.hydro,
     thermal: fleet.thermal,
     solar: fleet.solar,
@@ -304,204 +358,171 @@ export function createInitialSimulation(scenario: GridSimulationState['scenarioI
     eracStage: 0,
     isBlackout: false,
     isOverfrequencyAlert: false,
+    isIbrFrequencyWattActive: false,
     isPrimaryControlEnabled: true,
     scenarioId: scenario,
     events
   };
 }
 
+function pushEvent(
+  events: SimulationEvent[],
+  kind: string,
+  simTimeSeconds: number,
+  type: SimulationEvent['type'],
+  message: string
+): void {
+  events.unshift({
+    id: `${kind}_${simTimeSeconds.toFixed(2)}`,
+    timestampSeconds: simTimeSeconds,
+    timeLabel: formatSimClock(simTimeSeconds),
+    type,
+    message
+  });
+}
+
+function rampToward(current: number, target: number, maxRateMWs: number, dtSeconds: number): number {
+  const maxDelta = maxRateMWs * dtSeconds;
+  const diff = target - current;
+  if (Math.abs(diff) <= maxDelta) return target;
+  return current + Math.sign(diff) * maxDelta;
+}
+
+function availableIbrMW(fleet: PlantFleetState, derate: number): number {
+  const potential = fleet.weatherPotentialMW ?? fleet.maxCapacityMW;
+  const curtailRatio = 1 - (fleet.curtailmentPercent ?? 0) / 100;
+  return potential * curtailRatio * (1 - derate);
+}
+
+export function frequencyWattDerate(frequencyHz: number): number {
+  if (frequencyHz <= IBR_FREQUENCY_WATT_START_HZ) return 0;
+  const deviationPu = (frequencyHz - IBR_FREQUENCY_WATT_START_HZ) / F_NOMINAL;
+  return Math.min(1, deviationPu / IBR_FREQUENCY_WATT_DROOP);
+}
+
+export function primaryGovernorOffsetMW(frequencyHz: number, hydroMaxCapacityMW: number): number {
+  const deviationPu = (frequencyHz - F_NOMINAL) / F_NOMINAL;
+  const deltaMW = (-deviationPu / GOVERNOR_DROOP_R) * hydroMaxCapacityMW * GOVERNOR_PARTICIPATION;
+  return Math.max(-PRIMARY_RESERVE_DOWN_MW, Math.min(PRIMARY_RESERVE_UP_MW, deltaMW));
+}
+
+/** Integrates one fixed step of the aggregated single-bus swing equation (forward Euler). */
 export function stepSimulation(state: GridSimulationState, dtSeconds: number): GridSimulationState {
-  if (state.isBlackout || state.speedMultiplier === 0 || dtSeconds <= 0) {
+  if (state.isBlackout || dtSeconds <= 0) {
     return state;
   }
 
-  const effectiveDt = dtSeconds * state.speedMultiplier;
-  const newSimTime = state.simTimeSeconds + effectiveDt;
-  const newElapsed = state.elapsedSeconds + effectiveDt;
+  const newSimTime = state.simTimeSeconds + dtSeconds;
+  const newElapsed = state.elapsedSeconds + dtSeconds;
   const events = [...state.events];
 
-  // 1. Dynamic weather & scenario updates
   let currentBaseLoad = state.baseLoadMW;
   const newSolar = { ...state.solar };
   const newWind = { ...state.wind };
 
   if (state.scenarioId === 'pato') {
-    // Dynamic solar depletion and load increase according to Brasília daylight
-    const pot = calculateSolarPotentialAtTime(newSimTime, newSolar.maxCapacityMW);
-    newSolar.weatherPotentialMW = pot;
-    const curtailed = pot * (1 - (newSolar.curtailmentPercent || 0) / 100);
-    newSolar.targetMW = curtailed;
-
+    newSolar.weatherPotentialMW = calculateSolarPotentialAtTime(newSimTime, newSolar.maxCapacityMW);
+    newSolar.targetMW = newSolar.weatherPotentialMW * (1 - (newSolar.curtailmentPercent ?? 0) / 100);
     currentBaseLoad = calculateLoadAtTime(newSimTime, 88000);
   } else if (state.scenarioId === 'alta_renovavel') {
-    // Wind gusts / slight stochastic variation
     const windNoise = Math.sin(newElapsed * 0.15) * 600;
-    const potWind = Math.min(newWind.maxCapacityMW, Math.max(10000, 26000 + windNoise));
-    newWind.weatherPotentialMW = potWind;
-    newWind.targetMW = potWind * (1 - (newWind.curtailmentPercent || 0) / 100);
+    newWind.weatherPotentialMW = Math.min(newWind.maxCapacityMW, Math.max(10000, 26000 + windNoise));
+    newWind.targetMW = newWind.weatherPotentialMW * (1 - (newWind.curtailmentPercent ?? 0) / 100);
   }
 
-  // 2. Primary Frequency Governor Response (Droop R = 5%)
-  let hydroGovernorOffsetMW = 0;
-  if (state.isPrimaryControlEnabled) {
-    const freqDev = state.frequencyHz - F_NOMINAL;
-    // If f < 60 Hz, governor injects power: deltaP = - (1/R) * (df/f0) * P_nom
-    // Droop R = 0.05 -> df = -0.1 Hz -> df/f0 = -0.00166 -> deltaP_pu = +0.033 -> ~+2500 MW
-    const droopR = 0.05;
-    const deltaPu = -(freqDev / F_NOMINAL) / droopR;
-    hydroGovernorOffsetMW = Math.max(-5000, Math.min(6000, deltaPu * state.hydro.maxCapacityMW * 0.6));
-  }
-
-  // 3. Ramp generator outputs toward setpoints
-  const stepRamp = (current: number, target: number, maxRateMWs: number) => {
-    const maxDelta = maxRateMWs * effectiveDt;
-    const diff = target - current;
-    if (Math.abs(diff) <= maxDelta) return target;
-    return current + Math.sign(diff) * maxDelta;
-  };
+  const hydroGovernorOffsetMW = state.isPrimaryControlEnabled
+    ? primaryGovernorOffsetMW(state.frequencyHz, state.hydro.maxCapacityMW)
+    : 0;
 
   const newHydro = { ...state.hydro };
   const hydroEffectiveTarget = Math.max(
     newHydro.minTechnicalMW,
     Math.min(newHydro.maxCapacityMW, newHydro.targetMW + hydroGovernorOffsetMW)
   );
-  newHydro.actualMW = stepRamp(newHydro.actualMW, hydroEffectiveTarget, newHydro.rampRateMWs);
+  newHydro.actualMW = rampToward(newHydro.actualMW, hydroEffectiveTarget, newHydro.rampRateMWs, dtSeconds);
 
   const newThermal = { ...state.thermal };
-  // Thermal plants cannot operate below minTechnicalMW when online
   const thermalEffectiveTarget = newThermal.isOnline
     ? Math.max(newThermal.minTechnicalMW, Math.min(newThermal.maxCapacityMW, newThermal.targetMW))
     : 0;
-  newThermal.actualMW = stepRamp(newThermal.actualMW, thermalEffectiveTarget, newThermal.rampRateMWs);
+  newThermal.actualMW = rampToward(newThermal.actualMW, thermalEffectiveTarget, newThermal.rampRateMWs, dtSeconds);
 
-  // Solar and Wind inverters follow curtailment / target fast
-  const solarMaxAvail = newSolar.weatherPotentialMW !== undefined ? newSolar.weatherPotentialMW : newSolar.maxCapacityMW;
-  const solarCurtailRatio = 1 - (newSolar.curtailmentPercent || 0) / 100;
-  const solarCap = solarMaxAvail * solarCurtailRatio;
-  newSolar.actualMW = stepRamp(newSolar.actualMW, Math.min(newSolar.targetMW, solarCap), newSolar.rampRateMWs);
+  const ibrDerate = frequencyWattDerate(state.frequencyHz);
+  newSolar.actualMW = rampToward(
+    newSolar.actualMW,
+    Math.min(newSolar.targetMW, availableIbrMW(newSolar, ibrDerate)),
+    newSolar.rampRateMWs,
+    dtSeconds
+  );
+  newWind.actualMW = rampToward(
+    newWind.actualMW,
+    Math.min(newWind.targetMW, availableIbrMW(newWind, ibrDerate)),
+    newWind.rampRateMWs,
+    dtSeconds
+  );
 
-  const windMaxAvail = newWind.weatherPotentialMW !== undefined ? newWind.weatherPotentialMW : newWind.maxCapacityMW;
-  const windCurtailRatio = 1 - (newWind.curtailmentPercent || 0) / 100;
-  const windCap = windMaxAvail * windCurtailRatio;
-  newWind.actualMW = stepRamp(newWind.actualMW, Math.min(newWind.targetMW, windCap), newWind.rampRateMWs);
-
-  // Total generation
-  const totalGenMW = (newHydro.actualMW + newThermal.actualMW + newSolar.actualMW + newWind.actualMW);
-
-  // 4. Calculate Dynamic Equivalent Inertia H_eq
-  // Synchronous generators contribute mechanical inertia; IBRs contribute zero
-  const syncInertiaSum = newHydro.actualMW * newHydro.inertiaH + newThermal.actualMW * newThermal.inertiaH;
-  const equivalentInertiaH = totalGenMW > 0
-    ? Math.max(1.0, syncInertiaSum / totalGenMW)
-    : 4.0;
-
-  // 5. ERAC (Underfrequency Load Shedding Stages)
-  let eracStage = state.eracStage;
-  let shedPercent = 0;
-  if (eracStage >= 1) shedPercent += 5;
-  if (eracStage >= 2) shedPercent += 5;
-  if (eracStage >= 3) shedPercent += 5;
-
-  const timeLabel = formatSimClock(newSimTime);
-
-  if (state.frequencyHz <= 59.50 && eracStage === 0) {
-    eracStage = 1;
-    shedPercent = 5;
-    events.unshift({
-      id: `erac_1_${newElapsed.toFixed(0)}`,
-      timestampSeconds: newSimTime,
-      timeLabel,
-      type: 'critical',
-      message: 'ERAC Estágio 1 Acionado (f <= 59.50 Hz): Corte compulsório de 5% da carga do SIN.'
-    });
-  } else if (state.frequencyHz <= 59.30 && eracStage === 1) {
-    eracStage = 2;
-    shedPercent = 10;
-    events.unshift({
-      id: `erac_2_${newElapsed.toFixed(0)}`,
-      timestampSeconds: newSimTime,
-      timeLabel,
-      type: 'critical',
-      message: 'ERAC Estágio 2 Acionado (f <= 59.30 Hz): Corte adicional de 5% da carga (10% total).'
-    });
-  } else if (state.frequencyHz <= 59.10 && eracStage === 2) {
-    eracStage = 3;
-    shedPercent = 15;
-    events.unshift({
-      id: `erac_3_${newElapsed.toFixed(0)}`,
-      timestampSeconds: newSimTime,
-      timeLabel,
-      type: 'critical',
-      message: 'ERAC Estágio 3 Acionado (f <= 59.10 Hz): Corte de emergência de 15% da carga total.'
-    });
+  const isIbrFrequencyWattActive = ibrDerate > 0;
+  if (isIbrFrequencyWattActive && !state.isIbrFrequencyWattActive) {
+    pushEvent(events, 'ibr_pf_on', newSimTime, 'alert',
+      `Sobrefrequência (f > ${IBR_FREQUENCY_WATT_START_HZ.toFixed(1)} Hz): inversores solares/eólicos reduzem potência ativa pela curva P(f).`);
+  } else if (!isIbrFrequencyWattActive && state.isIbrFrequencyWattActive) {
+    pushEvent(events, 'ibr_pf_off', newSimTime, 'success',
+      'Frequência normalizada: inversores liberam a potência ativa retida pela curva P(f).');
   }
 
-  // Actual load with ERAC shedding
-  const shedLoadMW = Math.round(currentBaseLoad * (shedPercent / 100));
+  const totalGenMW = newHydro.actualMW + newThermal.actualMW + newSolar.actualMW + newWind.actualMW;
+  const kineticEnergyMWs = computeKineticEnergyMWs(newHydro, newThermal);
+  const equivalentInertiaH = totalGenMW > 0 ? kineticEnergyMWs / totalGenMW : 0;
+
+  let eracStage = state.eracStage;
+  while (eracStage < ERAC_STAGES.length && state.frequencyHz <= ERAC_STAGES[eracStage].thresholdHz) {
+    const stage = ERAC_STAGES[eracStage];
+    eracStage += 1;
+    pushEvent(events, `erac_${eracStage}`, newSimTime, 'critical',
+      `ERAC Estágio ${eracStage} (f ≤ ${stage.thresholdHz.toFixed(1)} Hz): corte de ${stage.shedPercent}% da carga (${eracShedPercent(eracStage)}% acumulado).`);
+  }
+
+  const shedLoadMW = Math.round(currentBaseLoad * (eracShedPercent(eracStage) / 100));
   const actualLoadMW = currentBaseLoad - shedLoadMW;
 
-  // 6. Swing Equation Integration:
-  // df/dt = (f0 / 2*H_eq) * (P_gen - P_load)/S_base - D * (f - f0)
-  const powerMismatchMW = totalGenMW - actualLoadMW;
-  const mismatchPu = powerMismatchMW / SYSTEM_BASE_MVA;
-  const freqDeviation = state.frequencyHz - F_NOMINAL;
-  const dampingTorque = LOAD_DAMPING_D * (freqDeviation / F_NOMINAL); // damping
+  const freqDeviationPu = (state.frequencyHz - F_NOMINAL) / F_NOMINAL;
+  const frequencyDependentLoadMW = actualLoadMW * (1 + LOAD_DAMPING_D * freqDeviationPu);
+  const powerMismatchMW = totalGenMW - frequencyDependentLoadMW;
 
-  const rocofHzS = (F_NOMINAL / (2 * equivalentInertiaH)) * mismatchPu - dampingTorque;
-
-  let newFreq = state.frequencyHz + rocofHzS * effectiveDt;
-
-  // 7. Catastrophic Protection Violations
   let isBlackout = false;
   let blackoutReason: string | undefined;
+  let rocofHzS = 0;
+  let newFreq = state.frequencyHz;
 
-  if (newFreq <= 58.50) {
+  if (kineticEnergyMWs <= 0) {
     isBlackout = true;
-    blackoutReason = 'Colapso de Subfrequência (f < 58.50 Hz). Atuação de proteção de subtensão e trip em cascata das turbinas síncronas.';
-    events.unshift({
-      id: `blackout_sub_${newElapsed.toFixed(0)}`,
-      timestampSeconds: newSimTime,
-      timeLabel,
-      type: 'critical',
-      message: 'APAGÃO SISTÊMICO: Frequência atingiu 58.50 Hz. Desconexão geral de geradores.'
-    });
-  } else if (newFreq >= 61.50) {
-    isBlackout = true;
-    blackoutReason = 'Colapso de Sobrefrequência (f > 61.50 Hz). Sobretensão crítica e trip por proteção de sobrevelocidade mecânica.';
-    events.unshift({
-      id: `blackout_over_${newElapsed.toFixed(0)}`,
-      timestampSeconds: newSimTime,
-      timeLabel,
-      type: 'critical',
-      message: 'APAGÃO SISTÊMICO: Frequência excedeu 61.50 Hz. Trip de geradores por sobrevelocidade.'
-    });
+    blackoutReason = 'Perda de todas as máquinas síncronas: sem inércia, não há referência de frequência para o sistema.';
+    pushEvent(events, 'blackout_sync', newSimTime, 'critical', 'APAGÃO SISTÊMICO: nenhuma máquina síncrona em operação.');
+  } else {
+    rocofHzS = (F_NOMINAL * powerMismatchMW) / (2 * kineticEnergyMWs);
+    newFreq = state.frequencyHz + rocofHzS * dtSeconds;
   }
 
-  // Automatic IBR trip on severe overfrequency (f >= 60.80 Hz)
-  if (newFreq >= 60.80 && (newSolar.actualMW > 2000 || newWind.actualMW > 2000)) {
-    newSolar.curtailmentPercent = 80;
-    newWind.curtailmentPercent = 80;
-    events.unshift({
-      id: `trip_ibr_${newElapsed.toFixed(0)}`,
-      timestampSeconds: newSimTime,
-      timeLabel,
-      type: 'alert',
-      message: 'Proteção de Sobrefrequência de Inversores (f >= 60.80 Hz): Curtailment automático de emergência de 80% em Solar/Eólica.'
-    });
+  if (!isBlackout && newFreq <= UNDERFREQUENCY_COLLAPSE_HZ) {
+    isBlackout = true;
+    blackoutReason = `Colapso por subfrequência (f < ${UNDERFREQUENCY_COLLAPSE_HZ.toFixed(1)} Hz): o ERAC esgotou seus ${ERAC_STAGES.length} estágios e as proteções das unidades geradoras atuaram em cascata.`;
+    pushEvent(events, 'blackout_under', newSimTime, 'critical',
+      `APAGÃO SISTÊMICO: frequência abaixo de ${UNDERFREQUENCY_COLLAPSE_HZ.toFixed(1)} Hz. Desligamento em cascata dos geradores.`);
+  } else if (!isBlackout && newFreq >= OVERFREQUENCY_COLLAPSE_HZ) {
+    isBlackout = true;
+    blackoutReason = `Colapso por sobrefrequência (f > ${OVERFREQUENCY_COLLAPSE_HZ.toFixed(1)} Hz): proteção de sobrevelocidade das turbinas desligou as unidades síncronas.`;
+    pushEvent(events, 'blackout_over', newSimTime, 'critical',
+      `APAGÃO SISTÊMICO: frequência acima de ${OVERFREQUENCY_COLLAPSE_HZ.toFixed(1)} Hz. Trip por sobrevelocidade.`);
   }
-
-  const isOverfrequencyAlert = newFreq >= 60.50;
-
-  // Limit event log size
-  const trimmedEvents = events.slice(0, 40);
 
   return {
+    ...state,
     simTimeSeconds: newSimTime,
     elapsedSeconds: newElapsed,
-    speedMultiplier: state.speedMultiplier,
-    frequencyHz: Number(newFreq.toFixed(3)),
-    rocofHzS: Number(rocofHzS.toFixed(3)),
-    equivalentInertiaH: Number(equivalentInertiaH.toFixed(2)),
+    frequencyHz: newFreq,
+    rocofHzS,
+    equivalentInertiaH,
+    kineticEnergyMWs,
     hydro: newHydro,
     thermal: newThermal,
     solar: newSolar,
@@ -512,9 +533,47 @@ export function stepSimulation(state: GridSimulationState, dtSeconds: number): G
     eracStage,
     isBlackout,
     blackoutReason,
-    isOverfrequencyAlert,
-    isPrimaryControlEnabled: state.isPrimaryControlEnabled,
-    scenarioId: state.scenarioId,
-    events: trimmedEvents
+    isOverfrequencyAlert: newFreq >= OVERFREQUENCY_ALERT_HZ,
+    isIbrFrequencyWattActive,
+    events: events.slice(0, 40)
+  };
+}
+
+/** Advances the simulation by one rendered frame using fixed sub-steps. */
+export function advanceSimulation(state: GridSimulationState, frameSeconds: number): GridSimulationState {
+  if (state.isBlackout || state.speedMultiplier === 0 || frameSeconds <= 0) {
+    return state;
+  }
+
+  const budget = state.integratorRemainderSeconds + Math.min(frameSeconds, MAX_FRAME_SECONDS) * state.speedMultiplier;
+  // Epsilon absorbs float error so a 0.03 s budget yields three steps, not two
+  const steps = Math.floor(budget / SIM_STEP_SECONDS + 1e-9);
+
+  let next = state;
+  for (let i = 0; i < steps && !next.isBlackout; i++) {
+    next = stepSimulation(next, SIM_STEP_SECONDS);
+  }
+
+  return { ...next, integratorRemainderSeconds: Math.max(0, budget - steps * SIM_STEP_SECONDS) };
+}
+
+/** Trips synchronous hydro units: output, setpoint and available capacity are lost together. */
+export function applyGeneratorTrip(state: GridSimulationState, tripMW: number): GridSimulationState {
+  const lostMW = Math.min(tripMW, state.hydro.actualMW);
+  const maxCapacityMW = Math.max(0, state.hydro.maxCapacityMW - lostMW);
+  const events = [...state.events];
+  pushEvent(events, 'trip', state.simTimeSeconds, 'critical',
+    `CONTINGÊNCIA: desligamento intempestivo de ${lostMW.toLocaleString('pt-BR')} MW em unidades hidrelétricas. A inércia e a reserva dessas máquinas saem junto.`);
+
+  return {
+    ...state,
+    hydro: {
+      ...state.hydro,
+      actualMW: state.hydro.actualMW - lostMW,
+      targetMW: Math.min(state.hydro.targetMW - lostMW, maxCapacityMW),
+      maxCapacityMW,
+      minTechnicalMW: Math.min(state.hydro.minTechnicalMW, maxCapacityMW)
+    },
+    events: events.slice(0, 40)
   };
 }
