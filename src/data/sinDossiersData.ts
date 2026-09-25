@@ -30,21 +30,21 @@ export const sinDossiers: SinDossier[] = [
     title: 'Anatomia do Apagão de 15 de Agosto de 2023',
     badge: 'COLAPSO DE TENSÃO & MODELOS DE EÓLICAS/SOLARES',
     badgeColor: 'rose',
-    subtitle: 'Da abertura acidental de uma LT 500 kV ao colapso de tensão no Nordeste, à separação do SIN em ilhas e à atuação do ERAC',
+    subtitle: 'Da abertura indevida de uma LT 500 kV ao colapso de tensão, ilhamento do SIN e atuação do ERAC',
     summary:
-      'Em 15 de agosto de 2023, às 08h30min36s, a abertura da LT 500 kV Quixadá – Fortaleza II (atuação acidental da lógica SOTF, sem curto-circuito) provocou um colapso de tensão no Nordeste, a separação do SIN em ilhas elétricas e a interrupção de ~23.368 MW de carga (RAP final do ONS), afetando 25 estados e o DF. Segundo o ONS, o fator determinante foi o suporte dinâmico de potência reativa das usinas eólicas e fotovoltaicas da região ter sido, em campo, muito aquém do previsto pelos modelos matemáticos fornecidos pelos agentes — o que impediu que os estudos identificassem o risco do ponto de operação.',
+      'Em 15/08/2023, a abertura indevida da LT 500 kV Quixadá–Fortaleza II deflagrou colapso de tensão no Nordeste, separação do SIN em ilhas elétricas e corte de ~23.368 MW (~32% da carga nacional), afetando 25 estados e o DF. Conforme o RAP final do ONS, o suporte dinâmico de potência reativa das usinas eólicas e solares em campo ficou muito aquém do previsto nos modelos matemáticos cadastrados, inviabilizando a identificação preventiva da vulnerabilidade operativa.',
     keyFormulas: [
       {
         label: 'Equação de Oscilação (Swing Equation)',
         formula: 'df/dt = (f₀ / 2H) · (P_mec - P_elec)',
         explanation:
-          'A taxa de variação da frequência (RoCoF) após um desbalanço é inversamente proporcional à inércia equivalente H. Governa a dinâmica das ilhas formadas após a separação. O RAP, porém, registra que o SIN operava com inércia adequada (~265 GW·s para ~73 GW de carga) e que o fenômeno inicial foi um colapso de tensão, não evitável por mais inércia.'
+          'A taxa de variação de frequência (RoCoF) após um desbalanço é inversamente proporcional à inércia H. O RAP registrou inércia sistêmica adequada (~265 GW·s para ~73 GW de carga): o gatilho da ocorrência foi colapso de tensão, insensível ao acréscimo de inércia mecânica.'
       },
       {
-        label: 'Ajustes Novos (Uniformizados) do ERAC',
+        label: 'Ajustes Uniformizados do ERAC',
         formula: 'f ≤ 58,5 / 58,2 / 57,9 / 57,7 / 57,5 Hz  →  cortes de 5 / 6 / 7 / 8 / 9% (até 35% da carga)',
         explanation:
-          'Relés de subfrequência (81) cortam carga em estágios para reequilibrar carga e geração antes que geradores se desconectem por subfrequência. Em 15/08/2023 a uniformização ainda estava em implantação por região: o SE/CO operava com os ajustes antigos (mesmos limiares, 7% por estágio, atuação instantânea) e o Norte/Nordeste estava em transição, com parte dos alimentadores ainda nos ajustes antigos por taxa de variação de frequência.'
+          'Relés de subfrequência (81) realizam alívio de carga escalonado para conter o afundamento da frequência antes do desligamento de geradores. O evento acelerou a padronização definitiva dos 5 degraus de corte em todo o SIN.'
       }
     ],
     keyMetrics: [
@@ -57,67 +57,67 @@ export const sinDossiers: SinDossier[] = [
     steps: [
       {
         time: '08:30:36,946 (T0)',
-        title: 'Evento Inicial: Abertura da LT 500 kV Quixadá – Fortaleza II',
+        title: 'Desarme Indevido da LT 500 kV Quixadá – Fortaleza II',
         description:
-          'A linha, com o maior carregamento de sua história (~1.950 MW, 2.375 A para limite normal de 2.390 A), abriu no terminal de Quixadá sem curto-circuito, pela atuação acidental da lógica de fechamento sob falta (SOTF) da proteção principal.',
+          'Linha abriu no terminal Quixadá sem curto-circuito físico na rede, operando em regime de carregamento recorde de ~1.950 MW (2.375 A para limite nominal de 2.390 A).',
         tag: 'Desarme de LT',
         badgeType: 'warning',
         technicalDetail:
-          'Uma função de sobrecorrente de 2.310 A foi habilitada sem a associação externa à lógica SOTF que deveria desativá-la após a energização — e com ajuste abaixo do limite nominal da linha. Pelos estudos do ONS, essa perda simples era suportável sem corte de carga.'
+          'Atuação acidental da função 50 SOTF (Switch-On-To-Fault): ajuste calibrado em 2.310 A (abaixo do nominal) sem bloqueio pós-energização. Perda simples N-1 deveria ser suportável.'
       },
       {
         time: 'T0 + 0,53 s',
         title: 'Colapso de Tensão no Ceará e Abertura da Interligação N/NE',
         description:
-          'O fluxo migrou para o tronco de 230 kV entre Milagres e Fortaleza II e para o 500 kV remanescente, com afundamento de tensão em Boa Esperança, Buritirama, Queimada Nova 2, Açu III e Campo Grande III. As usinas eólicas e fotovoltaicas próximas forneceram suporte de potência reativa muito inferior ao dos seus modelos (controle de planta — PPC — e injeção de corrente reativa sob falta dos inversores).',
+          'Sobrecarga imediata no tronco de 230 kV e afundamento generalizado de tensão. Usinas eólicas e solares locais não injetaram a potência reativa prevista nos modelos computacionais.',
         tag: 'Colapso de Tensão',
         badgeType: 'danger',
         technicalDetail:
-          'Aos 530 ms, a proteção de perda de sincronismo (PPS) da LT 500 kV Presidente Dutra – Boa Esperança atuou e o SEP associado abriu também Presidente Dutra – Teresina II C1/C2 e Imperatriz – Presidente Dutra C2. Seguiram-se desligamentos por proteções de distância no 230 kV e o início de oscilações de potência entre áreas.'
+          'Aos 530 ms atuou a Proteção de Perda de Sincronismo (PPS) da LT Presidente Dutra–Boa Esperança 500 kV, disparando abertura de linhas de 230 kV por relés 21 e oscilações interáreas.'
       },
       {
         time: 'T0 + 2,6 s a T0 + 3,5 s',
-        title: 'Separação do Norte e do Acre/Rondônia',
+        title: 'Separação e Blackout do Norte e Acre/Rondônia',
         description:
-          'A abertura da LT 500 kV Serra da Mesa – Gurupi C2 (T0 + 2,642 s) isolou o Norte (com Amapá e Amazonas), que era importador e entrou em subfrequência. Em ≈ 3,5 s, o Acre/Rondônia também se separou, em sobrefrequência e sobretensão.',
+          'Abertura da LT 500 kV Serra da Mesa–Gurupi C2 isolou o Norte (importador líquido), que afundou em severa subfrequência. Em seguida, o Acre/Rondônia também se separou.',
         tag: 'Ilhamento',
         badgeType: 'danger',
         technicalDetail:
-          'No Norte, o ERAC atuou mas não bastou para reequilibrar carga e geração: unidades geradoras desligaram e o sistema colapsou. O Acre/Rondônia também colapsou, apesar da atuação de 2 estágios do ERAC antes da separação.'
+          'No Norte, o ERAC não conteve o desbalanço acentuado entre carga e geração local, provocando queda sucessiva de máquinas e colapso total do subsistema.'
       },
       {
-        time: 'T0 + 2,6 s a ≈ T0 + 20 s',
-        title: 'ERAC no SE/CO, Sul e Nordeste',
+        time: 'T0 + 2,6 s a T0 + 20 s',
+        title: 'Atuação Massiva do ERAC no Sul, Sudeste e Nordeste',
         description:
-          'No bloco Sul/Sudeste/Centro-Oeste, a frequência chegou a ~57,76 Hz (SE/CO) e ~57,66 Hz (Sul), com atuação de 3 estágios do ERAC (cortes esperados de 21% e 25%). O Nordeste, exportador, ficou ≈ 18,6 s ligado ao SE/CO em subfrequência — sensibilizando os 5 estágios (35% nos ajustes novos, 55% nos antigos) — e depois ilhou-se em sobrefrequência e sobretensão.',
+          'Frequência afundou para 57,76 Hz no SE/CO e 57,66 Hz no Sul, sensibilizando 3 estágios do ERAC (~15,6 GW cortados) e recuperando 59,5 Hz em menos de 20 segundos.',
         tag: 'Disparo de ERAC',
         badgeType: 'warning',
         technicalDetail:
-          'O ONS avaliou o ERAC como satisfatório no SE/CO, Sul e Nordeste: no SE/CO e Sul a frequência voltou a 59,5 Hz em menos de 20 s. Os agentes informaram 15,61 GW cortados pelo esquema. Parte do Nordeste formou uma ilha estável com hidráulicas remanescentes e, principalmente, eólicas e fotovoltaicas.'
+          'Nordeste permaneceu conectado ao SE/CO por ~18,6 s em subfrequência (acionando 5 estágios de corte) e depois ilhou-se em sobrefrequência, sustentado por eólicas, solares e hidrelétricas remanescentes.'
       },
       {
-        time: '08:43 – 14:49',
+        time: '08:43 às 14:49',
         title: 'Recomposição Fluente & Black Start',
         description:
-          'O Sul teve as cargas restabelecidas entre 08h43 e 09h05 e o Sudeste entre 08h52 e 09h33. O Norte foi recomposto a partir do autorrestabelecimento (black start) de Tucuruí, Balbina, Coaracy Nunes, Estreito e Samuel; o Nordeste, pela expansão da ilha remanescente, pelo black start de Itapebi e com tensão vinda do SIN.',
+          'Sul e Sudeste restabeleceram a totalidade das cargas em menos de 1 hora. Norte e Nordeste exigiram partida a frio (black start) de grandes hidrelétricas e reconstituição em anéis.',
         tag: 'Recomposição',
         badgeType: 'success',
         technicalDetail:
-          'O autorrestabelecimento de Sobradinho falhou, exigindo tensão da ilha do Nordeste para partir suas unidades. O ONS autorizou o restabelecimento total das cargas às 14h49.'
+          'Tucuruí, Balbina, Estreito e Samuel lideraram o black start no Norte; Itapebi e a ilha remanescente reenergizaram o Nordeste (Sobradinho falhou na autopartida). Carga 100% normalizada às 14h49.'
       }
     ],
     lessonsLearned: [
       {
-        title: 'Modelos Validados em Campo para Eólicas e Solares',
-        desc: 'A discrepância entre os modelos cadastrados e o desempenho real levou o ONS a adaptar sua base de estudos ao comportamento observado, reduzir limites de intercâmbio do Nordeste, publicar guia de validação de modelos e requisitos de PMU para as usinas e propor à ANEEL a revisão do Submódulo 7.4 (requisitos de modelos reais e comissionamento).'
+        title: 'Validação Mandatória de Modelos IBR',
+        desc: 'Exigência de ensaios de campo e medição fasorial contínua (PMU) para certificar a resposta dinâmica de reativos e suportabilidade a afundamentos (FRT) de parques eólicos e solares.'
       },
       {
-        title: 'Inércia Não Foi a Causa',
-        desc: 'O RAP afasta explicitamente a inércia e o número de máquinas síncronas como causa: o fenômeno foi um colapso de tensão por falta de suporte de reativos. Compensadores síncronos elevam a potência de curto-circuito, mas, mantidas as discrepâncias de reativos das usinas, o risco permaneceria semelhante.'
+        title: 'Física do Colapso: Tensão vs Inércia',
+        desc: 'O ONS comprovou que a perturbação decorreu de déficit de suporte de reativos e potência de curto-circuito na malha, e não de insuficiência de inércia mecânica rotativa.'
       },
       {
-        title: 'Proteções e ERAC Revisados',
-        desc: 'A CHESF corrigiu a lógica SOTF da LT Quixadá – Fortaleza II no mesmo dia; o ONS determinou a reavaliação dos ajustes das PPS com a base de modelos revisada. O ERAC seguiu para ajustes uniformes no SE/CO, Sul, Nordeste e Norte, sem relés por taxa de variação de frequência no N/NE.'
+        title: 'Harmonização dos Esquemas de ERAC',
+        desc: 'Correção de lógicas SOTF e unificação dos 5 degraus de subfrequência (58,5 a 57,5 Hz, até 35% de corte) em todos os subsistemas, banindo relés assimétricos por taxa de frequência (df/dt).'
       }
     ],
     sources: [
@@ -144,27 +144,27 @@ export const sinDossiers: SinDossier[] = [
     title: 'O Custo Futuro da Água & A Formação do Preço (PLD)',
     badge: 'OPERAÇÃO HIDROTÉRMICA & DESPACHO CENTRALIZADO',
     badgeColor: 'cyan',
-    subtitle: 'Como a cadeia NEWAVE / DECOMP / DESSEM define despacho e preço no SIN, em vez de ofertas de preço dos geradores',
+    subtitle: 'Como a cadeia NEWAVE / DECOMP / DESSEM define despacho e preço no SIN, em vez de ofertas livres de geradores',
     summary:
-      'Diferentemente de mercados em que o preço spot resulta de ofertas dos geradores, no Brasil o despacho e o Custo Marginal de Operação (CMO) são calculados centralizadamente por modelos de otimização do CEPEL, e a CCEE deriva do CMO o Preço de Liquidação das Diferenças (PLD). A água armazenada nos reservatórios é valorada pelo custo futuro que ela evita: usá-la hoje ou guardá-la é uma decisão econômica sob incerteza hidrológica.',
+      'No SIN, o despacho físico e o preço horário (CMO/PLD) não derivam de leilões de oferta livre, mas da cadeia de otimização estocástica NEWAVE/DECOMP/DESSEM desenvolvida pelo CEPEL. O modelo precifica a água acumulada nos reservatórios pelo custo futuro que ela evita: turbinar hoje com custo imediato baixo ou poupar para blindar o sistema contra térmicas fósseis e risco de déficit futuro.',
     keyFormulas: [
       {
         label: 'Valor da Água & CMO',
-        formula: 'Valor da água = −∂FCF / ∂V   |   CMO = ∂C_total / ∂Demanda',
+        formula: 'Valor da Água = −∂FCF / ∂V   |   CMO = ∂C_total / ∂Demanda',
         explanation:
-          'A Função de Custo Futuro (FCF) dá o custo esperado de operação futura em função do armazenamento V. O valor da água é a redução desse custo por unidade adicional armazenada; o CMO é o custo de atender 1 MWh adicional de carga — a variável dual da restrição de atendimento à demanda. Quando uma hidrelétrica é a fonte marginal, o CMO se iguala ao seu valor da água.'
+          'A Função de Custo Futuro (FCF) traduz a expectativa de custo operacional frente ao volume V armazenado. O CMO é a derivada marginal (multiplicador de Lagrange) do balanço de carga. Quando uma hidrelétrica opera na margem, o CMO equivale exatamente ao valor de oportunidade da água.'
       },
       {
         label: 'Equilíbrio Hidrotérmico Ótimo',
         formula: 'min [ C_imediato(Térmicas, Déficit) + FCF(V_final) ]',
         explanation:
-          'Em cada etapa, o operador minimiza o custo imediato (combustível e déficit) somado ao custo futuro esperado associado ao armazenamento que sobra. Usar muita água hoje barateia o presente e encarece o futuro; poupar demais leva a vertimento e térmicas desnecessárias.'
+          'Minimização matemática em multiestágios: o algoritmo pondera o custo imediato de queima térmica contra o custo futuro de exaustão das reservas hídricas sob múltiplos cenários de vazão.'
       },
       {
         label: 'Fator de Ajuste do MRE (GSF)',
-        formula: 'GSF = Geração total das hidrelétricas do MRE / Σ Garantias Físicas do MRE',
+        formula: 'GSF = Geração Total do MRE / Σ Garantias Físicas do MRE',
         explanation:
-          'Com GSF < 1, a energia alocada a cada hidrelétrica do Mecanismo de Realocação de Energia fica abaixo da sua garantia física, base dos contratos vendidos. A diferença é liquidada no Mercado de Curto Prazo ao PLD — o chamado risco hidrológico.'
+          'Razão entre a geração hidrelétrica real e a soma das garantias físicas. GSF < 1 impõe déficit volumétrico e exposição financeira à liquidação no Mercado de Curto Prazo ao PLD.'
       }
     ],
     keyMetrics: [
@@ -176,54 +176,54 @@ export const sinDossiers: SinDossier[] = [
     stepsTitle: 'A Cadeia Hierárquica de Modelos do CEPEL / ONS / CCEE',
     steps: [
       {
-        title: 'NEWAVE: Planejamento de Médio/Longo Prazo (mensal)',
+        title: 'NEWAVE — Planejamento Estratégico Plurianual (Mensal)',
         description:
-          'Programação Dinâmica Dual Estocástica (PDDE) em base mensal, com horizonte de até 10 anos (5 anos no uso para o PMO/PLD). As hidrelétricas podem ser agregadas em Reservatórios Equivalentes de Energia (REE) ou individualizadas, e a hidrologia é representada por cenários de Energia Natural Afluente (ENA).',
+          'Horizonte de até 10 anos em passos mensais. Modela a matriz via Reservatórios Equivalentes de Energia (REE) e séries estocásticas de afluência (ENA).',
         tag: 'Estratégico / Mensal',
         badgeType: 'info',
         technicalDetail:
-          'Produz as funções de custo futuro que indicam se vale mais guardar água ou despachar térmicas agora para reduzir o risco de déficit adiante.'
+          'Emprega Programação Dinâmica Dual Estocástica (PDDE) para construir as Funções de Custo Futuro (FCF) que guiam o compromisso entre poupar água e despachar térmicas.'
       },
       {
-        title: 'DECOMP: Planejamento de Curto Prazo (semanal/mensal)',
+        title: 'DECOMP — Programação Tática de Médio Prazo (Semanal)',
         description:
-          'Programação Dinâmica Dual com usinas hidrelétricas individualizadas, patamares de carga e horizonte de até 1 ano (no cálculo do preço, cerca de 2 meses com discretização semanal), refinando a política do NEWAVE.',
+          'Horizonte de até 1 ano discretizado em semanas. Detalha usinas hidrelétricas individualizadas e patamares de carga por submercado.',
         tag: 'Tático / Semanal',
         badgeType: 'info',
         technicalDetail:
-          'Acopla-se ao NEWAVE pela FCF no fim do seu horizonte e gera a FCF que serve de condição de contorno para o DESSEM.'
+          'Acopla-se à FCF do NEWAVE e refina restrições hidráulicas de cascata (vazões mínimas, tempos de viagem d’água e limites de defluência).'
       },
       {
-        title: 'DESSEM: Programação Diária e Preço Horário',
+        title: 'DESSEM — Despacho Operativo Diário & PLD Horário',
         description:
-          'Resolve um unit commitment hidrotérmico por programação linear inteira mista, em base semi-horária e horizonte de até 7 dias, com unidades geradoras detalhadas e rede elétrica representada por modelagem DC (limites de fluxo nas linhas).',
+          'Horizonte de até 7 dias com granularidade semi-horária e horária. Representa a malha elétrica por fluxo de potência linearizado (DC) e limites de transmissão.',
         tag: 'Operativo / Diário',
         badgeType: 'success',
         technicalDetail:
-          'Fornece o CMO de cada submercado usado pela CCEE para o PLD horário (desde 1º/01/2021). Quando os limites de intercâmbio saturam, os preços dos submercados descolam — o exportador pode cair ao piso regulatório enquanto o importador sobe.'
+          'Resolve Unit Commitment Hidrotérmico via MILP. O CMO marginal por barra e submercado baliza diretamente a fixação do PLD horário apurado pela CCEE.'
       },
       {
-        title: 'A Separação entre Despacho Físico (ONS) e Liquidação Financeira (CCEE)',
+        title: 'Despacho Físico (ONS) vs Liquidação Financeira (CCEE)',
         description:
-          'O ONS despacha as usinas por custo e segurança elétrica. A CCEE confronta a geração e o consumo medidos com os contratos registrados e liquida as diferenças no Mercado de Curto Prazo ao PLD.',
+          'O ONS opera a rede física por ordem de mérito e critérios elétricos de segurança; a CCEE confronta a geração medida com a carteira contratual e liquida as sobras no MCP.',
         tag: 'Governança',
         badgeType: 'neutral',
         technicalDetail:
-          'Uma térmica despachada fora da ordem de mérito por restrição elétrica ou segurança é ressarcida via Encargos de Serviços do Sistema (ESS), rateados entre os consumidores.'
+          'Térmicas acionadas fora da ordem de mérito por restrição elétrica ou confiabilidade recebem ressarcimento por Encargos de Serviços do Sistema (ESS), rateados entre as cargas.'
       }
     ],
     lessonsLearned: [
       {
-        title: 'O Preço no Brasil É Custo Otimizado, Não Lance',
-        desc: 'Geradores não ofertam preço no Mercado de Curto Prazo: o CMO é a variável dual do balanço de carga no modelo, e o PLD é esse CMO limitado pelo piso e pelos tetos definidos pela ANEEL.'
+        title: 'Formação por Custo Otimizado vs Ofertas Livres',
+        desc: 'O modelo do SEB é regulado por custo auditado: o preço reflete o multiplicador matemático da restrição de demanda, sem inserção de lances estratégicos de geradores.'
       },
       {
-        title: 'O Conflito do GSF',
-        desc: 'GSF baixo não vem só da hidrologia: restrições de transmissão, geração fora da ordem de mérito e garantias físicas sobredimensionadas também comprimem o fator, alimentando a judicialização que travou liquidações na CCEE.'
+        title: 'Descolamento Espacial de Preços por Congestionamento',
+        desc: 'Gargalos nas interligações saturam limites de intercâmbio no DESSEM: o subsistema exportador desaba ao piso regulatório (R$ 57,31/MWh), enquanto o importador sobe rumo ao teto.'
       },
       {
-        title: 'O Debate sobre Preço por Oferta',
-        desc: 'O Projeto Meta II (CCEE/PSR, com apoio do Banco Mundial) comparou os modelos "por custo" e "por oferta", e o MME abriu consulta pública sobre a transição para um modelo híbrido que incorpora ofertas dos agentes na formação de preços.'
+        title: 'Transição Regulatória para Formação por Oferta',
+        desc: 'Estudos do Projeto Meta II (CCEE/PSR/Banco Mundial) embasam consultas públicas do MME para migração progressiva rumo a modelos híbridos baseados em ofertas horárias dos agentes.'
       }
     ],
     sources: [
@@ -268,19 +268,19 @@ export const sinDossiers: SinDossier[] = [
     badgeColor: 'amber',
     subtitle: 'Por que o ONS é forçado a cortar usinas solares e eólicas enquanto mantém outras fontes em operação?',
     summary:
-      'Com cerca de 42 GW de micro e minigeração distribuída (ANEEL, jul/2025) e a expansão eólica e solar concentrada no Nordeste, a carga líquida do SIN passou a ter o formato da "Curva do Pato": no meio do dia sobra geração — e falta rede para escoá-la —; ao entardecer, a queda da geração solar exige uma rampa rápida das fontes despacháveis.',
+      'A expansão acelerada da micro e minigeração distribuída solar (~42,3 GW) somada aos complexos eólicos e solares centralizados do Nordeste consolidou a "Curva do Pato" no SIN. No meio do dia há excedente estrutural de geração e saturação nas linhas de transmissão rumo ao Sudeste, forçando cortes de geração renovável (curtailment); no poente solar, o sistema enfrenta uma subida íngreme de rampa nas hidrelétricas e térmicas.',
     keyFormulas: [
       {
         label: 'Carga Líquida do Sistema',
-        formula: 'Carga Líquida = Carga Total - Geração Solar (Centralizada + MMGD) - Eólica',
+        formula: 'Carga Líquida = Demanda Total - Geração MMGD - Geração Solar/Eólica Centralizada',
         explanation:
-          'O "ventre do pato" surge perto do meio-dia, quando a produção solar atinge o pico e reduz a demanda a ser atendida pelas usinas despacháveis. O "pescoço do pato" é a subida íngreme da carga líquida no fim da tarde.'
+          'O "ventre do pato" atinge o mínimo solar entre 11h e 14h, derrubando a demanda atendida por usinas despacháveis. O "pescoço do pato" surge das 17h às 19h com a perda solar e o acendimento de cargas urbanas.'
       },
       {
-        label: 'Rampa de Carga Líquida',
+        label: 'Rampa Crítica de Carga Líquida',
         formula: 'Rampa = Δ(Carga Líquida) / Δt  [MW/min]',
         explanation:
-          'Quanto maior a capacidade de MMGD, menor a carga líquida mínima ao meio-dia e maior a rampa exigida quando o sol se põe, pois essa geração não é controlada pelo ONS e desaparece justamente antes do pico de consumo.'
+          'A perda abrupta de geração distribuída no entardecer não é controlada pelo ONS, obrigando hidrelétricas com reservatório e térmicas rápidas a cobrir centenas de MW por minuto para resguardar a estabilidade de 60 Hz.'
       }
     ],
     keyMetrics: [
@@ -292,58 +292,58 @@ export const sinDossiers: SinDossier[] = [
     stepsTitle: 'A Dinâmica Diária da Intermitência e dos Gargalos',
     steps: [
       {
-        time: 'Meio do dia',
-        title: 'O Ventre do Pato & O Excedente de Geração no Nordeste',
+        time: '11h às 14h',
+        title: 'O Ventre do Pato e o Superávit do Nordeste',
         description:
-          'Com sol e vento, a geração renovável do Nordeste supera com folga o consumo da região, que se torna fortemente exportadora — em 15/08/2023, às 08h30, já gerava ~22,5 GW para ~10,2 GW de carga.',
+          'Concomitância de irradiação solar de pico e ventos converte o Nordeste em pólo exportador massivo (~22,5 GW gerados para ~10,2 GW de carga).',
         tag: 'Pico Solar',
         badgeType: 'info',
         technicalDetail:
-          'A MMGD, espalhada pelo país, reduz a carga vista pelas usinas despachadas: em 2024 chegou a ~23,7 GW médios (dado semi-horário), e o SIN precisa reduzir hidrelétricas e demais fontes controláveis para manter o equilíbrio carga-geração.'
+          'Injeção maciça de MMGD na ponta consumidora derruba a carga líquida vista pela rede básica; usinas síncronas despacháveis são reduzidas ao mínimo técnico operacional.'
       },
       {
-        time: 'Meio do dia',
-        title: 'Saturação das Interligações N/NE ➔ SE/CO',
+        time: '12h às 15h',
+        title: 'Saturação de Intercâmbios N/NE ➔ SE/CO',
         description:
-          'O escoamento do excedente esbarra nos limites de intercâmbio — definidos por carregamento de linhas e por estabilidade de tensão e angular sob contingência — das interligações que ligam o Nordeste ao Sudeste/Centro-Oeste e ao Norte.',
+          'Troncos de 500 kV que conectam o Nordeste ao Centro-Oeste e Sudeste esbarram nos limites operativos de estabilidade angular e de tensão.',
         tag: 'Gargalo de Transmissão',
         badgeType: 'warning',
         technicalDetail:
-          'Os limites são calculados para que a perda de um elemento (critério N-1) não leve à instabilidade. Após o apagão de 2023, o ONS chegou a restringir o fluxo Nordeste → Sudeste a 5.000 MW, elevando-o gradualmente à medida que revisava os estudos de estabilidade.'
+          'Critério N-1 limita o fluxo de exportação para evitar colapso de tensão sistêmico caso ocorra perda de uma linha tronco de 500 kV em contingência simples.'
       },
       {
-        time: 'Meio do dia',
-        title: 'Ordem de Corte (Constrained-Off / Curtailment)',
+        time: 'Horário Diurno',
+        title: 'Ordem de Corte (Constrained-Off)',
         description:
-          'O ONS determina a redução da geração de usinas eólicas e fotovoltaicas por três razões: indisponibilidade externa (rede fora de serviço), confiabilidade elétrica (limites de transmissão e segurança) e razão energética (oferta maior que a carga).',
+          'Com interligações saturadas e sem carga suficiente, o ONS emite comandos mandatórios de corte de geração (curtailment) para dezenas de parques eólicos e solares centralizados.',
         tag: 'Curtailment',
         badgeType: 'danger',
         technicalDetail:
-          'Os cortes por razão energética são rateados entre as fontes despachadas pelo ONS, enquanto a MMGD permanece fora do processo — o que sobrecarrega os geradores centralizados e alimenta o debate regulatório sobre quem arca com a receita frustrada.'
+          'Cortes por razão de confiabilidade elétrica e excesso energético superaram 4,3 TWh em 2024. A MMGD, desprovida de supervisão do ONS, permanece imune e agrava o corte dos geradores centralizados.'
       },
       {
-        time: 'Entardecer',
-        title: 'A Rampa Crítica do Entardecer (O Pescoço do Pato)',
+        time: '17h às 19h',
+        title: 'O Pescoço do Pato e a Rampa Hidrelétrica',
         description:
-          'A geração solar cai em poucas horas até zerar enquanto o consumo sobe rumo ao pico noturno. A carga líquida dispara e precisa ser atendida por fontes despacháveis.',
+          'Usinas fotovoltaicas zeram geração em menos de 90 minutos enquanto o consumo nacional sobe rumo ao pico noturno. A carga líquida dispara bruscamente.',
         tag: 'Rampa Severa',
         badgeType: 'warning',
         technicalDetail:
-          'As hidrelétricas com reservatório assumem a maior parte da rampa, aumentando a vazão turbinada em questão de minutos, com reserva girante para manter os 60 Hz; térmicas flexíveis complementam quando falta água ou transmissão.'
+          'Hidrelétricas com reservatório de acumulação (bacias do Paraná, Paranaíba e Grande) assumem mais de 50% da rampa de potência em minutos para manter a frequência de 60 Hz.'
       }
     ],
     lessonsLearned: [
       {
-        title: 'Baterias em Escala de Utilidade (BESS)',
-        desc: 'Armazenar o excedente do meio do dia e descarregar no fim da tarde reduz cortes e alivia a rampa. O primeiro Leilão de Reserva de Capacidade de armazenamento (LRCAP 2026) exige requisitos técnicos definidos por ONS e EPE, incluindo controle de tensão e frequência e operação grid forming.'
+        title: 'Sistemas de Armazenamento BESS Grid-Scale',
+        desc: 'Baterias em grande escala absorvem o excedente fotovoltaico ao meio-dia e descarregam no pico noturno. O leilão LRCAP 2026 exige inversores grid-forming para controle de tensão e frequência.'
       },
       {
-        title: 'Compensadores Síncronos e Suporte de Reativos',
-        desc: 'Em redes com muita geração por inversores, compensadores síncronos elevam a potência de curto-circuito e o suporte de reativos. O PAR/PEL 2024 propõe três unidades nas subestações mais críticas: duas em Açu III 500 kV e uma em João Câmara III 500 kV.'
+        title: 'Compensadores Síncronos em Subestações Críticas',
+        desc: 'Instalação de compensadores (como previsto em Açu III e João Câmara III no PAR/PEL 2024) para elevar a potência de curto-circuito e estabilizar reativos em nós dominados por inversores.'
       },
       {
-        title: 'Leilões de Transmissão Estruturantes',
-        desc: 'O Lote 1 do Leilão de Transmissão nº 2/2023 — bipolo ±800 kV Graça Aranha (MA) – Silvânia (GO), com ~1.500 km, arrematado pela State Grid — é o maior lote da história da ANEEL, com operação prevista para 2030 para ampliar o escoamento do N/NE ao Centro-Oeste/Sudeste.'
+        title: 'Supercorredores UHVDC ±800 kV',
+        desc: 'O bipolo Graça Aranha (MA) – Silvânia (GO), com ~1.500 km arrematado pela State Grid no Leilão 02/2023, adicionará 5 GW de escoamento do Norte/Nordeste para o Sudeste a partir de 2030.'
       }
     ],
     sources: [

@@ -25,6 +25,8 @@ export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
   onOpenSimulator,
   onOpenLearn
 }) => {
+  const currentSinLoadGW = (telemetry.currentSinLoadMW / 1000).toFixed(1);
+
   return (
     <header className="h-13 bg-[#080b11]/90 backdrop-blur-md border-b border-slate-800 flex items-center justify-between px-3 sm:px-4 z-40 relative select-none">
       {/* Left: Brand & Sidebar Toggle */}
@@ -52,23 +54,24 @@ export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
 
       {/* Right: Tools & Views */}
       <div className="flex items-center space-x-2 text-xs font-mono">
-        {/* Dynamic ONS Live Badge */}
-        <div
-          className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-full border text-[11px] font-medium transition ${
+        {/* Dynamic ONS Live Badge & Load (Clickable -> 24h Curve) */}
+        <button
+          onClick={onOpenCurve}
+          className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-full border text-[11px] font-medium transition cursor-pointer hover:border-cyan-500/50 hover:bg-slate-900 ${
             isLive
               ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25'
               : 'bg-amber-500/10 text-amber-400 border-amber-500/25'
           }`}
-          title={
-            isLive
-              ? `Conexão direta com API Dados Abertos ONS • Medição às ${telemetry.latestTimeLabel}`
-              : 'Snapshot estático de referência técnica do SIN (offline)'
-          }
+          title={`Carga instantânea do SIN: ${currentSinLoadGW} GW (${telemetry.latestTimeLabel}) • Clique para ver curva de carga 24h`}
+          aria-label="Abrir Curva de Carga 24h"
         >
           <span className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
           <span>{isLive ? 'ONS LIVE' : 'REF'}</span>
-          <span className="text-slate-500 text-[10px] hidden md:inline">[{telemetry.latestTimeLabel}]</span>
-        </div>
+          <span className="text-slate-500 text-[10px]">[{telemetry.latestTimeLabel}]</span>
+          <span className="text-slate-700">•</span>
+          <strong className="text-white font-bold">{currentSinLoadGW} GW</strong>
+          <Activity className="w-3 h-3 text-cyan-400/80 ml-0.5" />
+        </button>
 
         {/* 60 Hz Dispatch Simulator Modal Button (Highlighted primary tool) */}
         <button
@@ -79,17 +82,6 @@ export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
         >
           <Gauge className="w-3.5 h-3.5 text-cyan-400" />
           <span>SIMULADOR 60 HZ</span>
-        </button>
-
-        {/* 24h Load Curve Modal Button */}
-        <button
-          onClick={onOpenCurve}
-          className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition text-xs cursor-pointer"
-          title="Abrir Curva de Carga 24h (Curva do Pato)"
-          aria-label="Abrir Curva de Carga 24h"
-        >
-          <Activity className="w-3.5 h-3.5 text-slate-400" />
-          <span className="hidden md:inline">CURVA 24H</span>
         </button>
 
         {/* Guide Mode Entry */}

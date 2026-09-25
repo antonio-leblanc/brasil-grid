@@ -34,8 +34,6 @@ interface ConsoleSidebarProps {
   setShowPowerFlow: (show: boolean) => void;
   showSubsystems: boolean;
   setShowSubsystems: (show: boolean) => void;
-  showInterchanges?: boolean;
-  setShowInterchanges?: (show: boolean) => void;
   onOpenInterchangeModal?: (id?: InterchangeId) => void;
 }
 
@@ -52,8 +50,6 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
   setShowPowerFlow,
   showSubsystems,
   setShowSubsystems,
-  showInterchanges = true,
-  setShowInterchanges,
   onOpenInterchangeModal
 }) => {
   const [assetTab, setAssetTab] = useState<'plants' | 'lines'>('plants');
@@ -162,7 +158,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
           {/* Visual Layers Toggle */}
           <div className="space-y-1.5 pt-2 border-t border-slate-800/50">
             <span className="text-slate-500 text-[9px] uppercase block">Camadas Visuais:</span>
-            <div className="grid grid-cols-3 gap-1">
+            <div className="grid grid-cols-2 gap-1">
               <FilterButton
                 active={showPowerFlow}
                 colorScheme="cyan"
@@ -183,18 +179,6 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
               >
                 Regiões
               </FilterButton>
-              {setShowInterchanges && (
-                <FilterButton
-                  active={!!showInterchanges}
-                  colorScheme="cyan"
-                  icon={ArrowRightLeft}
-                  onClick={() => setShowInterchanges(!showInterchanges)}
-                  className="text-[9px] uppercase py-1"
-                  aria-label="Alternar corredores de intercâmbio"
-                >
-                  Fronteiras
-                </FilterButton>
-              )}
             </div>
           </div>
         </div>

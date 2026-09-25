@@ -16,12 +16,6 @@ setWorkerUrl(workerUrl);
 import type { FeatureCollection } from 'geojson';
 import { majorPowerPlants, majorTransmissionLines } from '../../data/gridData';
 import { subsystemsGeoJSON } from '../../data/subsystemsGeoData';
-import {
-  regionalInterchanges,
-  getInterchangeStatus,
-  getStatusTheme,
-  type InterchangeId
-} from '../../data/interchangeData';
 import type { PowerPlantFeature, TransmissionLineFeature } from '../../data/gridData';
 import type { NationalTelemetrySnapshot } from '../../services/onsApi';
 
@@ -77,8 +71,6 @@ interface GridMapProps {
   plantTypeFilter: string;
   showPowerFlow: boolean;
   showSubsystems: boolean;
-  showInterchanges?: boolean;
-  onOpenInterchangeModal?: (id?: InterchangeId) => void;
   telemetry?: NationalTelemetrySnapshot;
 }
 
@@ -91,8 +83,6 @@ export const GridMap: React.FC<GridMapProps> = ({
   plantTypeFilter,
   showPowerFlow,
   showSubsystems,
-  showInterchanges = true,
-  onOpenInterchangeModal,
   telemetry
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -108,18 +98,14 @@ export const GridMap: React.FC<GridMapProps> = ({
   const onSelectLineRef = useRef(setSelectedLine);
   const showPowerFlowRef = useRef(showPowerFlow);
   const showSubsystemsRef = useRef(showSubsystems);
-  const showInterchangesRef = useRef(showInterchanges);
-  const onOpenInterchangeModalRef = useRef(onOpenInterchangeModal);
   const telemetryRef = useRef<NationalTelemetrySnapshot | undefined>(telemetry);
   useEffect(() => {
     onSelectPlantRef.current = setSelectedPlant;
     onSelectLineRef.current = setSelectedLine;
     showPowerFlowRef.current = showPowerFlow;
     showSubsystemsRef.current = showSubsystems;
-    showInterchangesRef.current = showInterchanges;
-    onOpenInterchangeModalRef.current = onOpenInterchangeModal;
     telemetryRef.current = telemetry;
-  }, [setSelectedPlant, setSelectedLine, showPowerFlow, showSubsystems, showInterchanges, onOpenInterchangeModal, telemetry]);
+  }, [setSelectedPlant, setSelectedLine, showPowerFlow, showSubsystems, telemetry]);
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
@@ -410,198 +396,6 @@ export const GridMap: React.FC<GridMapProps> = ({
         });
       }
 
-      // 1.5 Interchanges & Regional Bottlenecks Native GeoJSON
-      const interchangeLinesGeoJSON: FeatureCollection = {
-        type: 'FeatureCollection',
-        features: regionalInterchanges.map((ic) => {
-          const status = getInterchangeStatus(ic.nominalFlowMW, ic.maxExportLimitMW);
-          const theme = getStatusTheme(status);
-          const saturationPct = Math.round((Math.abs(ic.nominalFlowMW) / ic.maxExportLimitMW) * 100);
-          return {
-            type: 'Feature',
-            geometry: {
-              type: 'LineString',
-              coordinates: ic.pathCoordinates
-            },
-            properties: {
-              id: ic.id,
-              name: ic.name,
-              shortCode: ic.shortCode,
-              flowMW: ic.nominalFlowMW,
-              limitMW: ic.maxExportLimitMW,
-              saturationPct,
-              status,
-              color: theme.color,
-              direction: ic.primaryDirection,
-              cause: ic.bottleneck.cause
-            }
-          };
-        })
-      };
-
-      const interchangePointsGeoJSON: FeatureCollection = {
-        type: 'FeatureCollection',
-        features: regionalInterchanges.map((ic) => {
-          const status = getInterchangeStatus(ic.nominalFlowMW, ic.maxExportLimitMW);
-          const theme = getStatusTheme(status);
-          const saturationPct = Math.round((Math.abs(ic.nominalFlowMW) / ic.maxExportLimitMW) * 100);
-          return {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: ic.interfaceCoordinates
-            },
-            properties: {
-              id: ic.id,
-              name: ic.name,
-              shortCode: ic.shortCode,
-              badgeLabel: `${ic.shortCode}: ${(ic.nominalFlowMW / 1000).toFixed(1)} GW (${saturationPct}%)`,
-              flowMW: ic.nominalFlowMW,
-              limitMW: ic.maxExportLimitMW,
-              saturationPct,
-              status,
-              color: theme.color
-            }
-          };
-        })
-      };
-
-      if (!mapInstance.getSource('interchange-lines')) {
-        mapInstance.addSource('interchange-lines', {
-          type: 'geojson',
-          data: interchangeLinesGeoJSON
-        });
-
-        // 1.5a Neon Outer Glow for Interchange
-        mapInstance.addLayer({
-          id: 'interchanges-glow',
-          type: 'line',
-          source: 'interchange-lines',
-          layout: {
-            visibility: showInterchangesRef.current ? 'visible' : 'none'
-          },
-          paint: {
-            'line-color': ['get', 'color'],
-            'line-width': 10,
-            'line-opacity': 0.35,
-            'line-blur': 6
-          }
-        });
-
-        // 1.5b Main Interchange Path (Bold dashed vector)
-        mapInstance.addLayer({
-          id: 'interchanges-main',
-          type: 'line',
-          source: 'interchange-lines',
-          layout: {
-            'line-cap': 'round',
-            'line-join': 'round',
-            visibility: showInterchangesRef.current ? 'visible' : 'none'
-          },
-          paint: {
-            'line-color': ['get', 'color'],
-            'line-width': 3.5,
-            'line-dasharray': [4, 2],
-            'line-opacity': 0.95
-          }
-        });
-      }
-
-      if (!mapInstance.getSource('interchange-points')) {
-        mapInstance.addSource('interchange-points', {
-          type: 'geojson',
-          data: interchangePointsGeoJSON
-        });
-
-        // 1.5c Interface Frontier Marker Pulse
-        mapInstance.addLayer({
-          id: 'interchanges-marker-glow',
-          type: 'circle',
-          source: 'interchange-points',
-          layout: {
-            visibility: showInterchangesRef.current ? 'visible' : 'none'
-          },
-          paint: {
-            'circle-radius': 14,
-            'circle-color': ['get', 'color'],
-            'circle-opacity': 0.25,
-            'circle-blur': 0.8
-          }
-        });
-
-        // 1.5d Interface Marker Core
-        mapInstance.addLayer({
-          id: 'interchanges-marker-core',
-          type: 'circle',
-          source: 'interchange-points',
-          layout: {
-            visibility: showInterchangesRef.current ? 'visible' : 'none'
-          },
-          paint: {
-            'circle-radius': 5.5,
-            'circle-color': ['get', 'color'],
-            'circle-stroke-width': 2,
-            'circle-stroke-color': '#07090e',
-            'circle-opacity': 1
-          }
-        });
-
-        // Hover on Interchanges
-        const handleInterchangeEnter = (e: MapLayerMouseEvent) => {
-          if (!showInterchangesRef.current) return;
-          mapInstance.getCanvas().style.cursor = 'pointer';
-          if (!e.features || !e.features[0] || !popupRef.current) return;
-          const p = e.features[0].properties;
-          const flowGW = (Number(p?.flowMW) / 1000).toFixed(2);
-          const limitGW = (Number(p?.limitMW) / 1000).toFixed(2);
-          const color = p?.color || '#38bdf8';
-
-          popupRef.current
-            .setLngLat(e.lngLat)
-            .setHTML(`
-              <div class="px-3 py-2 rounded-lg bg-[#07090e]/95 border border-slate-700/80 shadow-2xl backdrop-blur-md font-mono text-left select-none pointer-events-none min-w-[210px]">
-                <div class="flex items-center justify-between gap-2 mb-1">
-                  <span class="text-xs font-bold text-white tracking-wide">${p?.shortCode}</span>
-                  <span class="text-[9px] px-1.5 py-0.5 rounded border uppercase font-bold" style="color: ${color}; border-color: ${color}40; background-color: ${color}15;">
-                    ${p?.status}
-                  </span>
-                </div>
-                <div class="text-[11px] text-slate-300 font-semibold mb-1">${p?.name}</div>
-                <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-800/80">
-                  <span>Fluxo: <strong class="text-white font-bold">${flowGW} GW</strong></span>
-                  <span>Teto ONS: <strong class="text-slate-300 font-bold">${limitGW} GW</strong></span>
-                </div>
-                <div class="flex items-center justify-between text-[9px] text-slate-500 pt-0.5">
-                  <span>Saturação: <strong style="color: ${color}; font-weight: bold;">${p?.saturationPct}%</strong></span>
-                  <span class="text-cyan-400 font-medium">Clique p/ painel SCADA</span>
-                </div>
-              </div>
-            `)
-            .addTo(mapInstance);
-        };
-
-        const handleInterchangeLeave = () => {
-          mapInstance.getCanvas().style.cursor = '';
-          popupRef.current?.remove();
-        };
-
-        const handleInterchangeClick = (e: MapLayerMouseEvent) => {
-          if (!showInterchangesRef.current || !e.features || !e.features[0]) return;
-          const icId = e.features[0].properties?.id as InterchangeId;
-          if (icId && onOpenInterchangeModalRef.current) {
-            onOpenInterchangeModalRef.current(icId);
-          }
-        };
-
-        mapInstance.on('mouseenter', 'interchanges-main', handleInterchangeEnter);
-        mapInstance.on('mouseleave', 'interchanges-main', handleInterchangeLeave);
-        mapInstance.on('click', 'interchanges-main', handleInterchangeClick);
-
-        mapInstance.on('mouseenter', 'interchanges-marker-core', handleInterchangeEnter);
-        mapInstance.on('mouseleave', 'interchanges-marker-core', handleInterchangeLeave);
-        mapInstance.on('click', 'interchanges-marker-core', handleInterchangeClick);
-      }
-
       // 2. Power Plants Native GeoJSON
       const plantsGeoJSON: FeatureCollection = {
         type: 'FeatureCollection',
@@ -822,23 +616,6 @@ export const GridMap: React.FC<GridMapProps> = ({
       map.current.setLayoutProperty('subsystems-border', 'visibility', visibility);
     }
   }, [showSubsystems, isLoaded]);
-
-  // Sync interchanges layers visibility
-  useEffect(() => {
-    if (!map.current || !isLoaded) return;
-    const visibility = showInterchanges ? 'visible' : 'none';
-    const layers = [
-      'interchanges-glow',
-      'interchanges-main',
-      'interchanges-marker-glow',
-      'interchanges-marker-core'
-    ];
-    layers.forEach((layerId) => {
-      if (map.current?.getLayer(layerId)) {
-        map.current.setLayoutProperty(layerId, 'visibility', visibility);
-      }
-    });
-  }, [showInterchanges, isLoaded]);
 
   // Sync selected plant focus and HUD target ring
   useEffect(() => {

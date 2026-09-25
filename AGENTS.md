@@ -53,3 +53,8 @@ Every significant feature requires a concise plan (goal, technical approach, fil
 - **Tolerância Zero a Números Estimados:** Potências (MW), comprimentos de linha, níveis nominais de tensão (kV), coordenadas geográficas e limites de intercâmbio devem vir de fontes primárias oficiais (ANEEL SIGA/SIGEL, ONS RAP/PAR, CCEE, EPE). Proibido inventar ou aproximar grandezas elétricas e geográficas.
 - **Rastreabilidade Mandatória:** Toda adição ou retificação cadastral exige preenchimento do atributo `sources: SourceRef[]` com `accessedAt` (formato ISO YYYY-MM-DD) no código TypeScript e inclusão da entrada auditada no livro de proveniência (`docs/data-audit-log.md`).
 
+### 5.5. Rejeição a AI-Slop & Leitura Cirúrgica (Interface SCADA)
+- **Rejeição a AI-Slop & Enchimento de Tela:** Proibição explícita de parágrafos prolixos criados para "ocupar espaço". Se um conceito pode ser expresso em uma métrica monospaçada ou em uma linha com o termo-chave em negrito, é proibido escrever um parágrafo narrativo.
+- **Estética SCADA Minimalista:** Menos é mais. Interface escura industrial (`#07090e`), tipografia técnica limpa, acentos funcionais de status (ciano, esmeralda, âmbar, rosa/magenta) e zero decorações cosméticas inúteis ou formulários labirínticos.
+- **Leitura Cirúrgica:** O usuário (engenheiro, pesquisador ou estudante) deve bater o olho e absorver a física, a métrica ou a regulação sem fricção cognitiva.
+

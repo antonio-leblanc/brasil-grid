@@ -99,7 +99,6 @@ export function App() {
   const [plantTypeFilter, setPlantTypeFilter] = useState<string>(initialState.type);
   const [showPowerFlow, setShowPowerFlow] = useState<boolean>(true);
   const [showSubsystems, setShowSubsystems] = useState<boolean>(true);
-  const [showInterchanges, setShowInterchanges] = useState<boolean>(true);
   const [isLoadCurveOpen, setIsLoadCurveOpen] = useState<boolean>(false);
   const [isSimulatorOpen, setIsSimulatorOpen] = useState<boolean>(initialState.sim);
   const [isInterchangeOpen, setIsInterchangeOpen] = useState<boolean>(!!initialState.interchange);
@@ -216,8 +215,6 @@ export function App() {
           setShowPowerFlow={setShowPowerFlow}
           showSubsystems={showSubsystems}
           setShowSubsystems={setShowSubsystems}
-          showInterchanges={showInterchanges}
-          setShowInterchanges={setShowInterchanges}
           onOpenInterchangeModal={(id) => {
             if (id) setSelectedInterchangeId(id);
             setIsInterchangeOpen(true);
@@ -235,11 +232,6 @@ export function App() {
             plantTypeFilter={plantTypeFilter}
             showPowerFlow={showPowerFlow}
             showSubsystems={showSubsystems}
-            showInterchanges={showInterchanges}
-            onOpenInterchangeModal={(id) => {
-              if (id) setSelectedInterchangeId(id);
-              setIsInterchangeOpen(true);
-            }}
             telemetry={telemetry}
           />
 
@@ -276,12 +268,6 @@ export function App() {
               <div className="hidden sm:flex items-center space-x-1 text-amber-300/90 pl-1 border-l border-slate-800">
                 <span className="w-1.5 h-1.5 rounded-sm bg-amber-500/40 border border-amber-500/60"></span>
                 <span>4 Subsistemas</span>
-              </div>
-            )}
-            {showInterchanges && (
-              <div className="hidden sm:flex items-center space-x-1 text-sky-400 pl-1 border-l border-slate-800">
-                <span className="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
-                <span>Fronteiras ONS</span>
               </div>
             )}
           </div>

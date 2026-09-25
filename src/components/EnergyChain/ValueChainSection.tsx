@@ -20,7 +20,7 @@ export const ValueChainSection: React.FC = () => {
           Do Elétron Primário até a Fatura Final
         </h2>
         <p className="text-sm sm:text-base text-slate-400">
-          O setor elétrico no Brasil opera sob quatro elos interdependentes, cada um com regulamentação própria, modelos de remuneração distintos e empresas líderes.
+          Estrutura em quatro elos interdependentes: marco regulatório, modelo de remuneração e dinâmicas físico-financeiras do SEB.
         </p>
       </div>
 
@@ -28,6 +28,15 @@ export const ValueChainSection: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {energyChainStages.map((stage) => {
           const isSelected = stage.id === selectedId;
+          const badgeText =
+            stage.id === 'geracao'
+              ? 'ATÉ 500 kV'
+              : stage.id === 'transmissao'
+              ? '230 a ±800 kV'
+              : stage.id === 'distribuicao'
+              ? '13,8 kV a 127 V'
+              : 'CONTRATOS & MCP';
+
           return (
             <div
               key={stage.id}
@@ -43,10 +52,10 @@ export const ValueChainSection: React.FC = () => {
                 <span className={`font-mono text-2xl font-black ${isSelected ? 'text-cyan-400' : 'text-slate-600'}`}>
                   {stage.number}
                 </span>
-                <span className={`text-[11px] font-mono px-2 py-0.5 rounded ${
-                  isSelected ? 'bg-cyan-500/20 text-cyan-300' : 'bg-slate-800 text-slate-400'
+                <span className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded ${
+                  isSelected ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 'bg-slate-800 text-slate-400'
                 }`}>
-                  {stage.voltage.split(' ')[0]}
+                  {badgeText}
                 </span>
               </div>
 
@@ -69,10 +78,13 @@ export const ValueChainSection: React.FC = () => {
           {/* Left Column: Core Narrative */}
           <div className="flex-1 space-y-6">
             <div>
-              <div className="flex items-center space-x-3 mb-2">
-                <span className="font-mono text-cyan-400 text-sm font-semibold">ELO {activeStage.number} / 04</span>
-                <span className="text-slate-600">•</span>
-                <span className="text-slate-400 text-sm font-mono">{activeStage.voltage}</span>
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <span className="font-mono text-cyan-400 text-xs px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-800/40 font-semibold">
+                  ELO {activeStage.number} / 04
+                </span>
+                <span className="text-slate-400 text-xs font-mono bg-slate-950/80 px-2 py-0.5 rounded border border-slate-800">
+                  {activeStage.voltage}
+                </span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">{activeStage.name}</h3>
               <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
@@ -106,13 +118,23 @@ export const ValueChainSection: React.FC = () => {
             {/* Strategic Highlights */}
             <div className="space-y-2 pt-2">
               <h4 className="text-xs font-mono uppercase tracking-wider text-slate-400">Pontos Estratégicos & Dinâmica Operacional</h4>
-              <div className="space-y-2">
-                {activeStage.highlights.map((h, i) => (
-                  <div key={i} className="flex items-start space-x-2.5 text-xs sm:text-sm text-slate-300">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                    <span>{h}</span>
-                  </div>
-                ))}
+              <div className="space-y-2.5">
+                {activeStage.highlights.map((h, i) => {
+                  const colonIndex = h.indexOf(':');
+                  return (
+                    <div key={i} className="flex items-start space-x-2.5 text-xs sm:text-sm text-slate-300">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      {colonIndex !== -1 ? (
+                        <span className="leading-relaxed">
+                          <strong className="text-white font-semibold font-mono text-xs">{h.slice(0, colonIndex)}:</strong>
+                          {h.slice(colonIndex + 1)}
+                        </span>
+                      ) : (
+                        <span className="leading-relaxed">{h}</span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

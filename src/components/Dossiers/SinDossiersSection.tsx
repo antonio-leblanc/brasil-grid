@@ -58,7 +58,7 @@ export const SinDossiersSection: React.FC = () => {
           Engenharia de Sistemas, Física & Despacho
         </h2>
         <p className="text-sm sm:text-base text-slate-400">
-          Investigações aprofundadas sobre eventos críticos, modelos computacionais e a operação em tempo real de um dos maiores sistemas elétricos interligados do mundo, de matriz predominantemente renovável.
+          Análises de engenharia sobre eventos críticos, modelagem matemática de despacho e dinâmica física de redes com alta penetração renovável.
         </p>
       </div>
 

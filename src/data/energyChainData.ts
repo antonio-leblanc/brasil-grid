@@ -21,10 +21,10 @@ export const energyChainStages: ValueChainStage[] = [
     number: '01',
     name: 'Geração',
     subtitle: 'A Origem da Energia',
-    voltage: '0,69 kV (aerogeradores) a 18 kV (hidrogeradores de Itaipu), elevada por transformadores para a transmissão (ex.: 18 → 500 kV em Itaipu)',
-    description: 'Transformação de recursos naturais primários em eletricidade. O Brasil possui uma das matrizes elétricas mais limpas do mundo: em 2025, 86,8% da oferta interna de energia elétrica veio de fontes renováveis.',
-    revenueModel: 'Venda de energia por contratos no ACR (leilões de energia nova, existente e de reserva) ou no ACL (contratos bilaterais), com as diferenças entre geração e contratos liquidadas ao PLD na CCEE.',
-    regulator: 'ANEEL (outorga e fiscalização) / ONS (despacho centralizado).',
+    voltage: '0,69 kV (eólica) a 18 kV (Itaipu) → Elevada a 230–500 kV na subestação',
+    description: 'Conversão de fontes primárias em eletricidade. O Brasil opera uma das matrizes mais limpas do planeta: 86,8% de oferta renovável em 2025, assentada na flexibilidade hidrelétrica e no salto solar/eólico.',
+    revenueModel: 'Venda de contratos no ACR (leilões regulados) ou no ACL (livre negociação bilateral). Diferenças entre geração física e compromissos contratuais são liquidadas ao PLD horário na CCEE.',
+    regulator: 'ANEEL (outorga e fiscalização) • ONS (despacho hidrotérmico centralizado por mérito econômico e segurança).',
     mainCompanies: [
       { name: 'Eletrobras', tag: 'Maior geradora do país (44,4 GW no 2T2025, ~22% da capacidade)' },
       { name: 'Engie Brasil', tag: 'Maior geradora privada 100% renovável' },
@@ -39,9 +39,9 @@ export const energyChainStages: ValueChainStage[] = [
       { label: 'Eólica + Solar (2025)', value: '26,4% da geração' }
     ],
     highlights: [
-      'Despacho hidrotérmico centralizado pelo ONS para otimizar o uso da água dos reservatórios.',
-      'Boom da micro e minigeração distribuída (MMGD, sobretudo solar): 54,5 TWh gerados em 2025, alta de 28,9% sobre 2024.',
-      'Complementaridade no Nordeste: solar concentrada no meio do dia; eólica com predominância noturna e safra dos ventos entre agosto e novembro.'
+      'Despacho Centralizado: O ONS determina a produção de cada usina minuto a minuto para minimizar o custo futuro de operação da água.',
+      'Avanço da MMGD: 54,5 TWh gerados por micro/minigeração em 2025 (+28,9% vs 2024), reduzindo a carga líquida vista pela rede básica no meio do dia.',
+      'Sinergia no Nordeste: Pico solar concentrado nas horas diurnas e geração eólica predominante à noite, com safra de ventos de agosto a novembro.'
     ],
     sources: [
       { label: 'EPE — Anuário Estatístico de Energia Elétrica 2026 (Destaques, ano-base 2025)', url: 'https://dashboard.epe.gov.br/apps/anuario-livro/livro/pt/destaques.html' },
@@ -61,10 +61,10 @@ export const energyChainStages: ValueChainStage[] = [
     number: '02',
     name: 'Transmissão',
     subtitle: 'As Autoestradas de Alta Tensão',
-    voltage: 'Rede Básica ≥ 230 kV: 230, 345, 440, 500/525 e 765 kV CA; ±600 kV e ±800 kV CC',
-    description: 'Transporte de imensas massas de energia por milhares de quilômetros, ligando os grandes centros de geração (Norte/Nordeste/Itaipu) aos polos de consumo no Sudeste/Sul.',
-    revenueModel: 'RAP (Receita Anual Permitida) — remuneração pela disponibilidade da instalação, independente do fluxo de potência transportado, com descontos por indisponibilidade (Parcela Variável).',
-    regulator: 'ANEEL (leilões de concessão de 30 anos; vence a menor RAP ofertada) / ONS (operação).',
+    voltage: 'Rede Básica (230 a 765 kV CA) • Bipolos UHVDC (±600 e ±800 kV CC)',
+    description: 'Autoestradas elétricas de ultra-alta tensão que transportam grandes blocos de potência por milhares de quilômetros, integrando usinas remotas (Norte/Nordeste/Itaipu) aos polos de consumo no Sudeste/Sul.',
+    revenueModel: 'RAP (Receita Anual Permitida) baseada estritamente na disponibilidade dos ativos (independe do volume de energia transportado), com penalidade por indisponibilidade via Parcela Variável (PV).',
+    regulator: 'ANEEL (leilões de concessão de 30 anos por menor RAP) • ONS (coordenação operacional e supervisão em tempo real).',
     mainCompanies: [
       { name: 'Taesa', tag: 'Dedicada exclusivamente à transmissão (~14,7 mil km em operação)' },
       { name: 'ISA Energia Brasil (ex-ISA CTEEP)', tag: '~95% da energia transmitida em SP' },
@@ -79,9 +79,9 @@ export const energyChainStages: ValueChainStage[] = [
       { label: 'Prazo da Concessão', value: '30 anos' }
     ],
     highlights: [
-      'Os bipolos ±800 kV de Belo Monte: Xingu–Estreito (MG, 2.076 km, BMTE: State Grid 51%, Furnas 24,5%, Eletronorte 24,5%) e Xingu–Terminal Rio (RJ, 2.543 km, XRTE/State Grid), o mais extenso sistema de ultra-alta tensão do Brasil.',
-      'Nos contratos de concessão recentes, a RAP é reajustada anualmente pelo IPCA; indisponibilidades geram desconto via Parcela Variável por Indisponibilidade (REN ANEEL 729/2016).',
-      'O Sistema Interligado Nacional (SIN) permite que a geração de Belo Monte (PA) atenda cargas no Sudeste e, via interligações regionais, no Sul.'
+      'Bipolos ±800 kV UHVDC: Escoamento de Belo Monte via Xingu–Estreito (2.076 km) e Xingu–Terminal Rio (2.543 km, o maior tronco de ultra-alta tensão do país).',
+      'Remuneração por Disponibilidade: Concessionárias não correm risco de volume; receita é reajustada anualmente pelo IPCA e deduzida em caso de falhas na linha.',
+      'Interligação Sistêmica Nacional: O intercâmbio regional viabiliza o aproveitamento estacional e o intercâmbio de excedentes entre bacias hidrográficas distantes.'
     ],
     sources: [
       { label: 'EPE — Anuário Estatístico de Energia Elétrica 2026 (Destaques, ano-base 2025)', url: 'https://dashboard.epe.gov.br/apps/anuario-livro/livro/pt/destaques.html' },
@@ -101,10 +101,10 @@ export const energyChainStages: ValueChainStage[] = [
     number: '03',
     name: 'Distribuição',
     subtitle: 'A Malha Urbana & Fio Físico',
-    voltage: '13,8 kV / 34,5 kV (média tensão) para 127/220 V ou 220/380 V (baixa tensão)',
-    description: 'O elo que recebe a eletricidade das subestações de transmissão e a entrega aos postes, transformadores e medidores finais de residências, hospitais, fábricas e comércios.',
-    revenueModel: 'Receita regulada pela TUSD (Tarifa de Uso do Sistema de Distribuição): a Parcela B remunera a rede e a operação da distribuidora; custos de energia, transmissão e encargos (Parcela A) são repassados. Revisão tarifária periódica a cada 4 ou 5 anos, conforme o contrato de concessão.',
-    regulator: 'ANEEL (metas de continuidade DEC/FEC — duração e frequência equivalentes de interrupção por unidade consumidora).',
+    voltage: 'Média Tensão (13,8 / 34,5 kV) • Baixa Tensão (127/220 V e 220/380 V)',
+    description: 'Malha capilar que recebe energia rebaixada das subestações e a distribui porta a porta a mais de 94 milhões de consumidores. Funciona como monopólio natural regulado.',
+    revenueModel: 'Tarifa TUSD: Parcela B remunera investimentos (CAPEX) e custos operacionais (OPEX) da concessionária; Parcela A repassa sem lucro custos de compra de energia, transmissão e encargos setoriais.',
+    regulator: 'ANEEL (revisões tarifárias periódicas a cada 4–5 anos e fiscalização de metas DEC/FEC).',
     mainCompanies: [
       { name: 'Light', tag: 'Região Metropolitana do Rio de Janeiro (31 municípios)' },
       { name: 'Enel Brasil', tag: 'Distribuição em SP, RJ e CE' },
@@ -119,9 +119,9 @@ export const energyChainStages: ValueChainStage[] = [
       { label: 'Componente Fio B', value: 'Custo da infraestrutura local' }
     ],
     highlights: [
-      'Monopólio natural: não existem duas fiações de postes concorrentes na mesma rua.',
-      'O fio de distribuição continua sendo usado mesmo quando o consumidor migra para o Mercado Livre: a distribuidora segue cobrando a TUSD.',
-      'Enfrenta o maior desafio de transição com a proliferação da geração distribuída solar (fluxo reverso na baixa tensão) e dos veículos elétricos.'
+      'Monopólio Natural: Não há postes concorrentes na mesma via; toda a infraestrutura física local pertence à concessionária da área outorgada.',
+      'Uso da Rede no Mercado Livre: Consumidores que migram para o ACL continuam conectados à distribuidora e pagam a TUSD pelo uso do fio.',
+      'Desafio do Fluxo Reverso: A rápida expansão de microgeração solar residencial e comercial exige reforço de alimentadores e controle dinâmico de sobretensão.'
     ],
     sources: [
       { label: 'EPE — Anuário Estatístico de Energia Elétrica 2025 (factsheet, ano-base 2024)', url: 'https://www.epe.gov.br/sites-pt/publicacoes-dados-abertos/publicacoes/PublicacoesArquivos/publicacao-160/topico-168/anuario-factsheet.pdf' },
@@ -139,10 +139,10 @@ export const energyChainStages: ValueChainStage[] = [
     number: '04',
     name: 'Comercialização',
     subtitle: 'Mercado Livre, Contratos & Liquidação CCEE',
-    voltage: 'Negociação financeira e de dados (independente da tensão)',
-    description: 'A comercialização faz o casamento financeiro entre oferta e demanda por meio de contratos bilaterais e da liquidação das diferenças no Mercado de Curto Prazo, valoradas ao PLD. No ACL, consumidores do Grupo A (média e alta tensão) contratam energia livremente; no ACR, as distribuidoras atendem o mercado cativo via leilões públicos.',
-    revenueModel: 'Compra e venda de contratos de energia, com gestão da exposição ao PLD horário e do risco de submercado.',
-    regulator: 'CCEE (registro de contratos, contabilização e liquidação) e ANEEL.',
+    voltage: 'Gestão contratual e financeira (desvinculada do fluxo físico)',
+    description: 'Elo responsável pelo casamento econômico entre oferta e demanda. Abrange o Ambiente de Contratação Regulada (ACR / mercado cativo) e o Ambiente de Contratação Livre (ACL / mercado livre).',
+    revenueModel: 'Spread em contratos de compra e venda bilateral (PPAs), gestão de carteira e mitigação do risco de submercado e exposição ao PLD horário.',
+    regulator: 'CCEE (registro de contratos, apuração de medições e liquidação financeira do MCP) • ANEEL.',
     mainCompanies: [
       { name: 'BTG Pactual', tag: 'Maior volume negociado no ACL (MM12 até out/2025)' },
       { name: 'Santander Comercializadora', tag: '2º maior volume negociado no ACL (MM12 até out/2025)' },
@@ -156,9 +156,9 @@ export const energyChainStages: ValueChainStage[] = [
       { label: 'Abertura da Baixa Tensão', value: 'Residencial até nov/2028 (Lei 15.269/2025)' }
     ],
     highlights: [
-      'A CCEE contabiliza a cada hora o descompasso entre a energia medida (gerada/consumida) e a energia contratada, liquidando sobras e déficits ao PLD de cada submercado.',
-      'A medição de faturamento (SMF) dos agentes é coletada diariamente pelo SCDE da CCEE e integralizada em base horária, compatível com o período de comercialização.',
-      'Com a Lei 15.269/2025, o custo da contratação de lastro (reserva de capacidade para a segurança do SIN) é rateado entre todos os usuários finais do SIN, cativos e livres, enquanto a energia (MWh) segue negociada em contratos.'
+      'Liquidação Financeira na CCEE: A CCEE confronta a cada hora a energia medida (SMF) com a carteira contratada, liquidando sobras ou déficits ao PLD de cada submercado.',
+      'Expansão do Mercado Livre: O ACL já responde por 44,8% de todo o consumo brasileiro após a abertura para todos os consumidores do Grupo A (média e alta tensão).',
+      'Separação Lastro × Energia (Lei 15.269/2025): A garantia física e confiabilidade sistêmica (lastro) é rateada por todos os consumidores, enquanto a energia (MWh) é livremente negociada.'
     ],
     sources: [
       { label: 'EPE — Anuário Estatístico de Energia Elétrica 2026 (Destaques, ano-base 2025)', url: 'https://dashboard.epe.gov.br/apps/anuario-livro/livro/pt/destaques.html' },
