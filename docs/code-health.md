@@ -57,10 +57,10 @@ Cada entidade de dados ganhou `sources: SourceRef[]`, exibido na UI (`SourcesLis
 | `transmissionLinesData.ts` | ✅ Auditado: 52 → 16 linhas. 36 corredores eram fictícios ou tinham tensão errada e foram removidos |
 | Textos de UI, README, spec | ✅ Auditados. Atribuição Esri reativada; selo "MINI-ONS" → "LAB 60 HZ" |
 | `interchangeData.ts`, `referenceGridSnapshot` | ✅ Auditado. 4 fronteiras com nomenclatura oficial ONS (FNESE, FNSE, FNEN, FSSE), fontes primárias com `accessedAt`, perfis horários rotulados como ilustrativos e recorde de demanda do SIN atualizado para 106.532 MW (26/02/2025) |
-| `powerPlantsData.ts` (72 usinas) | ⏳ **Não auditado.** `sources` opcional até a conclusão |
+| `powerPlantsData.ts` (72 usinas) | ⏳ **Parcialmente auditado (16/72 usinas).** Lote 1 (Top 16 UHEs, >65 GW) concluído com 100% de rastreabilidade ANEEL SIGA (`sources: SourceRef[]` com `accessedAt`). Lote 2 (23 UHEs restantes) e Lote 3 (33 térmicas/renováveis) mapeados e pendentes. |
 
 **Pendências para retomar:**
-- Usinas: capacidade, proprietário atual (Eletrobras → Axia Energia; vendas de ativos), coordenadas e unidades, com ANEEL SIGA como fonte primária.
+- Usinas: Lote 2 (23 UHEs restantes) e Lote 3 (33 térmicas, nucleares, eólicas e solares) mapeados com checklist no `data-audit-log.md`.
 - Linhas não representadas: circuitos 2 e 3 da Norte–Sul, Tucuruí–Imperatriz–Presidente Dutra, elos com o Uruguai (Rivera, Melo).
 - Algumas linhas usam Wikipedia como uma das fontes; trocar por fonte primária quando possível.
 - ERAC: no dia 15/08/2023, o SE/CO ainda usava os ajustes antigos (7% por estágio). O simulador usa os ajustes novos, uniformizados.

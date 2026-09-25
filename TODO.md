@@ -2,6 +2,21 @@
 
 > Lista de próximos passos. Cada item é escrito pra ser pego de forma independente, por qualquer agente/dev sem contexto prévio — leia o item inteiro (e os arquivos citados) antes de começar.
 
+## Despoluição e Simplificação UX ("Anti-AI-Slop")
+
+Iniciativa de descomplicação do laboratório: focar na intuição física, feedback visual imediato e eliminação da sobrecarga de painéis técnicos ("cockpit de avião").
+
+- [x] **Fase 1 — Redesenho do Simulador de Estabilidade 60 Hz:**
+  - [x] Transformar o simulador numa experiência centrada na **Balança de Potência (Geração = Demanda ↔ 60 Hz)**.
+  - [x] Substituir instrumentos sobrecarregados por tacômetro limpo com destaque em 60.00 Hz ([`FrequencyGauge.tsx`](file:///C:/gitrepos/brasil-grid/src/components/Simulator/FrequencyGauge.tsx)), registrador gráfico focado na faixa de segurança 59,9–60,1 Hz ([`FrequencyStripChart.tsx`](file:///C:/gitrepos/brasil-grid/src/components/Simulator/FrequencyStripChart.tsx)) e barra visual de balanço de potência (ΔP).
+  - [x] Simplificar o despacho para alavancas essenciais: Hidrelétricas com ajuste rápido ±2 GW ([`DispatchControlDesk.tsx`](file:///C:/gitrepos/brasil-grid/src/components/Simulator/DispatchControlDesk.tsx)), Térmicas de apoio lento e Renováveis com toggle de corte (Curtailment).
+  - [x] Cenários didáticos com desafios claros e objetivos explícitos: O Pôr do Sol (Curva do Pato), Queda de Usina (-2.8 GW), Excesso Solar e Modo Livre ([`DispatchSimulatorModal.tsx`](file:///C:/gitrepos/brasil-grid/src/components/Simulator/DispatchSimulatorModal.tsx)).
+  - [x] Expurgo de ruído: removidos custos R$/MWh em tempo real, emissões tCO2, log de eventos SCADA denso e muralha de fórmulas matemáticas. Mantido o motor físico de Kundur/ONS 100% integro sob o capô ([`gridPhysics.ts`](file:///C:/gitrepos/brasil-grid/src/services/gridPhysics.ts)).
+- [ ] **Fase 2 — Simplificação Geral da Navegação & UI:**
+  - [ ] Despoluir ConsoleHeader e ConsoleBottomBar (reduzir badges, fontes mono microscópicas e excesso de bordas fluorescentes).
+  - [ ] Consolidar modais e focar a experiência no mapa e no painel contextual de inspeção.
+  - [ ] Enxugar paredes de texto no Modo Guia (Dossiês e Cadeia de Valor) com resumos e infográficos compactos.
+
 ## Dados
 
 - [x] **Malha Integrada de Linhas de Transmissão:** 15→30→52 linhas tronco (+22 novos corredores estratégicos reais ONS/ANEEL conectando 100% das 72 usinas estruturantes a corredores de escoamento e fechando os anéis elétricos regionais).

@@ -11,10 +11,22 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     riverOrRegion: 'Rio Paraná (Foz do Iguaçu)',
     operator: 'Itaipu Binacional (Brasil / Paraguai)',
     coordinates: [-54.5889, -25.4083],
-    description: 'Segunda maior usina do mundo em geração histórica e o maior colosso do setor elétrico sul-americano. Opera com 20 turbinas Francis de 700 MW cada.',
+    description: 'Segunda maior usina do mundo em geração histórica e o maior colosso do setor elétrico sul-americano. Central binacional operando com 20 turbinas Francis de 700 MW cada (50 Hz Paraguai / 60 Hz Brasil).',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.PR.001198-3.01 (Itaipu Binacional)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'Itaipu Binacional — Dados Técnicos Oficiais',
+        url: 'https://www.itaipu.gov.br/energia/caracteristicas-da-usina',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 1984,
-      turbinesOrUnits: '20 x 700 MW (Francis)',
+      turbinesOrUnits: '20 x 700 MW (Francis) — 10 em 50 Hz e 10 em 60 Hz',
       flowOrEfficiency: 'Vazão nominal: 14.000 m³/s',
       gridConnectionVoltage: '500 kV (CA) & ±600 kV (CC)'
     }
@@ -23,18 +35,30 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'belo-monte',
     name: 'UHE Belo Monte',
     type: 'hidro',
-    capacityMW: 11233,
+    capacityMW: 11233.1,
     subsystem: 'N',
     state: 'PA',
     riverOrRegion: 'Rio Xingu (Altamira/Vitória do Xingu)',
-    operator: 'Norte Energia',
+    operator: 'Norte Energia S.A. (Axia Energia / Neoenergia)',
     coordinates: [-51.7778, -3.1256],
-    description: 'Maior hidrelétrica 100% brasileira. Usina a fio d\'água, altamente sazonal, cuja energia é drenada para o Sudeste através dos dois superlinhões de ±800 kV CC.',
+    description: 'Maior hidrelétrica 100% brasileira. Usina a fio d\'água altamente sazonal, dividida entre o Sítio Belo Monte (11.000 MW) e o Vertedouro Pimental (233,1 MW), com escoamento em ±800 kV UHVDC.',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.PA.030460-3.01 (Belo Monte) & UHE.PH.PA.030461-1.01 (Pimental)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'Norte Energia — Ficha Técnica Belo Monte',
+        url: 'https://www.norteenergiasa.com.br/pt-br/uhe-belo-monte/usina',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 2016,
-      turbinesOrUnits: '18 x 611 MW (Sítio Belo Monte) + 9 x 25 MW (Pimental)',
-      flowOrEfficiency: 'Queda líquida: ~89 metros',
-      gridConnectionVoltage: '±800 kV UHVDC'
+      turbinesOrUnits: '18 x 611,11 MW (Belo Monte Francis) + 6 x 38,85 MW + 3 x 2,14 MW (Pimental Bulbo)',
+      flowOrEfficiency: 'Queda líquida nominal: ~89 metros',
+      gridConnectionVoltage: '±800 kV UHVDC (Bipolos 1 e 2)'
     }
   },
   {
@@ -45,12 +69,24 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     subsystem: 'N',
     state: 'PA',
     riverOrRegion: 'Rio Tocantins (Tucuruí)',
-    operator: 'Eletrobras Eletronorte',
+    operator: 'Axia Energia (Eletronorte)',
     coordinates: [-49.6469, -3.8328],
     description: 'Âncora industrial da Amazônia Oriental. Alimentador crítico dos complexos eletrointensivos de alumínio e interligação com os subsistemas Nordeste e Sudeste.',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.PA.002882-7.01 (Tucuruí)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'Eletronorte / Axia Energia — Parque Gerador Tucuruí',
+        url: 'https://www.eletronorte.gov.br/',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 1984,
-      turbinesOrUnits: '24 unidades geradoras (Fases I e II)',
+      turbinesOrUnits: '24 unidades geradoras: 12 x 350 MW (Fase I) + 11 x 370 MW + 1 x 370 MW + 2 x 15 MW aux (Fase II)',
       flowOrEfficiency: 'Vazão máxima do vertedouro: 110.000 m³/s',
       gridConnectionVoltage: '500 kV'
     }
@@ -63,32 +99,56 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     subsystem: 'N',
     state: 'RO',
     riverOrRegion: 'Rio Madeira (Porto Velho)',
-    operator: 'Energia Sustentável do Brasil (Engie / Eletrobras)',
+    operator: 'ESBR — Energia Sustentável do Brasil (Engie / Axia Energia)',
     coordinates: [-64.6547, -9.2647],
     description: 'Complexo de engenharia no Rio Madeira equipado com turbinas bulbo de alto rendimento para baixas quedas d\'água.',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.RO.030164-7.01 (Jirau)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'ESBR — Usina Hidrelétrica Jirau',
+        url: 'https://www.energiasustentaveldobrasil.com.br/',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 2013,
       turbinesOrUnits: '50 turbinas tipo Bulbo de 75 MW',
-      flowOrEfficiency: 'Queda líquida: 15.2 metros',
-      gridConnectionVoltage: '500 kV ➔ Conversora ±600 kV'
+      flowOrEfficiency: 'Queda líquida nominal: 15,2 metros',
+      gridConnectionVoltage: '500 kV ➔ Conversora Coletora Porto Velho ±600 kV'
     }
   },
   {
     id: 'santo-antonio',
     name: 'UHE Santo Antônio',
     type: 'hidro',
-    capacityMW: 3568,
+    capacityMW: 3568.3,
     subsystem: 'N',
     state: 'RO',
     riverOrRegion: 'Rio Madeira (Porto Velho)',
-    operator: 'Santo Antônio Energia (Eletrobras)',
+    operator: 'Santo Antônio Energia S.A. (Axia Energia)',
     coordinates: [-63.9536, -8.8028],
     description: 'Opera a fio d\'água em conjunto com Jirau. Sua energia viaja pelo Bipolo do Madeira até a subestação de Araraquara (SP).',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.RO.030064-0.01 (Santo Antônio)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'Santo Antônio Energia — Dados da Usina',
+        url: 'https://www.santoantonioenergia.com.br/',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 2012,
-      turbinesOrUnits: '50 turbinas tipo Bulbo',
+      turbinesOrUnits: '50 turbinas tipo Bulbo (44 x 71,6 MW + 6 x 69,59 MW)',
       flowOrEfficiency: 'Vazão nominal: 24.000 m³/s',
-      gridConnectionVoltage: '±600 kV CC'
+      gridConnectionVoltage: '500 kV ➔ Conversora Coletora Porto Velho ±600 kV'
     }
   },
   {
@@ -99,9 +159,21 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     subsystem: 'NE',
     state: 'AL/SE',
     riverOrRegion: 'Rio São Francisco (Canindé/Piranhas)',
-    operator: 'Eletrobras Chesf',
+    operator: 'Axia Energia (Chesf)',
     coordinates: [-37.7958, -9.6158],
     description: 'Chave mestre da segurança eletroenergética do Nordeste no baixo São Francisco, com vertedouro encravado no cânion.',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.AL.002934-3.01 (Xingó)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'Chesf / Axia Energia — Usina Hidrelétrica de Xingó',
+        url: 'https://www.chesf.com.br/',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 1994,
       turbinesOrUnits: '6 x 527 MW (Francis)',
@@ -111,18 +183,30 @@ export const majorPowerPlants: PowerPlantFeature[] = [
   },
   {
     id: 'paulo-afonso',
-    name: 'Complexo Paulo Afonso (I-IV)',
+    name: 'Complexo Paulo Afonso (I-IV + Apolônio Sales)',
     type: 'hidro',
-    capacityMW: 4279,
+    capacityMW: 4279.6,
     subsystem: 'NE',
     state: 'BA',
     riverOrRegion: 'Rio São Francisco (Paulo Afonso)',
-    operator: 'Eletrobras Chesf',
+    operator: 'Axia Energia (Chesf)',
     coordinates: [-38.2167, -9.4000],
-    description: 'Complexo histórico pioneiro da eletrificação nordestina. Composto por quatro usinas e a central subterrânea de Apolônio Sales.',
+    description: 'Complexo histórico pioneiro da eletrificação nordestina. Composto por quatro usinas em Paulo Afonso (I: 180 MW, II: 443 MW, III: 794,2 MW, IV: 2.462,4 MW) e a usina de Apolônio Sales / Moxotó (400 MW).',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.BA.001968-2.01 a UHE.PH.BA.001971-2.01 (Paulo Afonso I-IV) & UHE.PH.BA.000109-0.01 (Apolônio Sales)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'Chesf / Axia Energia — Complexo de Paulo Afonso',
+        url: 'https://www.chesf.com.br/',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 1955,
-      turbinesOrUnits: '23 unidades geradoras totais',
+      turbinesOrUnits: '23 unidades geradoras totais somadas nas 5 casas de força',
       gridConnectionVoltage: '230 kV & 500 kV'
     }
   },
@@ -202,12 +286,24 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     subsystem: 'SE/CO',
     state: 'SP',
     riverOrRegion: 'Rio Paraná (Ilha Solteira)',
-    operator: 'CTG Brasil',
+    operator: 'Rio Paraná Energia S.A. (CTG Brasil)',
     coordinates: [-51.3378, -20.4306],
     description: 'Uma das maiores usinas inteiramente nacionais do país, opera em cascata com Três Irmãos e Jupiá, sustentando boa parte da carga do interior paulista e do Mato Grosso do Sul.',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.SP.001007-3.01 (Ilha Solteira)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'CTG Brasil — Usina Hidrelétrica Ilha Solteira',
+        url: 'https://ctgbr.com.br/portfolio/ilha-solteira/',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 1978,
-      turbinesOrUnits: '20 unidades Kaplan',
+      turbinesOrUnits: '20 x 172,2 MW (Francis)',
       gridConnectionVoltage: '440 kV / 138 kV'
     }
   },
@@ -256,9 +352,21 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     operator: 'Copel GeT',
     coordinates: [-51.8867, -26.0272],
     description: 'Cabeça da cascata do Iguaçu, com uma das maiores barragens em altura da América do Sul — âncora do suprimento do sistema paranaense.',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.PR.000966-0.01 (Gov. Bento Munhoz da Rocha Netto)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'Copel GeT — Usina Bento Munhoz (Foz do Areia)',
+        url: 'https://www.copel.com/',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 1980,
-      turbinesOrUnits: '4 unidades Francis',
+      turbinesOrUnits: '4 x 419 MW (Francis)',
       gridConnectionVoltage: '500 kV'
     }
   },
@@ -300,16 +408,28 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'marimbondo',
     name: 'UHE Marimbondo',
     type: 'hidro',
-    capacityMW: 1488,
+    capacityMW: 1440,
     subsystem: 'SE/CO',
     state: 'MG',
     riverOrRegion: 'Rio Grande (Fronteira/Icém)',
-    operator: 'Furnas Centrais Elétricas',
+    operator: 'Axia Energia (Furnas)',
     coordinates: [-49.2000, -20.4000],
-    description: 'Parte da cascata do rio Grande na divisa MG/SP, reforça o corredor de escoamento entre o Triângulo Mineiro e o interior paulista.',
+    description: 'Parte estratégica da cascata do Rio Grande na divisa MG/SP, reforça o corredor de escoamento entre o Triângulo Mineiro e o interior paulista com 8 turbinas Francis de 180 MW.',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.MG.001428-1.01 (Marimbondo)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'Furnas / Axia Energia — Usina Hidrelétrica de Marimbondo',
+        url: 'https://www.furnas.com.br/',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 1975,
-      turbinesOrUnits: '8 unidades Francis',
+      turbinesOrUnits: '8 x 180 MW (Francis)',
       gridConnectionVoltage: '500 kV'
     }
   },
@@ -338,12 +458,24 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     subsystem: 'SE/CO',
     state: 'MG',
     riverOrRegion: 'Rio Paranaíba (divisa MG/GO)',
-    operator: 'CTG Brasil',
+    operator: 'SPIC Brasil (UHE São Simão Energia S.A.)',
     coordinates: [-50.5000, -18.9833],
-    description: 'Uma das maiores usinas inteiramente em território nacional na bacia do Paranaíba, ancorando o suprimento do Triângulo Mineiro e de Goiás.',
+    description: 'Uma das maiores usinas inteiramente em território nacional na bacia do Paranaíba, ancorando o suprimento do Triângulo Mineiro e de Goiás. Concessão arrematada e operada pela SPIC Brasil.',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.MG.002621-2.01 (São Simão)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'SPIC Brasil — Usina Hidrelétrica São Simão',
+        url: 'https://spicbrasil.com.br/sao-simao/',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 1978,
-      turbinesOrUnits: '6 unidades Francis',
+      turbinesOrUnits: '6 x 285 MW (Francis)',
       gridConnectionVoltage: '500 kV'
     }
   },
@@ -447,16 +579,28 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'teles-pires',
     name: 'UHE Teles Pires',
     type: 'hidro',
-    capacityMW: 1820,
+    capacityMW: 1819.8,
     subsystem: 'N',
     state: 'PA/MT',
     riverOrRegion: 'Rio Teles Pires (Paranaíta / Apiacás)',
-    operator: 'Cia Hidrelétrica Teles Pires (Neoenergia / Eletrobras)',
+    operator: 'CHTP — Cia Hidrelétrica Teles Pires (Neoenergia / Axia Energia)',
     coordinates: [-56.4744, -9.3444],
     description: 'Aproveitamento a fio d\'água de grande porte no Rio Teles Pires, escoando energia gerada na Amazônia Meridional para o Centro-Oeste e Sudeste.',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.MT.030588-0.01 (Teles Pires)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'Neoenergia — UHE Teles Pires',
+        url: 'https://www.neoenergia.com/nossos-negocios/geracao/hidreletricas/teles-pires/',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 2015,
-      turbinesOrUnits: '5 x 364 MW (Francis)',
+      turbinesOrUnits: '5 x 363,96 MW (Francis)',
       gridConnectionVoltage: '500 kV'
     }
   },
@@ -468,9 +612,21 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     subsystem: 'SE/CO',
     state: 'SP/MS',
     riverOrRegion: 'Rio Paraná (Rosana / Batayporã)',
-    operator: 'Auren Energia',
+    operator: 'Auren Energia S.A.',
     coordinates: [-52.9556, -22.4833],
     description: 'Possui o mais extenso lago em barragem de terra do Brasil e a maior eclusa de navegação fluvial da Hidrovia Tietê-Paraná.',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.SP.000898-2.01 (Engenheiro Sérgio Motta)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'Auren Energia — Usina Porto Primavera',
+        url: 'https://www.aurenenergia.com.br/',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 1999,
       turbinesOrUnits: '14 x 110 MW (Kaplan)',
@@ -651,9 +807,21 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     subsystem: 'SE/CO',
     state: 'MG/GO',
     riverOrRegion: 'Rio Paranaíba (Itumbiara / Araporã)',
-    operator: 'Eletrobras Furnas',
+    operator: 'Axia Energia (Furnas)',
     coordinates: [-49.2000, -18.4167],
     description: 'Maior hidrelétrica do complexo de Furnas em capacidade instalada e uma das maiores barragens de terra/enrocamento do mundo, chave para a regularização do Paranaíba.',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.GO.001199-1.01 (Itumbiara)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'Furnas / Axia Energia — Usina Hidrelétrica de Itumbiara',
+        url: 'https://www.furnas.com.br/',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 1980,
       turbinesOrUnits: '6 x 347 MW (Francis)',
@@ -664,13 +832,25 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'uhe-jupia',
     name: 'UHE Eng. Souza Dias (Jupiá)',
     type: 'hidro',
-    capacityMW: 1551,
+    capacityMW: 1551.2,
     subsystem: 'SE/CO',
     state: 'SP/MS',
     riverOrRegion: 'Rio Paraná (Castilho / Três Lagoas)',
-    operator: 'CTG Brasil',
+    operator: 'Rio Paraná Energia S.A. (CTG Brasil)',
     coordinates: [-51.7778, -20.7833],
     description: 'Localizada no Rio Paraná logo a jusante da foz do Rio Tietê, opera em conjunto com Ilha Solteira no histórico Complexo de Urubupungá.',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.SP.000885-0.01 (Engenheiro Souza Dias)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'CTG Brasil — Usina Hidrelétrica Jupiá',
+        url: 'https://ctgbr.com.br/portfolio/jupia/',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 1969,
       turbinesOrUnits: '14 x 103 MW + 1 x 110 MW (Kaplan)',
@@ -681,16 +861,28 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'uhe-itaparica',
     name: 'UHE Luiz Gonzaga (Itaparica)',
     type: 'hidro',
-    capacityMW: 1479,
+    capacityMW: 1479.6,
     subsystem: 'NE',
     state: 'PE/BA',
     riverOrRegion: 'Rio São Francisco (Petrolândia)',
-    operator: 'Chesf',
+    operator: 'Axia Energia (Chesf)',
     coordinates: [-38.3167, -9.1333],
     description: 'Aproveitamento central da Chesf no submédio São Francisco, cujo reservatório regulariza as vazões que seguem para o complexo de Paulo Afonso e Xingó.',
+    sources: [
+      {
+        label: 'ANEEL SIGA — CEG UHE.PH.PE.001334-0.01 (Luiz Gonzaga)',
+        url: 'https://siga.aneel.gov.br/',
+        accessedAt: '2026-09-24'
+      },
+      {
+        label: 'Chesf / Axia Energia — Usina Hidrelétrica Luiz Gonzaga',
+        url: 'https://www.chesf.com.br/',
+        accessedAt: '2026-09-24'
+      }
+    ],
     technicalDetails: {
       commissionYear: 1988,
-      turbinesOrUnits: '6 x 246.5 MW (Francis)',
+      turbinesOrUnits: '6 x 246,6 MW (Francis)',
       gridConnectionVoltage: '500 kV / 230 kV'
     }
   },

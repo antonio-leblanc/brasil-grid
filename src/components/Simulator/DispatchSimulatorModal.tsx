@@ -6,15 +6,14 @@ import {
   Pause,
   RotateCcw,
   AlertTriangle,
-  Info,
-  Clock
+  Clock,
+  Lightbulb
 } from 'lucide-react';
 import type {
   GridSimulationState,
   HistoryPoint
 } from '../../services/gridPhysics';
 import {
-  ERAC_STAGES,
   advanceSimulation,
   applyGeneratorTrip,
   createInitialSimulation,
@@ -29,6 +28,33 @@ interface DispatchSimulatorModalProps {
   onClose: () => void;
 }
 
+const SCENARIOS = [
+  {
+    id: 'pato' as const,
+    label: '1. O Pôr do Sol (Curva do Pato)',
+    shortLabel: 'Curva do Pato',
+    objective: 'Às 17h30 a geração solar despenca rapidamente. Suba as hidrelétricas para cobrir o buraco e evitar que a frequência caia!'
+  },
+  {
+    id: 'trip_itaipu' as const,
+    label: '2. Queda de Usina (-2.8 GW)',
+    shortLabel: 'Queda de Usina',
+    objective: 'Uma grande usina caiu de repente! Reaja rápido aumentando a geração de reserva antes que a frequência acione o corte de emergência (ERAC).'
+  },
+  {
+    id: 'alta_renovavel' as const,
+    label: '3. Excesso Solar (Curtailment)',
+    shortLabel: 'Excesso Solar',
+    objective: 'Meio-dia ensolarado: há tanta energia renovável na rede que a frequência sobe. Use o corte (Curtailment) para estabilizar os 60 Hz.'
+  },
+  {
+    id: 'livre' as const,
+    label: '4. Modo Livre (Sandbox)',
+    shortLabel: 'Modo Livre',
+    objective: 'Experimente livremente! Suba e desça a potência de cada fonte para sentir o peso da balança elétrica.'
+  }
+];
+
 export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
   isOpen,
   onClose
@@ -37,8 +63,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
   const [simState, setSimState] = useState<GridSimulationState>(() => createInitialSimulation('pato'));
   const [history, setHistory] = useState<HistoryPoint[]>([]);
 
-  // The ref is the source of truth; React state only mirrors it, so operator commands issued between
-  // frames are never overwritten by a physics step computed from a stale snapshot
+  // The ref is the source of truth so React state re-renders don't drop physics steps
   const stateRef = useRef<GridSimulationState>(simState);
 
   const updateSim = useCallback((update: (prev: GridSimulationState) => GridSimulationState) => {
@@ -132,7 +157,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
     updateSim((prev) => applyGeneratorTrip(prev, 2800));
   };
 
-  // Continuous physics engine ticker (runs only when modal is open)
+  // Physics animation loop
   useEffect(() => {
     if (!isOpen) return;
 
@@ -148,7 +173,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
         stateRef.current = nextState;
         setSimState(nextState);
 
-        // Record history point at ~15-20 Hz for smooth chart without bloating memory
+        // Record history point for strip chart
         if (now - lastHistoryPushRef.current >= 60) {
           lastHistoryPushRef.current = now;
           const totalGen =
@@ -168,7 +193,6 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
               inertiaH: nextState.equivalentInertiaH
             };
             const updated = [...prevHistory, nextPoint];
-            // Keep last 150 points (~10-15 seconds window)
             return updated.length > 150 ? updated.slice(updated.length - 150) : updated;
           });
         }
@@ -194,47 +218,50 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
     simState.solar.actualMW +
     simState.wind.actualMW;
 
+  const deltaMW = totalGenMW - simState.actualLoadMW;
+
+  const activeScenario = SCENARIOS.find((s) => s.id === scenarioId) || SCENARIOS[0];
+
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
-        className="bg-[#080b11] border border-slate-800 rounded-xl shadow-2xl w-full max-w-6xl max-h-[96vh] flex flex-col overflow-hidden text-slate-100 font-sans"
+        className="bg-[#080b11] border border-slate-800 rounded-2xl shadow-2xl w-full max-w-5xl max-h-[96vh] flex flex-col overflow-hidden text-slate-100 font-sans"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Top SCADA Modal Bar */}
-        <div className="px-4 py-3 border-b border-slate-800/80 bg-slate-950/70 flex items-center justify-between flex-wrap gap-2">
+        {/* 1. Clean Header */}
+        <div className="px-4 sm:px-6 py-3.5 border-b border-slate-800 bg-slate-950/80 flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
+            <div className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
               <Gauge className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
                 <h2 className="text-sm sm:text-base font-bold text-white tracking-wide font-mono">
-                  SALA DE OPERAÇÃO & ESTABILIDADE 60 HZ
+                  SIMULADOR DE REDE 60 HZ
                 </h2>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full font-bold uppercase bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-                  LAB 60 HZ
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full font-bold uppercase bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                  Didático
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 font-mono mt-0.5 flex items-center space-x-2">
-                <span>Balanço Ativo • Equação de Swing • Inércia Dinâmica Heq</span>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Mantenha a geração igual ao consumo para não deixar a frequência cair.
               </p>
             </div>
           </div>
 
-          {/* Right Header Action Tools: Time, Speed, Reset & Close */}
-          <div className="flex items-center space-x-2 font-mono text-xs">
-            {/* Simulation Clock Display */}
+          {/* Action Tools: Time, Speed, Reset & Close */}
+          <div className="flex items-center space-x-2 text-xs font-mono">
+            {/* Clock */}
             <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-300">
               <Clock className="w-3.5 h-3.5 text-cyan-400" />
               <span>{formatSimClock(simState.simTimeSeconds)}</span>
-              <span className="text-[10px] text-slate-500 font-semibold">BRT</span>
             </div>
 
             {/* Speed Multipliers */}
-            <div className="flex items-center space-x-0.5 bg-slate-900 border border-slate-800 p-0.5 rounded-lg text-[11px]">
+            <div className="flex items-center space-x-0.5 bg-slate-900 border border-slate-800 p-0.5 rounded-lg text-xs">
               <button
                 type="button"
                 onClick={() => handleSetSpeed(simState.speedMultiplier === 0 ? 1 : 0)}
@@ -271,18 +298,8 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
                 className={`px-2 py-1 rounded transition cursor-pointer ${
                   simState.speedMultiplier === 5 ? 'bg-cyan-500/20 text-cyan-300 font-bold' : 'text-slate-400 hover:text-white'
                 }`}
-                title="Recomendado para simular o Crepúsculo da Curva do Pato"
               >
                 5x
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSetSpeed(10)}
-                className={`px-2 py-1 rounded transition cursor-pointer ${
-                  simState.speedMultiplier === 10 ? 'bg-cyan-500/20 text-cyan-300 font-bold' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                10x
               </button>
             </div>
 
@@ -291,7 +308,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
               type="button"
               onClick={() => handleReset()}
               className="p-1.5 rounded-lg border border-slate-800 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition cursor-pointer"
-              title="Reiniciar Simulação"
+              title="Reiniciar Desafio"
             >
               <RotateCcw className="w-4 h-4" />
             </button>
@@ -308,89 +325,62 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
           </div>
         </div>
 
-        {/* Scenario Selection Tabs */}
-        <div className="px-4 py-2 border-b border-slate-800/80 bg-slate-950/40 flex items-center justify-between overflow-x-auto gap-2 font-mono text-xs">
-          <div className="flex items-center space-x-1.5 shrink-0">
-            <span className="text-slate-500 text-[10px] uppercase font-bold mr-1">CENÁRIOS:</span>
-            <button
-              type="button"
-              onClick={() => handleSelectScenario('pato')}
-              className={`px-3 py-1.5 rounded-lg border transition font-semibold cursor-pointer ${
-                scenarioId === 'pato'
-                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/50'
-                  : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              1. Curva do Pato (17h30)
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSelectScenario('trip_itaipu')}
-              className={`px-3 py-1.5 rounded-lg border transition font-semibold cursor-pointer ${
-                scenarioId === 'trip_itaipu'
-                  ? 'bg-red-500/20 text-red-300 border-red-500/50'
-                  : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              2. Perda de Usina (-2.8 GW)
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSelectScenario('alta_renovavel')}
-              className={`px-3 py-1.5 rounded-lg border transition font-semibold cursor-pointer ${
-                scenarioId === 'alta_renovavel'
-                  ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50'
-                  : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              3. Baixa Inércia & Curtailment
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSelectScenario('livre')}
-              className={`px-3 py-1.5 rounded-lg border transition font-semibold cursor-pointer ${
-                scenarioId === 'livre'
-                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50'
-                  : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              4. Modo Livre (Sandbox)
-            </button>
+        {/* 2. Mission / Scenario Selection */}
+        <div className="px-4 sm:px-6 py-2.5 border-b border-slate-800/80 bg-slate-950/40">
+          <div className="flex items-center space-x-2 overflow-x-auto pb-1 text-xs">
+            <span className="text-slate-500 uppercase font-mono text-[10px] font-bold shrink-0 mr-1">
+              DESAFIOS:
+            </span>
+            {SCENARIOS.map((sc) => (
+              <button
+                key={sc.id}
+                type="button"
+                onClick={() => handleSelectScenario(sc.id)}
+                className={`px-3 py-1.5 rounded-lg border transition font-medium text-xs whitespace-nowrap cursor-pointer ${
+                  scenarioId === sc.id
+                    ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 font-bold'
+                    : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {sc.label}
+              </button>
+            ))}
           </div>
 
-          <div className="text-[11px] text-slate-400 shrink-0 hidden md:block">
-            {scenarioId === 'pato' && 'Compense a queda solar das 17h30 com rampas hidroelétricas.'}
-            {scenarioId === 'trip_itaipu' && 'Teste a resposta inercial e a reserva primária após perder 2.800 MW de UHEs (ilustrativo).'}
-            {scenarioId === 'alta_renovavel' && 'Controle o excesso e a alta volatilidade aplicando curtailment.'}
-            {scenarioId === 'livre' && 'Controle total sem roteiro predefinido.'}
+          {/* Mission Objective Banner */}
+          <div className="mt-2 p-2 rounded-lg bg-slate-900/60 border border-slate-800 text-xs text-slate-300 flex items-center space-x-2">
+            <span className="font-bold text-cyan-400 font-mono text-[11px] shrink-0">OBJETIVO:</span>
+            <span>{activeScenario.objective}</span>
           </div>
         </div>
 
-        {/* Scrollable Main Control Room Viewport */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
-          {/* Blackout Warning Banner if triggered */}
+        {/* 3. Main Viewport */}
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-4">
+          {/* Blackout Banner if triggered */}
           {simState.isBlackout && (
-            <div className="p-4 rounded-xl bg-red-950/70 border border-red-600 text-red-200 flex items-center justify-between animate-pulse">
+            <div className="p-4 rounded-xl bg-red-950/80 border border-red-600 text-red-200 flex items-center justify-between animate-pulse">
               <div className="flex items-center space-x-3">
                 <AlertTriangle className="w-6 h-6 text-red-400 shrink-0" />
                 <div>
-                  <h3 className="font-mono font-bold text-sm text-white">COLAPSO DO SISTEMA INTERLIGADO (APAGÃO GERAL)</h3>
-                  <p className="text-xs font-mono text-red-300 mt-0.5">{simState.blackoutReason}</p>
+                  <h3 className="font-bold text-sm text-white font-mono">APAGÃO GERAL (COLAPSO DA REDE)</h3>
+                  <p className="text-xs text-red-300 mt-0.5">
+                    {simState.blackoutReason || 'A frequência desceu abaixo dos limites seguros e os geradores desligaram.'}
+                  </p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => handleReset()}
-                className="px-3.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-mono text-xs font-bold transition cursor-pointer"
+                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-xs transition cursor-pointer"
               >
-                REINICIAR GRID
+                RECOMEÇAR DESAFIO
               </button>
             </div>
           )}
 
-          {/* Top Row: Tachometer + Real-time Strip Chart */}
+          {/* Row 1: Frequency Gauge + Strip Chart */}
           <div className="flex flex-col lg:flex-row gap-3">
-            <div className="w-full lg:w-72 shrink-0">
+            <div className="w-full lg:w-80 shrink-0">
               <FrequencyGauge
                 frequencyHz={simState.frequencyHz}
                 rocofHzS={simState.rocofHzS}
@@ -398,6 +388,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
                 eracStage={simState.eracStage}
                 isBlackout={simState.isBlackout}
                 isOverfrequencyAlert={simState.isOverfrequencyAlert}
+                deltaMW={deltaMW}
               />
             </div>
             <FrequencyStripChart
@@ -409,7 +400,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
             />
           </div>
 
-          {/* Middle Row: Dispatch Control Desk (Fleet Sliders & Actions) */}
+          {/* Row 2: Dispatch Desk (Power Balance & Fleets) */}
           <DispatchControlDesk
             state={simState}
             onUpdateHydroTarget={handleUpdateHydroTarget}
@@ -420,70 +411,31 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
             onTogglePrimaryControl={handleTogglePrimaryControl}
           />
 
-          {/* Bottom Row: SCADA Event Log + Technical Notes */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 text-xs font-mono">
-            {/* Event Log */}
-            <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/90 flex flex-col h-40">
-              <div className="flex items-center justify-between text-[11px] text-slate-400 mb-2 border-b border-slate-900 pb-1">
-                <span className="font-bold text-slate-300 uppercase">LOG DE EVENTOS & PROTEÇÃO SCADA</span>
-                <span>{simState.events.length} registros</span>
-              </div>
-              <div className="flex-1 overflow-y-auto space-y-1 pr-1 font-mono text-[10px]">
-                {simState.events.length === 0 ? (
-                  <span className="text-slate-600 italic">Nenhum evento anômalo registrado.</span>
-                ) : (
-                  simState.events.map((ev) => (
-                    <div
-                      key={ev.id}
-                      className={`p-1.5 rounded flex items-start space-x-2 border ${
-                        ev.type === 'critical'
-                          ? 'bg-red-500/10 border-red-500/30 text-red-300'
-                          : ev.type === 'alert'
-                          ? 'bg-amber-500/10 border-amber-500/30 text-amber-300'
-                          : ev.type === 'warning'
-                          ? 'bg-yellow-500/10 border-yellow-500/30 text-yellow-300'
-                          : 'bg-slate-900/60 border-slate-800 text-slate-300'
-                      }`}
-                    >
-                      <span className="text-slate-500 font-bold shrink-0">[{ev.timeLabel}]</span>
-                      <span className="leading-tight">{ev.message}</span>
-                    </div>
-                  ))
-                )}
-              </div>
+          {/* Row 3: Didactic Note (Clear & Human) */}
+          <div className="p-3.5 rounded-xl bg-slate-900/50 border border-slate-800 text-xs text-slate-300 space-y-1.5">
+            <div className="flex items-center space-x-1.5 text-cyan-400 font-bold">
+              <Lightbulb className="w-4 h-4" />
+              <span>Como funciona a física de 60 Hz?</span>
             </div>
-
-            {/* Theoretical Physics Card */}
-            <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/90 flex flex-col justify-between space-y-2 text-slate-300">
-              <div className="flex items-center space-x-1.5 text-cyan-400 font-bold text-[11px] border-b border-slate-900 pb-1">
-                <Info className="w-3.5 h-3.5" />
-                <span>Mecânica da Equação de Swing no SIN</span>
-              </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
-                A aceleração do rotor de todo o parque gerador é regida por:{' '}
-                <code className="text-cyan-300 font-mono text-[10px] bg-slate-900 px-1 py-0.5 rounded">
-                  df/dt = f0 · (P_ger − P_carga(f)) / (2 · Σ H·S)
-                </code>
-                , em que Σ H·S é a energia cinética das máquinas síncronas (MW·s). O H de cada máquina não muda; quando hidrelétricas síncronas são deslocadas por solar/eólica (recursos baseados em inversores, IBR, sem inércia mecânica acoplada à rede), cai a inércia equivalente do sistema na base da geração total (H_eq). Neste simulador, H_eq vai de ~3 s (cenários com despacho hidrotérmico típico) a ~1 s (cenário de alta renovável): para o mesmo degrau de potência, o RoCoF inicial fica cerca de 3 vezes maior.
-              </p>
-              <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-900">
-                <span>Regime permanente: 59,9–60,1 Hz (PRODIST Mód. 8/ANEEL)</span>
-                <span>ERAC: {ERAC_STAGES[0].thresholdHz.toFixed(1)}–{ERAC_STAGES[ERAC_STAGES.length - 1].thresholdHz.toFixed(1)} Hz (5 estágios, até −35% da carga)</span>
-              </div>
-            </div>
+            <p className="text-slate-400 leading-relaxed text-[11px]">
+              No Brasil, todos os geradores e motores da rede giram juntos a exatamente <strong>60 rotações por segundo (60 Hz)</strong>.
+              Se o consumo da população for maior do que as usinas estão gerando, as turbinas sofrem resistência mecânica e começam a desacelerar (a frequência cai).
+              Se faltar muita geração e a frequência cair abaixo de 58,5 Hz, o sistema de proteção (ERAC) corta energia de cidades inteiras para salvar as máquinas de um colapso completo.
+              As <strong>hidrelétricas</strong> são a grande ferramenta do operador: abrem e fecham água com rapidez para manter a balança perfeitamente nivelada.
+            </p>
           </div>
         </div>
 
-        {/* Modal Footer */}
-        <div className="px-4 py-2.5 border-t border-slate-800/80 bg-slate-950/70 flex items-center justify-between text-xs font-mono text-slate-400">
+        {/* 4. Footer */}
+        <div className="px-4 sm:px-6 py-2.5 border-t border-slate-800 bg-slate-950/70 flex items-center justify-between text-xs text-slate-400">
           <div className="flex items-center space-x-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Modelo didático de barra única (SIN 60 Hz) • Brasil Grid Educational Lab</span>
+            <span>Simulador Didático de Estabilidade • Brasil Grid Educational Lab</span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="px-3.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition cursor-pointer"
+            className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold transition cursor-pointer"
           >
             Fechar
           </button>
