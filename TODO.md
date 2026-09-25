@@ -19,7 +19,12 @@ Iniciativa de descomplicação do laboratório: focar na intuição física, fee
 
 ## Dados
 
-- [x] **Malha Integrada de Linhas de Transmissão:** 15→30→52 linhas tronco (+22 novos corredores estratégicos reais ONS/ANEEL conectando 100% das 72 usinas estruturantes a corredores de escoamento e fechando os anéis elétricos regionais).
+- [ ] **Expansão Tier 3 da Malha de Transmissão (52 → 85+ Linhas Tronco):**
+  - Adicionar o histórico sistema em 750 kV CA de Itaipu (Foz do Iguaçu → Ivaiporã → Itaberá → Tijuco Preto / SP).
+  - Integrar o anel estruturante de 440 kV paulista (Ilha Solteira, Jupiá e Porto Primavera ligando ao interior e Grande SP via Bauru, Araraquara e Campinas).
+  - Adicionar o Linhão de Tucuruí / Calha Norte do Rio Amazonas (230/500 kV) que interligou Manaus e Macapá ao SIN.
+  - Expandir os troncos de 500 kV de escoamento eólico/solar do interior do Nordeste (Morro do Chapéu, Bom Nome, Gilbués, Poções, Padre Bernardo).
+- [x] **Malha Integrada de Linhas de Transmissão (Fase Atual):** 15→30→52 linhas tronco (+22 corredores estratégicos ONS/ANEEL conectando usinas estruturantes a corredores de escoamento).
 - [x] **Censo Tier 2 de Usinas Estruturantes do SIN:** 26→72 usinas cobrindo todo o parque gerador de grande porte (>85% da matriz brasileira em 39 hidrelétricas, 10 complexos eólicos, 9 parques solares, 13 térmicas/biomassa e central nuclear).
 
 ## Code health (detalhe completo em `docs/code-health.md`)
