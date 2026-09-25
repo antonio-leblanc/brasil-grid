@@ -92,7 +92,7 @@ export const scaleLevels: ScaleLevel[] = [
       { label: 'Itaipu Binacional — Relatório de Sustentabilidade 2016', url: 'https://www.itaipu.gov.br/publicacoes/relatorio-de-sustentabilidade-2016' },
       { label: 'Dialogue Earth — Histórico do acordo de Itaipu (Anexo C)', url: 'https://dialogue.earth/pt-br/energia/entenda-longo-historico-acordo-itaipu/' },
       { label: 'Agência Gov — Sete recordes de demanda no ano (fev/2025)', url: 'https://agenciagov.ebc.com.br/noticias/202502/demanda-de-energia-bate-novo-recorde-e-sistema-eletrico-mantem-estabilidade' },
-      { label: 'pv magazine Brasil — EPE estima 8,8 GW de resposta da demanda (cita o recorde de 106.532 MW)', url: 'http://www.pv-magazine-brasil.com/2026/09/22/epe-estima-potencial-de-88-gw-para-resposta-da-demanda-no-brasil/' }
+      { label: 'pv magazine Brasil — EPE estima 8,8 GW de resposta da demanda (cita o recorde de 106.532 MW)', url: 'https://www.pv-magazine-brasil.com/2026/09/22/epe-estima-potencial-de-88-gw-para-resposta-da-demanda-no-brasil/' }
     ]
   },
   {
