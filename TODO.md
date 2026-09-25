@@ -5,21 +5,20 @@
 
 ## P0 — Proveniência dos dados
 
-- [ ] **Corrigir o veredito no [`docs/data-audit-log.md`](docs/data-audit-log.md).**
-  - As duas entradas "Linhas Tronco Tier 3" e a entrada "Usinas Hidrelétricas — Lote 1" passam de "✅ Aprovado" para "⚠️ Fonte genérica (home page)".
-  - Trocar `HEAD` pelo hash real (`d5ac39a` nas linhas; conferir o das usinas com `git log -S`).
-  - Regra daqui em diante: o audit-log nunca registra `HEAD`, só o hash.
+- [x] **Corrigir o veredito no [`docs/data-audit-log.md`](docs/data-audit-log.md).**
+  - Entrada do "Lote 1 de usinas" retificada para "⚠️ Fonte genérica (home page)".
+  - Troca de `HEAD` pelo hash real dos commits (`8e7cf83` nas usinas, `d5ac39a` nas linhas).
+  - Regra mantida: o audit-log nunca registra `HEAD`, só o hash.
 
-- [ ] **Selo "não verificada" para as entidades da `ROOT_URL_DEBT`** (decisão: não remover as linhas).
-  - Adicionar `verification: 'verified' | 'unverified'` em `TransmissionLineFeature` e `PowerPlantFeature` ([`gridData.ts`](src/data/gridData.ts)).
+- [x] **Quitar a `ROOT_URL_DEBT` das 36 linhas Tier 3** ([`transmissionLinesData.ts`](src/data/transmissionLinesData.ts)).
+  - Base oficial auditada: cadastro da Rede Básica do ONS ([`LINHA_TRANSMISSAO.csv`](https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv)).
+  - As 36 linhas tiveram `voltageKV`, `lengthKm`, `nom_agenteproprietario` e códigos de equipamento ONS retificados com links profundos.
+  - As 36 entidades foram removidas de `ROOT_URL_DEBT` em [`sources.test.ts`](src/data/sources.test.ts) (dívida reduzida de 52 para 16).
+
+- [ ] **Selo "não verificada" para as entidades restantes da `ROOT_URL_DEBT`** (16 UHEs do Lote 1).
+  - Adicionar `verification: 'verified' | 'unverified'` em `PowerPlantFeature` ([`gridData.ts`](src/data/gridData.ts)).
   - Exibir no [`NodeInspector`](src/components/Inspector/NodeInspector.tsx) um selo discreto (âmbar, monoespaçado), no mesmo espírito do `REF` da telemetria.
   - Fazer o [`sources.test.ts`](src/data/sources.test.ts) exigir `unverified` para toda entidade da `ROOT_URL_DEBT`.
-
-- [ ] **Quitar a `ROOT_URL_DEBT` das 36 linhas Tier 3** ([`transmissionLinesData.ts`](src/data/transmissionLinesData.ts)).
-  - Fonte de conferência: cadastro de linhas do ONS ([dados.ons.org.br/dataset/linha-transmissao](https://dados.ons.org.br/dataset/linha-transmissao)), que traz tensão, extensão e subestações terminais. Complementar com o SIGEL e os PAR/PEL do ONS (link para o PDF, não para a home).
-  - Para cada linha: conferir `voltageKV`, `lengthKm` e as SEs terminais; trocar as fontes por links profundos; mudar para `verified`; remover o id da `ROOT_URL_DEBT`.
-  - Suspeita forte nos comprimentos: quase todos são múltiplos de 10 km.
-  - A linha que não for encontrada no cadastro fica `unverified` e é anotada no audit-log.
 
 - [ ] **Quitar a `ROOT_URL_DEBT` das 16 UHEs do Lote 1** ([`powerPlantsData.ts`](src/data/powerPlantsData.ts)).
   - As usinas já têm CEG. Trocar `https://siga.aneel.gov.br/` pelo dataset do SIGA nos dados abertos da ANEEL (link direto para o dataset) e manter o CEG como chave de conferência.

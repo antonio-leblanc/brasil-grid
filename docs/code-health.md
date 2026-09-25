@@ -15,7 +15,7 @@
 | Bundle principal | 1,56 MB (439 kB gzip); modais pesadas em chunks lazy |
 | Dependências de runtime | 7 |
 | Usinas com `sources` | 16/72 |
-| Entidades com fonte = home page | 52 (16 usinas + 36 linhas), catalogadas em `ROOT_URL_DEBT` |
+| Entidades com fonte = home page | 16 (16 usinas restantes; 36 linhas quitadas com base oficial ONS) |
 
 ## Pontos fortes
 
