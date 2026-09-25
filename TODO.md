@@ -13,8 +13,8 @@ Iniciativa de descomplicação do laboratório: focar na intuição física, fee
   - [x] Cenários didáticos com desafios claros e objetivos explícitos: O Pôr do Sol (Curva do Pato), Queda de Usina (-2.8 GW), Excesso Solar e Modo Livre ([`DispatchSimulatorModal.tsx`](file:///C:/gitrepos/brasil-grid/src/components/Simulator/DispatchSimulatorModal.tsx)).
   - [x] Expurgo de ruído: removidos custos R$/MWh em tempo real, emissões tCO2, log de eventos SCADA denso e muralha de fórmulas matemáticas. Mantido o motor físico de Kundur/ONS 100% integro sob o capô ([`gridPhysics.ts`](file:///C:/gitrepos/brasil-grid/src/services/gridPhysics.ts)).
 - [ ] **Fase 2 — Simplificação Geral da Navegação & UI:**
-  - [ ] Despoluir ConsoleHeader e ConsoleBottomBar (reduzir badges, fontes mono microscópicas e excesso de bordas fluorescentes).
-  - [ ] Consolidar modais e focar a experiência no mapa e no painel contextual de inspeção.
+  - [x] Despoluir ConsoleHeader e ConsoleBottomBar: cabeçalho enxuto com destaque claro para o Simulador 60 Hz e Curva 24h ([`ConsoleHeader.tsx`](file:///C:/gitrepos/brasil-grid/src/components/Console/ConsoleHeader.tsx)), rodapé minimalista com telemetria sutil em pontos e barra da matriz polida ([`ConsoleBottomBar.tsx`](file:///C:/gitrepos/brasil-grid/src/components/Console/ConsoleBottomBar.tsx)).
+  - [x] Barra Lateral LEAN: largura reduzida de 520px para 380px-410px, abas compactas alternando entre Usinas (72) e Linhas (52) eliminando o scroll infinito duplicado ([`ConsoleSidebar.tsx`](file:///C:/gitrepos/brasil-grid/src/components/Console/ConsoleSidebar.tsx)).
   - [ ] Enxugar paredes de texto no Modo Guia (Dossiês e Cadeia de Valor) com resumos e infográficos compactos.
 
 ## Dados
