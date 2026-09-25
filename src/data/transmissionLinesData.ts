@@ -421,7 +421,7 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
     name: 'Tronco Jurupari ➔ Laranjal do Jari ➔ Macapá (Travessia do Amazonas)',
     voltageKV: 230,
     type: 'CA',
-    lengthKm: 390,
+    lengthKm: 349,
     from: 'SE Jurupari (Almeirim - PA)',
     to: 'SE Macapá (Macapá - AP)',
     concessionaire: 'LMTE – Linhas de Macapá Transmissora (Energisa)',
@@ -431,12 +431,20 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-51.0600, 0.0400]
     ],
     sources: [
-      { label: 'ANEEL — Resolução Autorizativa LMTE', url: 'https://www.aneel.gov.br/', accessedAt: '2026-09-24' },
-      { label: 'MegaWhat — Interligação do Amapá ao SIN', url: 'https://megawhat.energy/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: 'Circuito duplo 230 kV CA conectando o Amapá ao barramento de 500 kV de Jurupari através da travessia dos rios Amazonas e Jari',
-      substations: ['SE Jurupari', 'SE Laranjal do Jari', 'SE Macapá']
+      converterTechnology: '230 kV CA circuito duplo com vãos estaiados na travessia dos rios Amazonas e Jari. Composta por LT 230 kV Jurupari / Laranjal (105,0 km, cod: PAJRP-2LAL-1AP) e LT 230 kV Laranjal / Macapá (244,0 km, cod: APLAL-2MCP-1).',
+      substations: ['SE Jurupari (PA)', 'SE Laranjal (AP)', 'SE Macapá (AP)']
     }
   },
   {
@@ -444,76 +452,100 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
     name: 'Tronco Tucuruí ➔ Vila do Conde (Barcarena)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 330,
+    lengthKm: 328.7,
     from: 'SE Tucuruí (Tucuruí - PA)',
     to: 'SE Vila do Conde (Barcarena - PA)',
-    concessionaire: 'Axia Energia (Eletronorte)',
+    concessionaire: 'Axia Norte (Eletronorte) / ETEP / VCTE',
     coordinates: [
       [-49.6469, -3.8328],
       [-48.7700, -2.0000],
       [-48.7200, -1.5400]
     ],
     sources: [
-      { label: 'Eletronorte — Sistema de Transmissão Pará', url: 'https://www.eletronorte.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Cadastro de Linhas de Transmissão', url: 'https://dados.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA em circuito duplo — escoa energia da UHE Tucuruí para o polo eletrointensivo de alumínio (Albras/Alunorte) e Região Metropolitana de Belém',
-      substations: ['SE Tucuruí', 'SE Moju', 'SE Vila do Conde']
+      converterTechnology: '500 kV CA em três circuitos (C1 328,7 km Axia Norte, C2 323,95 km ETEP, C3 324,0 km VCTE). Escoa energia da UHE Tucuruí para o polo eletrointensivo de alumínio de Barcarena e Grande Belém.',
+      substations: ['SE Tucuruí (PA)', 'SE Vila do Conde (PA)']
     }
   },
   {
     id: 'linha-tucurui-maraba-imperatriz',
-    name: 'Tronco Tucuruí ➔ Marabá ➔ Imperatriz',
+    name: 'Tronco Tucuruí ➔ Marabá ➔ Imperatriz (Interligação N–NE)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 480,
+    lengthKm: 405.5,
     from: 'SE Tucuruí (PA)',
     to: 'SE Imperatriz (MA)',
-    concessionaire: 'Axia Energia (Eletronorte)',
+    concessionaire: 'Axia Norte (Eletronorte) / EATE / ENTE',
     coordinates: [
       [-49.6469, -3.8328],
       [-49.1200, -5.3600],
       [-47.4900, -5.5300]
     ],
     sources: [
-      { label: 'Eletronorte — Interligação Norte–Nordeste 500 kV', url: 'https://www.eletronorte.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Plano de Operação do SIN', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — corredor tronco leste da Amazônia que transporta a geração de Tucuruí em direção ao Maranhão e ao intercâmbio com o Nordeste',
-      substations: ['SE Tucuruí', 'SE Marabá', 'SE Imperatriz']
+      converterTechnology: '500 kV CA interligando Norte e Nordeste. Segmentos: LT 500 kV Marabá / Tucuruí C1 (223,3 km, cod: PAMB--5TC--1) e LT 500 kV Imperatriz / Marabá C1 (182,2 km, cod: MAIZ--5MB--1PA).',
+      substations: ['SE Tucuruí (PA)', 'SE Marabá (PA)', 'SE Imperatriz (MA)']
     }
   },
   {
     id: 'linha-xingu-tucurui',
-    name: 'Interligação Belo Monte ➔ Tucuruí (SE Xingu ➔ SE Tucuruí)',
+    name: 'Tronco de Acoplamento 500 kV Xingu ➔ Tucuruí',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 260,
+    lengthKm: 265,
     from: 'SE Xingu (Anapu - PA)',
     to: 'SE Tucuruí (Tucuruí - PA)',
-    concessionaire: 'Axia Energia (Eletronorte) / BMTE',
+    concessionaire: 'LXTE – Leilão Xingu Transmissora (State Grid)',
     coordinates: [
       [-51.6300, -3.1700],
       [-49.6469, -3.8328]
     ],
     sources: [
-      { label: 'ONS — Submódulo 23.3: Acoplamento Xingu–Tucuruí', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' },
-      { label: 'EPE — Estudos de Transmissão de Belo Monte', url: 'https://www.epe.gov.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — elo sincronizador de extra-alta tensão entre as duas maiores usinas 100% brasileiras (Belo Monte 11,2 GW e Tucuruí 8,5 GW)',
-      substations: ['SE Xingu', 'SE Tucuruí']
+      converterTechnology: '500 kV CA circuito duplo (265,0 km cada, cod: PATC--5XIN-1 e PATC--5XIN-2). Eixo estruturante de acoplamento hidroelétrico entre as UHEs Belo Monte (Rio Xingu) e Tucuruí (Rio Tocantins).',
+      substations: ['SE Xingu (PA)', 'SE Tucuruí (PA)']
     }
   },
   {
     id: 'linha-itaipu-ivaipora-765',
-    name: 'Tronco 765 kV Foz do Iguaçu ➔ Ivaiporã (Setor 60 Hz)',
+    name: 'Tronco 765 kV Itaipu — Eixo 1 (Foz do Iguaçu ➔ Ivaiporã)',
     voltageKV: 765,
     type: 'CA',
-    lengthKm: 330,
-    from: 'SE Foz do Iguaçu (PR)',
+    lengthKm: 322,
+    from: 'SE Foz do Iguaçu 60 Hz (PR)',
     to: 'SE Ivaiporã (PR)',
     concessionaire: 'Axia Energia (Furnas)',
     coordinates: [
@@ -522,20 +554,28 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-51.6800, -24.2500]
     ],
     sources: [
-      { label: 'Furnas — Tronco de 765 kV de Itaipu', url: 'https://www.furnas.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica', url: 'https://dados.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '765 kV CA (3 circuitos) — maior tensão em corrente alternada do hemisfério sul, conectando os geradores de 60 Hz de Itaipu ao anel de Ivaiporã',
-      substations: ['SE Foz do Iguaçu', 'SE Cascavel', 'SE Ivaiporã']
+      converterTechnology: '765 kV CA circuito triplo (C1 322,0 km, C2 323,0 km, C3 339,0 km, cod: PRSTIV7STF61). Maior nível de tensão alternada do Brasil, escoando os geradores de 60 Hz de Itaipu Binacional.',
+      substations: ['SE Foz do Iguaçu 60Hz (PR)', 'SE Ivaiporã (PR)']
     }
   },
   {
     id: 'linha-ivaipora-itabera-765',
-    name: 'Tronco 765 kV Ivaiporã ➔ Itaberá',
+    name: 'Tronco 765 kV Itaipu — Eixo 2 (Ivaiporã ➔ Itaberá)',
     voltageKV: 765,
     type: 'CA',
-    lengthKm: 310,
+    lengthKm: 265,
     from: 'SE Ivaiporã (PR)',
     to: 'SE Itaberá (SP)',
     concessionaire: 'Axia Energia (Furnas)',
@@ -545,20 +585,28 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-49.1400, -23.8600]
     ],
     sources: [
-      { label: 'Furnas — Sistema de Transmissão de Itaipu', url: 'https://www.furnas.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Relatório de Linhas de Transmissão 765 kV', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '765 kV CA — trecho intermediário do tronco de Itaipu com compensação série e reatores de linha para controle de sobretensão',
-      substations: ['SE Ivaiporã', 'SE Itaberá']
+      converterTechnology: '765 kV CA circuito triplo (C1 265,0 km, C2 264,0 km, C3 272,0 km, cod: SPSTIA7STIV1PR). Transpõe a divisa PR/SP transportando a potência da calha de Itaipu para o anel de carga paulista.',
+      substations: ['SE Ivaiporã (PR)', 'SE Itaberá (SP)']
     }
   },
   {
     id: 'linha-itabera-tijuco-preto-765',
-    name: 'Tronco 765 kV Itaberá ➔ Tijuco Preto (Grande SP)',
+    name: 'Tronco 765 kV Itaipu — Eixo 3 (Itaberá ➔ Tijuco Preto)',
     voltageKV: 765,
     type: 'CA',
-    lengthKm: 290,
+    lengthKm: 305,
     from: 'SE Itaberá (SP)',
     to: 'SE Tijuco Preto (Mogi das Cruzes - SP)',
     concessionaire: 'Axia Energia (Furnas)',
@@ -568,46 +616,62 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-46.1300, -23.6000]
     ],
     sources: [
-      { label: 'Furnas — Subestação Tijuco Preto 765/500/345 kV', url: 'https://www.furnas.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ISA CTEEP — Acoplamento do Anel Metropolitano', url: 'https://www.isacteep.com.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '765 kV CA — entrega massiva de energia no anel periférico da Grande São Paulo, descarregando até 6.000 MW',
-      substations: ['SE Itaberá', 'SE Tijuco Preto']
+      converterTechnology: '765 kV CA circuito triplo (C1 305,0 km, C2 304,0 km, C3 312,0 km, cod: SPSTIA7STTP1). Alimenta o centro de gravidade da Grande São Paulo e Vale do Paraíba.',
+      substations: ['SE Itaberá (SP)', 'SE Tijuco Preto (SP)']
     }
   },
   {
     id: 'linha-ilha-solteira-araraquara',
-    name: 'Tronco 440 kV Urubupungá (Ilha Solteira ➔ Araraquara)',
+    name: 'Tronco Paulista 440 kV (Ilha Solteira ➔ Araraquara)',
     voltageKV: 440,
     type: 'CA',
-    lengthKm: 380,
+    lengthKm: 375.9,
     from: 'SE Ilha Solteira (SP)',
-    to: 'SE Araraquara (SP)',
-    concessionaire: 'ISA CTEEP',
+    to: 'SE Araraquara CTP (SP)',
+    concessionaire: 'ISA Energia Brasil (ISA CTEEP)',
     coordinates: [
       [-51.3500, -20.4300],
       [-49.5200, -20.8200],
       [-48.1800, -21.7900]
     ],
     sources: [
-      { label: 'ISA CTEEP — Sistema Tronco 440 kV Paulista', url: 'https://www.isacteep.com.br/', accessedAt: '2026-09-24' },
-      { label: 'CESP — Memória Histórica de Ilha Solteira', url: 'https://memoriadaeletricidade.com.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '440 kV CA — rede pioneira projetada pela CESP na década de 1970 para escoar 3.444 MW de Ilha Solteira para o interior e capital paulista',
-      substations: ['SE Ilha Solteira', 'SE Mirassol', 'SE Araraquara']
+      converterTechnology: '440 kV CA em circuito duplo (C1 375,9 km e C2 375,9 km, cod: SPILS-4ARA-1 e SPILS-4ARA-2). Espinha dorsal do sistema CESP escoando a UHE Ilha Solteira (3.444 MW).',
+      substations: ['SE Ilha Solteira (SP)', 'SE Araraquara CTP (SP)']
     }
   },
   {
     id: 'linha-araraquara-bauru-embu-guacu',
-    name: 'Tronco Central 440 kV (Araraquara ➔ Bauru ➔ Embu-Guaçu)',
+    name: 'Anel Paulista 440 kV (Araraquara ➔ Bauru ➔ Embu-Guaçu)',
     voltageKV: 440,
     type: 'CA',
-    lengthKm: 340,
-    from: 'SE Araraquara (SP)',
+    lengthKm: 409.7,
+    from: 'SE Araraquara CTP (SP)',
     to: 'SE Embu-Guaçu (SP)',
-    concessionaire: 'ISA CTEEP',
+    concessionaire: 'ISA Energia Brasil (ISA CTEEP)',
     coordinates: [
       [-48.1800, -21.7900],
       [-49.0700, -22.3100],
@@ -615,46 +679,62 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-46.8100, -23.8300]
     ],
     sources: [
-      { label: 'ISA CTEEP — Tronco 440 kV de Abastecimento da RMSP', url: 'https://www.isacteep.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Diagrama Unifilar Submódulo 23.3', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '440 kV CA — coluna vertebral da malha paulista interligando os nós de Bauru e Araraquara ao anel sul da capital (SE Embu-Guaçu)',
-      substations: ['SE Araraquara', 'SE Bauru', 'SE Botucatu', 'SE Embu-Guaçu']
+      converterTechnology: '440 kV CA integrando o interior paulista à Grande São Paulo. Composta por LT 440 kV Bauru / Araraquara CTP (103,7 km, cod: SPBAU-4ARA-1) e LT 440 kV Bauru / Embu-Guaçu C-1 (305,97 km, cod: SPBAU-4EMG-1).',
+      substations: ['SE Araraquara CTP (SP)', 'SE Bauru (SP)', 'SE Embu-Guaçu (SP)']
     }
   },
   {
     id: 'linha-jupia-bauru-440',
-    name: 'Tronco 440 kV Jupiá ➔ Bauru',
+    name: 'Tronco 440 kV Rio Paraná (Jupiá ➔ Bauru)',
     voltageKV: 440,
     type: 'CA',
-    lengthKm: 310,
+    lengthKm: 312,
     from: 'SE Jupiá (Castilho - SP)',
     to: 'SE Bauru (Bauru - SP)',
-    concessionaire: 'ISA CTEEP',
+    concessionaire: 'ISA Energia Brasil (ISA CTEEP)',
     coordinates: [
       [-51.6700, -20.7800],
       [-50.4400, -21.2000],
       [-49.0700, -22.3100]
     ],
     sources: [
-      { label: 'ISA CTEEP — Linha 440 kV Jupiá-Bauru', url: 'https://www.isacteep.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ANEEL — Banco SIGEL', url: 'https://sigel.aneel.gov.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '440 kV CA — escoamento da UHE Jupiá (1.551 MW) diretamente para o hub energético de Bauru',
-      substations: ['SE Jupiá', 'SE Araçatuba', 'SE Bauru']
+      converterTechnology: '440 kV CA circuito duplo (C1 312,0 km e C2 312,0 km, cod: SPJUP-4BAU-1 e SPJUP-4BAU-2). Escoa a geração da UHE Engenheiro Souza Dias / Jupiá (1.551 MW) na foz do Rio Tietê.',
+      substations: ['SE Jupiá (SP)', 'SE Bauru (SP)']
     }
   },
   {
     id: 'linha-porto-primavera-assis',
-    name: 'Tronco 440 kV Porto Primavera ➔ Assis ➔ Santo Ângelo',
+    name: 'Tronco Porto Primavera ➔ Taquaruçu ➔ Assis (440 kV)',
     voltageKV: 440,
     type: 'CA',
-    lengthKm: 430,
+    lengthKm: 286.6,
     from: 'SE Porto Primavera (Rosana - SP)',
-    to: 'SE Santo Ângelo (Mogi Mirim - SP)',
-    concessionaire: 'ISA CTEEP',
+    to: 'SE Assis (SP)',
+    concessionaire: 'ISA Energia Brasil (ISA CTEEP) / Taesa',
     coordinates: [
       [-52.9500, -22.4800],
       [-50.4100, -22.6600],
@@ -662,114 +742,154 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-46.9500, -22.4300]
     ],
     sources: [
-      { label: 'ISA CTEEP — Eixo Paranapanema 440 kV', url: 'https://www.isacteep.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Linhas de Transmissão da Área São Paulo', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '440 kV CA — escoa 1.540 MW da UHE Eng. Sérgio Motta (Porto Primavera) para o leste paulista',
-      substations: ['SE Porto Primavera', 'SE Assis', 'SE Salto Grande', 'SE Santo Ângelo']
+      converterTechnology: '440 kV CA conectando a UHE Porto Primavera (1.540 MW) e UHE Taquaruçu à SE Assis. Composta por LT 440 kV P. Primavera / Taquaruçu C1 (113,2 km, cod: SPPPR-4TAQ-1) e LT 440 kV Taquaruçu / Assis C1 (173,35 km, cod: SPTAQ-4ASS-1).',
+      substations: ['SE Porto Primavera (SP)', 'SE Taquaruçu (SP)', 'SE Assis (SP)']
     }
   },
   {
     id: 'linha-sao-joao-piaui-milagres',
-    name: 'Tronco 500 kV São João do Piauí ➔ Milagres',
+    name: 'Interligação 500 kV Piauí ➔ Ceará (São João do Piauí ➔ Milagres)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 350,
+    lengthKm: 400,
     from: 'SE São João do Piauí (PI)',
     to: 'SE Milagres (CE)',
-    concessionaire: 'Taesa / Axia Energia (Chesf)',
+    concessionaire: 'Iracema Transmissora (Taesa)',
     coordinates: [
       [-42.2500, -8.3600],
       [-41.4600, -7.0700],
       [-38.9400, -7.3100]
     ],
     sources: [
-      { label: 'Taesa — Concessão São João Transmissora', url: 'https://ri.taesa.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Submódulo 23.3 Restrições Operativas do Nordeste', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — corredor estrutural de interconexão entre o complexo solar do Piauí e a malha do Ceará e Rio Grande do Norte',
-      substations: ['SE São João do Piauí', 'SE Picos', 'SE Milagres']
+      converterTechnology: '500 kV CA com 400,0 km de extensão (cod: PISJI-5MLG-1CE). Corredor fundamental para transferir os excedentes eólicos e solares do sul do Piauí diretamente ao nó estratégico de Milagres.',
+      substations: ['SE São João do Piauí (PI)', 'SE Milagres (CE)']
     }
   },
   {
     id: 'linha-gilbues-sao-joao-piaui',
-    name: 'Tronco 500 kV Gilbués ➔ São João do Piauí',
+    name: 'Coletora Solar 500 kV Gilbués ➔ São João do Piauí',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 340,
-    from: 'SE Gilbués (PI)',
+    lengthKm: 413,
+    from: 'SE Gilbués II (PI)',
     to: 'SE São João do Piauí (PI)',
-    concessionaire: 'Neoenergia / Taesa',
+    concessionaire: 'SJTE – São João Transmissora de Energia',
     coordinates: [
       [-45.3400, -9.8300],
       [-44.3000, -10.0300],
       [-42.2500, -8.3600]
     ],
     sources: [
-      { label: 'Neoenergia — LT 500 kV Gilbués-São João', url: 'https://www.neoenergia.com/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Relatório de Análise de Perturbação', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — via de escoamento da fronteira de renováveis do MATOPIBA; nó sujeito a severo curtailment em horários de ponta solar',
-      substations: ['SE Gilbués', 'SE São João do Piauí']
+      converterTechnology: '500 kV CA com 413,0 km de extensão (cod: PIGBD-5SJI-1). Drena a geração centralizada do polo solar fotovoltaico de São Gonçalo do Gurguéia e complexos adjacentes.',
+      substations: ['SE Gilbués II (PI)', 'SE São João do Piauí (PI)']
     }
   },
   {
     id: 'linha-barreiras-rio-das-eguas',
-    name: 'Tronco 500 kV Oeste Baiano (Barreiras ➔ Rio das Éguas)',
+    name: 'Tronco 500 kV Oeste Baiano (Barreiras II ➔ Rio das Éguas)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 220,
-    from: 'SE Barreiras (BA)',
+    lengthKm: 239.3,
+    from: 'SE Barreiras II (BA)',
     to: 'SE Rio das Éguas (Correntina - BA)',
-    concessionaire: 'Taesa',
+    concessionaire: 'PTE – Paranaíba Transmissora de Energia / Barreiras Transmissora',
     coordinates: [
       [-44.9900, -12.1500],
       [-44.6400, -13.4000]
     ],
     sources: [
-      { label: 'Taesa — Concessão ATE III (Rio das Éguas)', url: 'https://ri.taesa.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ANEEL — Banco SIGEL', url: 'https://sigel.aneel.gov.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — conecta o polo agroenergético do oeste da Bahia ao tronco de interligação Sudeste–Nordeste',
-      substations: ['SE Barreiras', 'SE Rio das Éguas']
+      converterTechnology: '500 kV CA em circuito duplo (C1 239,27 km e C2 251,0 km, cod: BABRD-5RDE-1 e BABRD-5RDE-2). Artéria da interligação do MATOPIBA com os troncos de escoamento para o Sudeste.',
+      substations: ['SE Barreiras II (BA)', 'SE Rio das Éguas (BA)']
     }
   },
   {
     id: 'linha-pocoes-padre-paraiso-gov-valadares',
-    name: 'Tronco Leste 500 kV (Poções ➔ Padre Paraíso ➔ Gov. Valadares)',
+    name: 'Interligação 500 kV NE–SE (Poções III ➔ Padre Paraíso 2 ➔ Gov. Valadares 6)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 490,
-    from: 'SE Poções (BA)',
+    lengthKm: 537,
+    from: 'SE Poções III (BA)',
     to: 'SE Governador Valadares 6 (MG)',
-    concessionaire: 'Neoenergia / Taesa',
+    concessionaire: 'Paraíso TPE / IE Aimorés / IE Paraguaçu',
     coordinates: [
       [-40.3700, -14.5300],
       [-41.4800, -17.0700],
       [-41.9400, -18.8500]
     ],
     sources: [
-      { label: 'ONS — Relatório de Análise do Apagão de 15/08/2023', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' },
-      { label: 'Neoenergia — Sistema de Transmissão Jalapão/Atacama', url: 'https://www.neoenergia.com/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — principal rota de escoamento maciço de eólicas do Nordeste para o Sudeste; epicentro da abertura de linhas no blecaute de 15 de agosto de 2023',
-      substations: ['SE Poções', 'SE Padre Paraíso', 'SE Governador Valadares 6']
+      converterTechnology: '500 kV CA estruturante da Fronteira NE-SECO. Composta por LT 500 kV Pe. Paraíso 2 / Poções III (334,0 km, cod: MGPPA25POD-1BA) e LT 500 kV G. Valadares 6 / Pe. Paraíso 2 (203,0 km, cod: MGGVA65PPA21).',
+      substations: ['SE Poções III (BA)', 'SE Pe. Paraíso 2 (MG)', 'SE Governador Valadares 6 (MG)']
     }
   },
   {
     id: 'linha-gov-valadares-mutum-rio',
-    name: 'Tronco Sudeste 500 kV (Gov. Valadares ➔ Mutum ➔ Terminal Rio)',
+    name: 'Corredor Leste 500 kV (Gov. Valadares 6 ➔ Mutum ➔ Terminal Rio)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 440,
+    lengthKm: 428.4,
     from: 'SE Governador Valadares 6 (MG)',
     to: 'SE Terminal Rio (Paracambi - RJ)',
-    concessionaire: 'Axia Energia (Furnas) / Neoenergia',
+    concessionaire: 'TCC Caminho do Café / SPE Linha Verde / MGE Transmissão',
     coordinates: [
       [-41.9400, -18.8500],
       [-41.4400, -20.0300],
@@ -777,23 +897,31 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-43.7100, -22.6100]
     ],
     sources: [
-      { label: 'Furnas — Tronco de 500 kV Minas-Rio', url: 'https://www.furnas.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Procedimentos de Rede Submódulo 23.3', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — canaliza a energia vinda do Nordeste e de Minas Gerais para alimentar a carga pesada da Baixada Fluminense e Grande Rio',
-      substations: ['SE Governador Valadares 6', 'SE Mutum', 'SE Campos', 'SE Terminal Rio']
+      converterTechnology: '500 kV CA integrando o leste de Minas ao Rio de Janeiro. Segmentos: LT 500 kV G. Valadares 6 / Mutum (156,0 km, cod: MGGVA65MTUM1), LT 500 kV Mutum / Rio Novo Sul (132,0 km, cod: MGMTUM5SRNS1ES) e conexões ao anel metropolitano fluminense.',
+      substations: ['SE Governador Valadares 6 (MG)', 'SE Mutum (MG)', 'SE Terminal Rio (RJ)']
     }
   },
   {
     id: 'linha-xingo-paulo-afonso-camacari',
-    name: 'Tronco 500 kV Baixo São Francisco (Xingó ➔ Paulo Afonso ➔ Camaçari)',
+    name: 'Tronco São Francisco 500 kV (Xingó ➔ Camaçari II)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 420,
-    from: 'SE Xingó (SE/AL)',
-    to: 'SE Camaçari (BA)',
-    concessionaire: 'Axia Energia (Chesf)',
+    lengthKm: 351,
+    from: 'SE Usina Xingó (AL/SE)',
+    to: 'SE Camaçari II (BA)',
+    concessionaire: 'Pedras Transmissora (Taesa)',
     coordinates: [
       [-37.8700, -9.6200],
       [-38.2200, -9.3800],
@@ -801,46 +929,62 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-38.3200, -12.7000]
     ],
     sources: [
-      { label: 'Chesf — Sistema de Transmissão da Bacia do São Francisco', url: 'https://www.chesf.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Cadastro de Linhas de Transmissão 500 kV', url: 'https://dados.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — via expressa de suprimento das hidrelétricas de Paulo Afonso (4 GW) e Xingó (3,16 GW) ao Polo Industrial de Camaçari e Salvador',
-      substations: ['SE Xingó', 'SE Paulo Afonso', 'SE Sapeaçu', 'SE Camaçari']
+      converterTechnology: '500 kV CA circuito duplo (C1 351,0 km e C2 351,0 km, cod: SEXNG-5CMD-1BA e SEXNG-5CMD-2BA). Escoa a geração da UHE Xingó (3.162 MW) e Complexo Paulo Afonso (4.279 MW) para o Polo Petroquímico de Camaçari e Salvador.',
+      substations: ['SE Usina Xingó (AL/SE)', 'SE Camaçari II (BA)']
     }
   },
   {
     id: 'linha-campos-novos-curitiba-525',
-    name: 'Tronco Sul 525 kV (Campos Novos ➔ Foz do Areia ➔ Curitiba Leste)',
+    name: 'Tronco Sul 525 kV (Campos Novos ➔ Areia ➔ Curitiba Leste)',
     voltageKV: 525,
     type: 'CA',
-    lengthKm: 360,
+    lengthKm: 411.5,
     from: 'SE Campos Novos (SC)',
     to: 'SE Curitiba Leste (PR)',
-    concessionaire: 'CGT Eletrosul / Copel GeT',
+    concessionaire: 'Axia Sul (Eletrosul) / Copel GeT',
     coordinates: [
       [-51.3500, -27.3800],
       [-51.6200, -26.0100],
       [-49.1200, -25.4300]
     ],
     sources: [
-      { label: 'CGT Eletrosul — Sistema de Transmissão 525 kV', url: 'https://www.cgteletrosul.com.br/', accessedAt: '2026-09-24' },
-      { label: 'Copel — Relatório Anual de Operação da Rede Básica', url: 'https://www.copel.com/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '525 kV CA — escoamento conjunto das usinas das bacias dos rios Uruguai (Campos Novos, Barra Grande) e Iguaçu (Foz do Areia) para o Paraná',
-      substations: ['SE Campos Novos', 'SE Foz do Areia', 'SE Curitiba Leste']
+      converterTechnology: '525 kV CA eixo dorsal do subsistema Sul. Composta por LT 525 kV Areia / C. Novos (176,3 km, cod: PRARE-5CNO-1SC) e LT 525 kV Areia / Curitiba C1 (235,2 km, cod: PRARE-5CBA-1).',
+      substations: ['SE Campos Novos (SC)', 'SE Areia (PR)', 'SE Curitiba Leste (PR)']
     }
   },
   {
     id: 'linha-ita-caxias-gravatai-525',
-    name: 'Tronco Sul 525 kV (Itá ➔ Caxias ➔ Nova Santa Rita ➔ Gravataí)',
+    name: 'Tronco Gaúcho 525 kV (Itá ➔ Caxias ➔ Gravataí)',
     voltageKV: 525,
     type: 'CA',
-    lengthKm: 390,
+    lengthKm: 333.8,
     from: 'SE Itá (SC)',
     to: 'SE Gravataí (RS)',
-    concessionaire: 'CGT Eletrosul',
+    concessionaire: 'Axia Sul (Eletrosul)',
     coordinates: [
       [-52.3200, -27.2800],
       [-51.1800, -29.1600],
@@ -848,12 +992,20 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-50.9900, -29.9400]
     ],
     sources: [
-      { label: 'CGT Eletrosul — Tronco 525 kV Rio Grande do Sul', url: 'https://www.cgteletrosul.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Relatório de Planejamento de Transmissão Sul', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '525 kV CA — transporta a energia da UHE Itá (1.450 MW) e UHE Machadinho (1.140 MW) para a Grande Porto Alegre e polo petroquímico de Triunfo',
-      substations: ['SE Itá', 'SE Caxias', 'SE Nova Santa Rita', 'SE Gravataí']
+      converterTechnology: '525 kV CA transportando energia da UHE Itá (1.450 MW) e UHE Machadinho para a Grande Porto Alegre. Segmentos: LT 525 kV Caxias / Itá C1 (255,0 km, cod: RSCAX-5YTA-1SC) e LT 525 kV Caxias / Gravataí C1 (78,8 km, cod: RSCAX-5GRA-1).',
+      substations: ['SE Itá (SC)', 'SE Caxias (RS)', 'SE Gravataí (RS)']
     }
   },
   {
@@ -861,22 +1013,30 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
     name: 'Tronco Central 500 kV (Serra da Mesa ➔ Samambaia / Brasília)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 280,
+    lengthKm: 249,
     from: 'SE Serra da Mesa (Minaçu - GO)',
     to: 'SE Samambaia (DF)',
-    concessionaire: 'Axia Energia (Furnas)',
+    concessionaire: 'Axia Energia (Furnas) / Taesa',
     coordinates: [
       [-48.3100, -13.8300],
       [-49.1400, -14.5200],
       [-48.0800, -15.8700]
     ],
     sources: [
-      { label: 'Furnas — Sistema Serra da Mesa-Brasília 500 kV', url: 'https://www.furnas.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Malha de Atendimento ao Distrito Federal', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — tronco crucial que abastece o Distrito Federal a partir da UHE Serra da Mesa e serve como interligação dos fluxos Norte-Sul',
-      substations: ['SE Serra da Mesa', 'SE Uruaçu', 'SE Samambaia']
+      converterTechnology: '500 kV CA em três circuitos (C1 249,0 km, C2 248,5 km, C3 248,0 km, cod: GOUSSM5STSB1DF). Abastece o Distrito Federal a partir da UHE Serra da Mesa (1.275 MW) e ancora o entroncamento Norte-Sul.',
+      substations: ['SE Serra da Mesa (GO)', 'SE Samambaia (DF)']
     }
   },
   {
@@ -884,10 +1044,10 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
     name: 'Tronco 500 kV Paranaíba (Itumbiara ➔ Emborcação ➔ Ribeirão Preto)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 340,
+    lengthKm: 330.6,
     from: 'SE Itumbiara (GO/MG)',
     to: 'SE Ribeirão Preto (SP)',
-    concessionaire: 'Axia Energia (Furnas) / Cemig GT',
+    concessionaire: 'Cemig GT / RPTE / Axia Energia',
     coordinates: [
       [-49.2000, -18.4100],
       [-47.9800, -18.4400],
@@ -895,43 +1055,59 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-47.8100, -21.1700]
     ],
     sources: [
-      { label: 'Furnas — Usinas do Rio Paranaíba e Tronco 500 kV', url: 'https://www.furnas.com.br/', accessedAt: '2026-09-24' },
-      { label: 'Cemig — Sistema de Transmissão de Emborcação', url: 'https://www.cemig.com.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — conecta as duas maiores usinas do Rio Paranaíba (Itumbiara 2.082 MW e Emborcação 1.192 MW) ao anel do nordeste paulista',
-      substations: ['SE Itumbiara', 'SE Emborcação', 'SE Franca', 'SE Ribeirão Preto']
+      converterTechnology: '500 kV CA conectando as usinas estruturantes do Rio Paranaíba (UHE Itumbiara 2.082 MW e UHE Emborcação 1.192 MW) ao anel do nordeste paulista. LT 500 kV Emborcação / Itumbiara (134,56 km, cod: MGEMBO5USIM1).',
+      substations: ['SE Itumbiara (GO/MG)', 'SE Emborcação (MG)', 'SE Ribeirão Preto (SP)']
     }
   },
   {
     id: 'linha-angra-rio',
-    name: 'Tronco Nuclear de Angra (Angra ➔ Graúna ➔ Terminal Rio)',
+    name: 'Tronco Nuclear de Angra (Angra ➔ Nova Iguaçu / Terminal Rio)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 115,
+    lengthKm: 138.6,
     from: 'SE Angra (Angra dos Reis - RJ)',
     to: 'SE Terminal Rio (Paracambi - RJ)',
-    concessionaire: 'Axia Energia (Furnas) / Eletronuclear',
+    concessionaire: 'Axia Energia (Furnas) / XRTE',
     coordinates: [
       [-44.4500, -23.0100],
       [-44.2000, -22.9500],
       [-43.7100, -22.6100]
     ],
     sources: [
-      { label: 'Eletronuclear — Sistema de Transmissão de Angra 1 e 2', url: 'https://www.eletronuclear.gov.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Cadastro da Rede Básica da Região Sudeste', url: 'https://dados.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA circuito duplo — escoa os 1.990 MW da Central Nuclear Almirante Álvaro Alberto (CNAAA) diretamente para o anel de carga da Região Metropolitana do Rio',
-      substations: ['SE Angra', 'SE Graúna', 'SE Terminal Rio']
+      converterTechnology: '500 kV CA escoando a potência de 1.990 MW da Central Nuclear Almirante Álvaro Alberto (Angra 1 e 2). Composta por LT 500 kV Angra Fur / Nova Iguaçu C1 (108,6 km, cod: RJSTAN5STNV1) e LT 500 kV Terminal Rio / Nova Iguaçu (30,0 km, cod: RJTRIO5NVI-1).',
+      substations: ['SE Angra (RJ)', 'SE Nova Iguaçu (RJ)', 'SE Terminal Rio (RJ)']
     }
   },
   {
     id: 'linha-furnas-adrianopolis',
-    name: 'Eixo Histórico 500 kV UHE Furnas ➔ Adrianópolis',
-    voltageKV: 500,
+    name: 'Eixo Histórico 345 kV UHE Furnas ➔ Itutinga ➔ Adrianópolis',
+    voltageKV: 345,
     type: 'CA',
-    lengthKm: 370,
+    lengthKm: 397,
     from: 'SE Furnas (São José da Barra - MG)',
     to: 'SE Adrianópolis (Nova Iguaçu - RJ)',
     concessionaire: 'Axia Energia (Furnas)',
@@ -941,12 +1117,20 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-43.4800, -22.6800]
     ],
     sources: [
-      { label: 'Furnas — 65 Anos da Linha Tronco 500 kV', url: 'https://www.furnas.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Relatório de Instalações de Transmissão', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — primeiro corredor de extra-alta tensão de Furnas no Brasil, escoando a geração do Rio Grande para os estados de Minas e Rio de Janeiro',
-      substations: ['SE Furnas', 'SE Itutinga', 'SE Adrianópolis']
+      converterTechnology: '345 kV CA — corredor pioneiro de transmissão de Furnas no Brasil. Segmentos: LT 345 kV Furnas / Itutinga C1 (198,0 km, cod: MGUSFU3STIT1) e LT 345 kV Adrianópolis / Itutinga C1 (199,0 km, cod: RJSTAD3STIT1MG).',
+      substations: ['SE Furnas (MG)', 'SE Itutinga (MG)', 'SE Adrianópolis (RJ)']
     }
   },
   {
@@ -954,68 +1138,92 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
     name: 'Tronco 500 kV São Simão ➔ Marimbondo ➔ Ribeirão Preto',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 310,
-    from: 'SE São Simão (São Simão - GO)',
-    to: 'SE Ribeirão Preto (Ribeirão Preto - SP)',
-    concessionaire: 'SPIC Brasil / Axia Energia (Furnas)',
+    lengthKm: 412,
+    from: 'SE São Simão (GO/MG)',
+    to: 'SE Ribeirão Preto (SP)',
+    concessionaire: 'RPTE – Ribeirão Preto Transmissora de Energia',
     coordinates: [
       [-50.5100, -18.9900],
       [-49.2000, -20.3100],
       [-47.8100, -21.1700]
     ],
     sources: [
-      { label: 'ANEEL — Banco de Informações de Geração e Transmissão (SIGEL)', url: 'https://sigel.aneel.gov.br/', accessedAt: '2026-09-24' },
-      { label: 'SPIC Brasil — Concessão UHE São Simão', url: 'https://www.spicbrasil.com.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — escoamento conjunto da UHE São Simão (1.710 MW) e UHE Marimbondo (1.440 MW) na transição dos rios Paranaíba e Grande',
-      substations: ['SE São Simão', 'SE Marimbondo', 'SE Ribeirão Preto']
+      converterTechnology: '500 kV CA integrando a UHE São Simão (1.710 MW) e UHE Marimbondo (1.440 MW). Segmentos: LT 500 kV Marimbondo / São Simão-SE C1 (216,0 km, cod: MGUSMR5SSSE1) e LT 500 kV Marimbondo / Ribeirão Preto C1 (196,0 km, cod: MGUSMR5RPR-1SP).',
+      substations: ['SE São Simão (GO)', 'SE Marimbondo (MG)', 'SE Ribeirão Preto (SP)']
     }
   },
   {
     id: 'linha-costa-branca-rn',
-    name: 'Tronco Eólico Costa Branca (Açu III ➔ João Câmara ➔ Natal)',
+    name: 'Tronco Eólico Costa Branca 500 kV (Açu III ➔ João Câmara III ➔ Ceará-Mirim)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 215,
+    lengthKm: 190,
     from: 'SE Açu III (Açu - RN)',
-    to: 'SE Ceará-Mirim (Natal - RN)',
-    concessionaire: 'Taesa / Neoenergia',
+    to: 'SE Ceará-Mirim 2 (Natal - RN)',
+    concessionaire: 'Argo VI / Axia Nordeste (Chesf)',
     coordinates: [
       [-36.9100, -5.5800],
       [-35.8200, -5.5300],
       [-35.4200, -5.6300]
     ],
     sources: [
-      { label: 'ANEEL — Leilão de Transmissão 005/2015', url: 'https://www.aneel.gov.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Relatório de Análise de Perturbações e Escoamento Eólico', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — espinha dorsal de escoamento dos maiores parques eólicos terrestres do Brasil situados no Rio Grande do Norte',
-      substations: ['SE Açu III', 'SE João Câmara III', 'SE Ceará-Mirim']
+      converterTechnology: '500 kV CA espinha dorsal dos parques eólicos do litoral potiguar. Composta por LT 500 kV Açu III / J. Câmara III (126,0 km, cod: RNACT-5JCT-1) e LT 500 kV Ceará-Mirim 2 / J. Câmara III (64,0 km, cod: RNCMM-5JCT-1).',
+      substations: ['SE Açu III (RN)', 'SE João Câmara III (RN)', 'SE Ceará-Mirim 2 (RN)']
     }
   },
   {
     id: 'linha-milagres-banabuiu-fortaleza',
-    name: 'Tronco 500 kV Milagres ➔ Banabuiú ➔ Fortaleza (Pacatuba)',
+    name: 'Tronco 500 kV Ceará Central (Milagres ➔ Quixadá ➔ Fortaleza II)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 410,
+    lengthKm: 406.5,
     from: 'SE Milagres (CE)',
-    to: 'SE Pacatuba (Fortaleza - CE)',
-    concessionaire: 'Axia Energia (Chesf)',
+    to: 'SE Fortaleza II (CE)',
+    concessionaire: 'Axia Nordeste (Chesf)',
     coordinates: [
       [-38.9400, -7.3100],
       [-38.9200, -5.3100],
       [-38.6200, -3.9800]
     ],
     sources: [
-      { label: 'Chesf — Sistema de Transmissão 500 kV do Ceará', url: 'https://www.chesf.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Cadastro da Rede Básica Submódulo 23.3', url: 'https://dados.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — principal via de abastecimento elétrico da Região Metropolitana de Fortaleza a partir do nó de intercâmbio de Milagres',
-      substations: ['SE Milagres', 'SE Banabuiú', 'SE Pacatuba']
+      converterTechnology: '500 kV CA principal via de suprimento da Grande Fortaleza a partir do nó de Milagres. Segmentos: LT 500 kV Milagres / Quixadá (268,7 km, cod: CEV3-5QXA-1) e LT 500 kV Quixadá / Fortaleza II (137,8 km, cod: CEQXA-5FZD-1).',
+      substations: ['SE Milagres (CE)', 'SE Quixadá (CE)', 'SE Fortaleza II (CE)']
     }
   },
   {
@@ -1023,21 +1231,29 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
     name: 'Tronco 500 kV Sobral III ➔ Pecém II (Porto do Pecém)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 180,
+    lengthKm: 174.8,
     from: 'SE Sobral III (Sobral - CE)',
     to: 'SE Pecém II (São Gonçalo do Amarante - CE)',
-    concessionaire: 'Axia Energia (Chesf)',
+    concessionaire: 'STN – Sistema de Transmissão do Nordeste / Axia Nordeste',
     coordinates: [
       [-40.3500, -3.6800],
       [-38.8600, -3.5500]
     ],
     sources: [
-      { label: 'ANEEL — SIGEL (Sistema de Informações Georreferenciadas do Setor Elétrico)', url: 'https://sigel.aneel.gov.br/', accessedAt: '2026-09-24' },
-      { label: 'Chesf — Linha 500 kV Sobral III – Pecém II', url: 'https://www.chesf.com.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — conexão estratégica do Complexo Industrial e Portuário do Pecém e termelétricas associadas ao SIN',
-      substations: ['SE Sobral III', 'SE Pecém II']
+      converterTechnology: '500 kV CA em circuito duplo (C V6 174,8 km STN e C V7 174,8 km Axia Nordeste, cod: CEPCE-5SBT-2 e CEPCE-5SBT-1). Conecta o Porto do Pecém e termelétricas associadas ao SIN.',
+      substations: ['SE Sobral III (CE)', 'SE Pecém II (CE)']
     }
   },
   {
@@ -1045,55 +1261,71 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
     name: 'Tronco 500 kV Teles Pires / Sinop (Cláudia ➔ Paranatinga)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 360,
+    lengthKm: 350,
     from: 'SE Cláudia (Cláudia - MT)',
     to: 'SE Paranatinga (Paranatinga - MT)',
-    concessionaire: 'Matrinchã Transmissora (State Grid Brasil)',
+    concessionaire: 'Matrinchã Transmissora (State Grid Brasil) / PRTE',
     coordinates: [
       [-54.8800, -11.5000],
       [-54.0500, -14.4300]
     ],
     sources: [
-      { label: 'State Grid Brasil — Matrinchã Transmissora de Energia', url: 'https://stategrid.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ANEEL — Resolução Autorizativa Matrinchã', url: 'https://www.aneel.gov.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — rota de escoamento das UHEs Sinop (401 MW), Colíder (300 MW) e Teles Pires em direção ao centro de gravidade de carga nacional',
-      substations: ['SE Cláudia', 'SE Paranatinga']
+      converterTechnology: '500 kV CA em circuito triplo (C1 350,0 km, C2 350,0 km, C3 350,0 km, cod: MTCLD-5PRG-1, MTCLD-5PRG-2, MTCLD-5PRG-3). Escoa a geração das UHEs Sinop (401 MW), Colíder (300 MW) e Teles Pires.',
+      substations: ['SE Cláudia (MT)', 'SE Paranatinga (MT)']
     }
   },
   {
     id: 'linha-rio-verde-itumbiara',
-    name: 'Tronco 500 kV Agro Centro-Oeste (Rio Verde ➔ Jataí ➔ Itumbiara)',
+    name: 'Tronco 500 kV Agro Centro-Oeste (Rio Verde Norte ➔ Itumbiara)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 290,
-    from: 'SE Rio Verde (Rio Verde - GO)',
-    to: 'SE Itumbiara (Itumbiara - GO)',
-    concessionaire: 'Axia Energia (Furnas) / Celg T',
+    lengthKm: 202,
+    from: 'SE Rio Verde Norte (GO)',
+    to: 'SE Itumbiara (GO/MG)',
+    concessionaire: 'ITE – Itumbiara Transmissora de Energia',
     coordinates: [
       [-50.9200, -17.7900],
       [-51.7200, -17.8800],
       [-49.2000, -18.4100]
     ],
     sources: [
-      { label: 'ONS — Plano de Ampliações e Reforços Centro-Oeste', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' },
-      { label: 'Furnas — Subestações da Região Centro-Oeste', url: 'https://www.furnas.com.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — atende ao crescimento acelerado da carga do agronegócio e agroindústria no sudoeste de Goiás',
-      substations: ['SE Rio Verde', 'SE Jataí', 'SE Itumbiara']
+      converterTechnology: '500 kV CA com 202,0 km de extensão (cod: GOID--5USIM1MG). Escoa a energia da região produtora do agronegócio goiano diretamente para o barramento de 500 kV da UHE Itumbiara.',
+      substations: ['SE Rio Verde Norte (GO)', 'SE Itumbiara (GO/MG)']
     }
   },
   {
     id: 'linha-cuiaba-campo-grande',
-    name: 'Interligação 230 kV Mato Grosso ➔ Mato Grosso do Sul',
+    name: 'Interligação 230 kV Mato Grosso ➔ Mato Grosso do Sul (Cuiabá ➔ Rondonópolis ➔ Chapadão ➔ Campo Grande)',
     voltageKV: 230,
     type: 'CA',
-    lengthKm: 730,
+    lengthKm: 466.6,
     from: 'SE Cuiabá (Cuiabá - MT)',
-    to: 'SE Campo Grande (Campo Grande - MS)',
-    concessionaire: 'Axia Energia (Furnas)',
+    to: 'SE Campo Grande 2 (Campo Grande - MS)',
+    concessionaire: 'AETE / Brilhante Transmissora',
     coordinates: [
       [-56.0900, -15.6000],
       [-54.6300, -16.4700],
@@ -1101,12 +1333,20 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-54.6200, -20.4500]
     ],
     sources: [
-      { label: 'Furnas — Tronco de Interligação MT-MS', url: 'https://www.furnas.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Cadastro de Linhas da Rede Básica Centro-Oeste', url: 'https://dados.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '230 kV CA circuito duplo — corredor de 730 km que integra as bacias do Rio Paraguai e Pantanal aos centros de carga do Centro-Oeste',
-      substations: ['SE Cuiabá', 'SE Rondonópolis', 'SE Coxim', 'SE Campo Grande']
+      converterTechnology: '230 kV CA integrando as malhas regionais de MT e MS. Segmentos: LT 230 kV SE Cuiabá / Rondonópolis C1 (171,0 km, cod: MTCB--2RP--1) e LT 230 kV Campo Grande 2 / Chapadão C1 (295,6 km, cod: MSCG22CPD-1).',
+      substations: ['SE Cuiabá (MT)', 'SE Rondonópolis (MT)', 'SE Chapadão (MS)', 'SE Campo Grande 2 (MS)']
     }
   },
   {
@@ -1114,9 +1354,9 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
     name: 'Tronco Sul 525 kV (Salto Caxias ➔ Cascavel Oeste ➔ Foz do Iguaçu)',
     voltageKV: 525,
     type: 'CA',
-    lengthKm: 190,
+    lengthKm: 178,
     from: 'SE Salto Caxias (Capitão Leônidas Marques - PR)',
-    to: 'SE Foz do Iguaçu (Foz do Iguaçu - PR)',
+    to: 'SE Foz do Iguaçu 60 Hz (PR)',
     concessionaire: 'Copel GeT',
     coordinates: [
       [-53.5300, -25.5400],
@@ -1124,46 +1364,62 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-54.5889, -25.4083]
     ],
     sources: [
-      { label: 'Copel GeT — Sistema Tronco 525 kV do Iguaçu', url: 'https://www.copel.com/', accessedAt: '2026-09-24' },
-      { label: 'ANEEL — SIGEL (Sistema de Informações Georreferenciadas)', url: 'https://sigel.aneel.gov.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '525 kV CA — escoamento dos 1.240 MW da UHE Salto Caxias (Gov. José Richa) para o anel de interligação de Cascavel e Foz do Iguaçu',
-      substations: ['SE Salto Caxias', 'SE Cascavel Oeste', 'SE Foz do Iguaçu']
+      converterTechnology: '525 kV CA integrando a UHE Salto Caxias / Gov. José Richa (1.240 MW) ao anel do oeste paranaense. Composta por LT 525 kV Salto Caxias / Cascavel Oeste (63,0 km, cod: PRSCX-5CVO-1) e LT 525 kV Cascavel Oeste / Foz do Iguaçu 60Hz (115,0 km, cod: PRCVO-5STF61).',
+      substations: ['SE Salto Caxias (PR)', 'SE Cascavel Oeste (PR)', 'SE Foz do Iguaçu 60Hz (PR)']
     }
   },
   {
     id: 'linha-segredo-curitiba',
-    name: 'Tronco Sul 525 kV (Gov. Ney Braga / Segredo ➔ Curitiba)',
+    name: 'Tronco Sul 525 kV (Gov. Ney Braga / Segredo ➔ Areia ➔ Curitiba)',
     voltageKV: 525,
     type: 'CA',
-    lengthKm: 310,
+    lengthKm: 291.9,
     from: 'SE Segredo (Mangueirinha - PR)',
-    to: 'SE Curitiba Norte (Curitiba - PR)',
-    concessionaire: 'Copel GeT',
+    to: 'SE Curitiba (PR)',
+    concessionaire: 'Axia Sul (Eletrosul) / Copel GeT',
     coordinates: [
       [-52.1100, -25.7900],
       [-49.5200, -25.3500],
       [-49.2800, -25.3500]
     ],
     sources: [
-      { label: 'Copel GeT — Linha 525 kV Segredo–Curitiba', url: 'https://www.copel.com/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Plano da Operação Elétrica do Sul', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '525 kV CA — escoa 1.260 MW da UHE Segredo (Gov. Ney Braga) no Rio Iguaçu diretamente para a Região Metropolitana de Curitiba',
-      substations: ['SE Segredo', 'SE Bateias', 'SE Curitiba Norte']
+      converterTechnology: '525 kV CA escoando a UHE Segredo / Gov. Ney Braga (1.260 MW) no Rio Iguaçu para Curitiba. Composta por LT 525 kV Areia / Segredo (56,7 km, cod: PRARE-5SGD-1-------1) e LT 525 kV Areia / Curitiba C1 (235,2 km, cod: PRARE-5CBA-1).',
+      substations: ['SE Segredo (PR)', 'SE Areia (PR)', 'SE Curitiba (PR)']
     }
   },
   {
     id: 'linha-candiota-povo-novo',
-    name: 'Tronco Térmico Gaúcho (Candiota ➔ Pelotas ➔ Povo Novo)',
+    name: 'Tronco Térmico Gaúcho 230 kV (Candiota / Presidente Médici ➔ Pelotas 3 ➔ Quinta / Povo Novo)',
     voltageKV: 230,
     type: 'CA',
-    lengthKm: 175,
-    from: 'SE Candiota (Candiota - RS)',
-    to: 'SE Povo Novo (Rio Grande - RS)',
-    concessionaire: 'CGT Eletrosul',
+    lengthKm: 178.9,
+    from: 'SE Presidente Médici / Candiota (Candiota - RS)',
+    to: 'SE Povo Novo / Quinta (Rio Grande - RS)',
+    concessionaire: 'CPFL Transmissão (CPFL T)',
     coordinates: [
       [-53.6900, -31.5500],
       [-53.6700, -31.5600],
@@ -1171,81 +1427,113 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-52.2500, -31.9900]
     ],
     sources: [
-      { label: 'CGT Eletrosul — Sistema de Transmissão de Candiota', url: 'https://www.cgteletrosul.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Relatório de Análise e Operação Sul', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '230 kV CA circuito duplo — transporta a geração a carvão mineral do polo de Candiota (350 MW) para a zona portuária de Rio Grande e acoplamento ao litoral sul',
-      substations: ['SE Candiota', 'SE Presidente Médici', 'SE Pelotas 3', 'SE Povo Novo']
+      converterTechnology: '230 kV CA conectando o polo termelétrico a carvão de Candiota ao porto de Rio Grande. Composta por LT 230 kV Presidente Médici / Pelotas 3 C1 (135,0 km, cod: RSPME-2PEL31) e LT 230 kV Pelotas 3 / Quinta C1 (43,86 km, cod: RSPEL32QUI-1).',
+      substations: ['SE Presidente Médici (RS)', 'SE Pelotas 3 (RS)', 'SE Quinta / Povo Novo (RS)']
     }
   },
   {
     id: 'linha-sol-do-sertao-morro-chapeu',
-    name: 'Tronco 500 kV Sertão Baiano (Gentio do Ouro ➔ Morro do Chapéu II)',
+    name: 'Tronco Solar/Eólico 500 kV Sertão Baiano (Sol do Sertão ➔ Gentio do Ouro II ➔ Ourolândia II)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 190,
-    from: 'SE Gentio do Ouro (Gentio do Ouro - BA)',
-    to: 'SE Morro do Chapéu II (Morro do Chapéu - BA)',
-    concessionaire: 'Neoenergia / Taesa',
+    lengthKm: 283,
+    from: 'SE Sol do Sertão (Oliveira dos Brejinhos - BA)',
+    to: 'SE Ourolândia II (Ourolândia - BA)',
+    concessionaire: 'ETB – Enel Transmissora Brasil / Argo VII',
     coordinates: [
       [-42.5000, -11.4300],
       [-41.0800, -11.0500],
       [-41.1500, -11.5500]
     ],
     sources: [
-      { label: 'Neoenergia — Sistema de Transmissão Sobral-Morro do Chapéu', url: 'https://www.neoenergia.com/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Procedimentos de Rede Submódulo 23.3', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — conecta megaprojetos solares (Sol do Sertão) e eólicos da Chapada Diamantina ao nó de Poções e intercâmbio NE-SE',
-      substations: ['SE Gentio do Ouro', 'SE Ourolândia II', 'SE Morro do Chapéu II']
+      converterTechnology: '500 kV CA coletando a produção do Complexo Solar Sol do Sertão (475 MW) e eólicas regionais. Composta por LT 500 kV Sol do Sertão / Gentio do Ouro II (126,0 km, cod: BASDS-5GOR-1) e LT 500 kV Gentio do Ouro II / Ourolândia II (157,0 km, cod: BAGOR-5OUR-1).',
+      substations: ['SE Sol do Sertão (BA)', 'SE Gentio do Ouro II (BA)', 'SE Ourolândia II (BA)']
     }
   },
   {
     id: 'linha-mesquita-neves-bh',
-    name: 'Anel Metropolitano 500 kV Minas Gerais (Mesquita ➔ Neves 1 ➔ Ouro Preto)',
+    name: 'Anel Metropolitano 500 kV Minas Gerais (Neves 1 ➔ Mesquita)',
     voltageKV: 500,
     type: 'CA',
-    lengthKm: 220,
-    from: 'SE Mesquita (Santana do Paraíso / Ipatinga - MG)',
-    to: 'SE Ouro Preto 2 (Ouro Preto - MG)',
-    concessionaire: 'Cemig GT / Axia Energia (Furnas)',
+    lengthKm: 172.5,
+    from: 'SE Neves 1 (Ribeirão das Neves - MG)',
+    to: 'SE Mesquita (Santana do Paraíso - MG)',
+    concessionaire: 'IE Minas Gerais / Cemig GT',
     coordinates: [
       [-42.5300, -19.4600],
       [-43.9500, -19.7600],
       [-43.5000, -20.3800]
     ],
     sources: [
-      { label: 'Cemig GT — Sistema de Transmissão da Grande Belo Horizonte', url: 'https://www.cemig.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Relatório de Atendimento à Região Metropolitana de BH', url: 'https://www.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '500 kV CA — anel de alta tensão que abastece o polo siderúrgico do Vale do Aço (Usiminas) e a Grande Belo Horizonte',
-      substations: ['SE Mesquita', 'SE Neves 1', 'SE Ouro Preto 2']
+      converterTechnology: '500 kV CA circuito duplo (C1 172,5 km e C2 172,4 km, cod: MGMESQ5NEVE2 e MGMESQ5NEVE1). Interliga o anel da Grande Belo Horizonte ao polo siderúrgico do Vale do Aço (Usiminas).',
+      substations: ['SE Neves 1 (MG)', 'SE Mesquita (MG)']
     }
   },
   {
     id: 'linha-araraquara-campinas-taubate',
-    name: 'Tronco 440 kV Interior ➔ Vale do Paraíba (Araraquara ➔ Campinas ➔ Taubaté)',
-    voltageKV: 440,
+    name: 'Tronco 500 kV Interior ➔ Vale do Paraíba (Araraquara 2 ➔ Taubaté)',
+    voltageKV: 500,
     type: 'CA',
-    lengthKm: 285,
-    from: 'SE Araraquara (Araraquara - SP)',
+    lengthKm: 334.3,
+    from: 'SE Araraquara 2 (Araraquara - SP)',
     to: 'SE Taubaté (Taubaté - SP)',
-    concessionaire: 'ISA CTEEP',
+    concessionaire: 'Copel GeT',
     coordinates: [
       [-48.1800, -21.7900],
       [-47.0600, -22.9000],
       [-45.5500, -23.0200]
     ],
     sources: [
-      { label: 'ISA CTEEP — Tronco 440 kV Campinas-Taubaté', url: 'https://www.isacteep.com.br/', accessedAt: '2026-09-24' },
-      { label: 'ONS — Cadastro de Linhas da Área São Paulo', url: 'https://dados.ons.org.br/', accessedAt: '2026-09-24' }
+      {
+        label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica (dataset oficial)',
+        url: 'https://dados.ons.org.br/dataset/linha-transmissao',
+        accessedAt: '2026-09-25'
+      },
+      {
+        label: 'ONS — LINHA_TRANSMISSAO.csv (registro primário)',
+        url: 'https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/linha_transmissao/LINHA_TRANSMISSAO.csv',
+        accessedAt: '2026-09-25'
+      }
     ],
     technicalDetails: {
-      converterTechnology: '440 kV CA — interliga o polo de Araraquara e a Região Metropolitana de Campinas ao polo industrial e aeroespacial do Vale do Paraíba',
-      substations: ['SE Araraquara', 'SE Campinas', 'SE Taubaté']
+      converterTechnology: '500 kV CA com 334,32 km de extensão (cod: SPARA25TAU-1). Transfere fluxos do polo de conversão de Araraquara diretamente ao Vale do Paraíba sem sobrecarregar o anel metropolitano da capital.',
+      substations: ['SE Araraquara 2 (SP)', 'SE Taubaté (SP)']
     }
   }
 ];
