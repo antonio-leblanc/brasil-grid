@@ -14,13 +14,13 @@ export const ValueChainSection: React.FC = () => {
       <div className="text-center max-w-3xl mx-auto space-y-2">
         <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono">
           <Zap className="w-3.5 h-3.5" />
-          <span>A CADEIA DE VALOR DO SETOR ELÉTRICO BRASILEIRO (SEB)</span>
+          <span>CADEIA DE VALOR DO SETOR ELÉTRICO BRASILEIRO (SEB)</span>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-          Do Elétron Primário até a Fatura Final
+        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-wide font-mono uppercase">
+          Arquitetura Operativa & Regulatória
         </h2>
-        <p className="text-sm sm:text-base text-slate-400">
-          Estrutura em quatro elos interdependentes: marco regulatório, modelo de remuneração e dinâmicas físico-financeiras do SEB.
+        <p className="text-xs font-mono text-slate-400">
+          Quatro elos funcionais: limites físicos de tensão, governança (ANEEL/ONS) e liquidação contábil CCEE.
         </p>
       </div>
 
@@ -59,8 +59,8 @@ export const ValueChainSection: React.FC = () => {
                 </span>
               </div>
 
-              <h3 className="text-lg font-bold text-white mb-1">{stage.name}</h3>
-              <p className="text-xs text-slate-400 line-clamp-2">{stage.subtitle}</p>
+              <h3 className="text-lg font-bold text-white mb-1 font-mono">{stage.name}</h3>
+              <p className="text-xs text-slate-400 line-clamp-2 font-mono">{stage.subtitle}</p>
 
               {/* Selection indicator pill */}
               <div className="mt-4 flex items-center text-xs font-mono text-cyan-400 font-medium">
@@ -86,10 +86,10 @@ export const ValueChainSection: React.FC = () => {
                   {activeStage.voltage}
                 </span>
               </div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">{activeStage.name}</h3>
-              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+              <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 font-mono uppercase">{activeStage.name}</h3>
+              <div className="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80 font-mono text-xs sm:text-sm text-slate-300 leading-normal">
                 {activeStage.description}
-              </p>
+              </div>
             </div>
 
             {/* Economics & Regulation Cards */}
@@ -99,7 +99,7 @@ export const ValueChainSection: React.FC = () => {
                   <TrendingUp className="w-4 h-4" />
                   <span className="font-bold uppercase">Modelo de Remuneração</span>
                 </div>
-                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                <p className="text-xs text-slate-300 leading-normal font-mono">
                   {activeStage.revenueModel}
                 </p>
               </div>
@@ -109,7 +109,7 @@ export const ValueChainSection: React.FC = () => {
                   <ShieldAlert className="w-4 h-4" />
                   <span className="font-bold uppercase">Regulação & Governança</span>
                 </div>
-                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                <p className="text-xs text-slate-300 leading-normal font-mono">
                   {activeStage.regulator}
                 </p>
               </div>
@@ -122,15 +122,15 @@ export const ValueChainSection: React.FC = () => {
                 {activeStage.highlights.map((h, i) => {
                   const colonIndex = h.indexOf(':');
                   return (
-                    <div key={i} className="flex items-start space-x-2.5 text-xs sm:text-sm text-slate-300">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                    <div key={i} className="flex items-start space-x-2.5 text-xs text-slate-300 font-mono">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                       {colonIndex !== -1 ? (
-                        <span className="leading-relaxed">
-                          <strong className="text-white font-semibold font-mono text-xs">{h.slice(0, colonIndex)}:</strong>
+                        <span className="leading-normal">
+                          <strong className="text-white font-semibold">{h.slice(0, colonIndex)}:</strong>
                           {h.slice(colonIndex + 1)}
                         </span>
                       ) : (
-                        <span className="leading-relaxed">{h}</span>
+                        <span className="leading-normal">{h}</span>
                       )}
                     </div>
                   );
@@ -165,9 +165,9 @@ export const ValueChainSection: React.FC = () => {
 
               <div className="space-y-2">
                 {activeStage.mainCompanies.map((c, i) => (
-                  <div key={i} className="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800/60 flex flex-col">
+                  <div key={i} className="p-2 rounded-lg bg-slate-900/60 border border-slate-800/60 flex flex-col font-mono">
                     <span className="text-xs font-bold text-white">{c.name}</span>
-                    <span className="text-[11px] text-slate-400">{c.tag}</span>
+                    <span className="text-[10px] text-slate-400">{c.tag}</span>
                   </div>
                 ))}
               </div>

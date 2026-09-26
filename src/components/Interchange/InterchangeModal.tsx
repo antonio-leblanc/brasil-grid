@@ -340,31 +340,32 @@ export const InterchangeModal: React.FC<InterchangeModalProps> = ({
 
                       {/* Power metrics */}
                       <div className="space-y-2">
-                        <div className="flex items-end justify-between">
+                        {/* Carregamento e Margem Hero Row */}
+                        <div className="flex items-baseline justify-between bg-slate-900/60 p-2.5 rounded-lg border border-slate-800/80">
                           <div>
-                            <span className="text-[10px] text-slate-500 uppercase block">
-                              FLUXO OPERATIVO:
+                            <span className="text-[10px] text-slate-500 uppercase block font-semibold">
+                              CARREGAMENTO:
                             </span>
-                            <span className="text-lg font-bold text-white">
-                              {(ic.nominalFlowMW / 1000).toFixed(2)}{' '}
-                              <span className="text-xs font-normal text-slate-400">
-                                GW
-                              </span>
+                            <span
+                              className="text-xl font-bold font-mono"
+                              style={{ color: theme.color }}
+                            >
+                              {saturationPct}%
                             </span>
                           </div>
                           <div className="text-right">
-                            <span className="text-[10px] text-slate-500 uppercase block">
-                              LIMITE MÁXIMO ONS:
+                            <span className="text-[10px] text-slate-500 uppercase block font-semibold">
+                              MARGEM OPERATIVA:
                             </span>
-                            <span className="text-sm font-semibold text-slate-300">
-                              {(ic.maxExportLimitMW / 1000).toFixed(2)} GW
+                            <span className="text-base font-bold font-mono text-white">
+                              {(marginMW / 1000).toFixed(2)} GW
                             </span>
                           </div>
                         </div>
 
                         {/* Linear Progress Bar */}
                         <div className="space-y-1">
-                          <div className="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800 relative">
+                          <div className="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-800 relative">
                             <div
                               className="h-full rounded-full transition-all duration-500"
                               style={{
@@ -386,43 +387,48 @@ export const InterchangeModal: React.FC<InterchangeModalProps> = ({
                             />
                           </div>
 
-                          <div className="flex items-center justify-between text-[10px] text-slate-500">
+                          <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
                             <span>
-                              Carregamento:{' '}
-                              <strong
-                                className="font-bold"
-                                style={{ color: theme.color }}
-                              >
-                                {saturationPct}%
-                              </strong>
+                              Fluxo: <strong className="text-slate-200">{(ic.nominalFlowMW / 1000).toFixed(2)} GW</strong>
                             </span>
                             <span>
-                              Margem Livre:{' '}
-                              <strong className="text-slate-300 font-bold">
-                                {(marginMW / 1000).toFixed(2)} GW
-                              </strong>
+                              Limite ONS: <strong className="text-slate-200">{(ic.maxExportLimitMW / 1000).toFixed(2)} GW</strong>
                             </span>
                           </div>
                         </div>
                       </div>
 
-                      {/* Footer action */}
+                      {/* Footer actions */}
                       <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
-                        <span className="text-slate-500 truncate max-w-[240px]">
+                        <span className="text-slate-500 text-[10px] truncate max-w-[160px]">
                           {ic.mainLines[0]}
                         </span>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSelectInterface(ic.id);
-                            setActiveTab('dossie');
-                          }}
-                          className="text-cyan-400 hover:text-cyan-300 flex items-center space-x-1 font-semibold transition cursor-pointer"
-                        >
-                          <span>Diagnóstico Físico</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </button>
+                        <div className="flex items-center space-x-1.5">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSelectInterface(ic.id);
+                              setActiveTab('curvas24h');
+                            }}
+                            className="px-2 py-1 rounded bg-slate-900 border border-slate-700/80 text-cyan-400 hover:text-white hover:border-cyan-500/60 flex items-center space-x-1 text-[10px] font-semibold transition cursor-pointer"
+                          >
+                            <TrendingUp className="w-3 h-3" />
+                            <span>Curva 24h</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSelectInterface(ic.id);
+                              setActiveTab('dossie');
+                            }}
+                            className="px-2 py-1 rounded bg-cyan-950/60 border border-cyan-800/60 text-cyan-300 hover:bg-cyan-900/60 hover:text-white flex items-center space-x-1 text-[10px] font-semibold transition cursor-pointer"
+                          >
+                            <Info className="w-3 h-3" />
+                            <span>Dossiê</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   );

@@ -18,6 +18,11 @@ import { majorPowerPlants, majorTransmissionLines } from '../../data/gridData';
 import { subsystemsGeoJSON } from '../../data/subsystemsGeoData';
 import type { PowerPlantFeature, TransmissionLineFeature } from '../../data/gridData';
 import type { NationalTelemetrySnapshot } from '../../services/onsApi';
+import {
+  getLineMapLibreFilter,
+  getPlantMapLibreFilter,
+  type LineVoltageFilter
+} from '../../data/gridFilters';
 
 // Clean, unwatermarked ESRI Dark Gray Canvas
 const darkMatterStyle: StyleSpecification = {
@@ -60,16 +65,13 @@ const darkMatterStyle: StyleSpecification = {
   ]
 };
 
-
-
 interface GridMapProps {
   selectedPlant: PowerPlantFeature | null;
   setSelectedPlant: (plant: PowerPlantFeature | null) => void;
   selectedLine: TransmissionLineFeature | null;
   setSelectedLine: (line: TransmissionLineFeature | null) => void;
-  voltageFilter: 'all' | '800' | '500';
+  voltageFilter: LineVoltageFilter;
   plantTypeFilter: string;
-  showPowerFlow: boolean;
   showSubsystems: boolean;
   telemetry?: NationalTelemetrySnapshot;
 }
@@ -81,7 +83,6 @@ export const GridMap: React.FC<GridMapProps> = ({
   setSelectedLine,
   voltageFilter,
   plantTypeFilter,
-  showPowerFlow,
   showSubsystems,
   telemetry
 }) => {
@@ -96,16 +97,14 @@ export const GridMap: React.FC<GridMapProps> = ({
   // Keep latest handlers in refs to prevent unnecessary re-bindings
   const onSelectPlantRef = useRef(setSelectedPlant);
   const onSelectLineRef = useRef(setSelectedLine);
-  const showPowerFlowRef = useRef(showPowerFlow);
   const showSubsystemsRef = useRef(showSubsystems);
   const telemetryRef = useRef<NationalTelemetrySnapshot | undefined>(telemetry);
   useEffect(() => {
     onSelectPlantRef.current = setSelectedPlant;
     onSelectLineRef.current = setSelectedLine;
-    showPowerFlowRef.current = showPowerFlow;
     showSubsystemsRef.current = showSubsystems;
     telemetryRef.current = telemetry;
-  }, [setSelectedPlant, setSelectedLine, showPowerFlow, showSubsystems, telemetry]);
+  }, [setSelectedPlant, setSelectedLine, showSubsystems, telemetry]);
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
@@ -268,34 +267,7 @@ export const GridMap: React.FC<GridMapProps> = ({
           data: linesGeoJSON
         });
 
-        // 1a. Neon Outer Glow
-        mapInstance.addLayer({
-          id: 'lines-glow',
-          type: 'line',
-          source: 'transmission-lines',
-          paint: {
-            'line-color': [
-              'step',
-              ['get', 'voltageKV'],
-              '#8b5cf6',
-              500, '#06b6d4',
-              600, '#d97706',
-              800, '#f59e0b'
-            ],
-            'line-width': [
-              'step',
-              ['get', 'voltageKV'],
-              3,
-              500, 5,
-              600, 7,
-              800, 9
-            ],
-            'line-opacity': 0.35,
-            'line-blur': 4
-          }
-        });
-
-        // 1b. Crisp Main Line
+        // 1a. Crisp Main Line
         mapInstance.addLayer({
           id: 'lines-main',
           type: 'line',
@@ -321,35 +293,23 @@ export const GridMap: React.FC<GridMapProps> = ({
           }
         });
 
-        // 1c. Animated Power Flow Pulse (WebGL)
+        // 1b. Selected Line Target Highlight
         mapInstance.addLayer({
-          id: 'lines-flow',
+          id: 'lines-selected',
           type: 'line',
           source: 'transmission-lines',
-          layout: {
-            'line-cap': 'round',
-            'line-join': 'round',
-            visibility: showPowerFlowRef.current ? 'visible' : 'none'
-          },
+          filter: ['==', ['get', 'id'], ''],
           paint: {
-            'line-color': [
-              'step',
-              ['get', 'voltageKV'],
-              '#fae8ff',
-              500, '#e0f2fe',
-              600, '#fef3c7',
-              800, '#ffffff'
-            ],
+            'line-color': '#38bdf8',
             'line-width': [
               'step',
               ['get', 'voltageKV'],
-              1.6,
-              500, 2.0,
-              600, 2.4,
-              800, 2.8
+              3.5,
+              500, 4.5,
+              600, 5.5,
+              800, 6.5
             ],
-            'line-opacity': 0.85,
-            'line-dasharray': [4, 2.5]
+            'line-opacity': 1
           }
         });
 
@@ -358,23 +318,12 @@ export const GridMap: React.FC<GridMapProps> = ({
           mapInstance.getCanvas().style.cursor = 'pointer';
           if (!e.features || !e.features[0] || !popupRef.current) return;
           const p = e.features[0].properties;
-          const voltageVal = Number(p?.voltageKV) || 0;
-          const voltageColor =
-            voltageVal >= 600
-              ? 'text-amber-400'
-              : voltageVal >= 500
-              ? 'text-cyan-400'
-              : 'text-purple-400';
 
           popupRef.current
             .setLngLat(e.lngLat)
             .setHTML(`
-              <div class="px-3 py-2 rounded-lg bg-[#07090e]/95 border border-slate-700/80 shadow-2xl backdrop-blur-md font-mono text-left select-none pointer-events-none min-w-[170px]">
-                <div class="text-xs font-bold text-white tracking-wide truncate max-w-[220px] mb-1">${p?.name}</div>
-                <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-800/80">
-                  <span class="${voltageColor} font-bold text-[11px]">${p?.voltageKV} kV ${p?.type}</span>
-                  <span>${p?.lengthKm ? `${Number(p?.lengthKm).toLocaleString('pt-BR')} km` : ''}</span>
-                </div>
+              <div class="px-2.5 py-1 rounded bg-[#07090e]/95 border border-slate-700/80 shadow-xl font-mono text-xs text-white font-semibold select-none pointer-events-none">
+                ${p?.name}
               </div>
             `)
             .addTo(mapInstance);
@@ -527,30 +476,12 @@ export const GridMap: React.FC<GridMapProps> = ({
           const f = e.features[0];
           const coords = (f.geometry as GeoJSON.Point).coordinates.slice() as [number, number];
           const p = f.properties;
-          const capacityMW = Number(p?.capacityMW) || 0;
-          const gwStr = (capacityMW / 1000).toFixed(1);
-
-          const typeConfig: Record<string, { badge: string }> = {
-            hidro: { badge: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' },
-            solar: { badge: 'bg-amber-500/20 text-amber-400 border-amber-500/40' },
-            eolica: { badge: 'bg-sky-500/20 text-sky-400 border-sky-500/40' },
-            nuclear: { badge: 'bg-orange-500/20 text-orange-400 border-orange-500/40' },
-            termica: { badge: 'bg-rose-500/20 text-rose-400 border-rose-500/40' }
-          };
-          const config = typeConfig[p?.type] || { badge: 'bg-slate-800 text-slate-300 border-slate-700' };
 
           popupRef.current
             .setLngLat(coords)
             .setHTML(`
-              <div class="px-3 py-2 rounded-lg bg-[#07090e]/95 border border-slate-700/80 shadow-2xl backdrop-blur-md font-mono text-left select-none pointer-events-none min-w-[160px]">
-                <div class="flex items-center justify-between gap-2 mb-1">
-                  <span class="text-xs font-bold text-white tracking-wide truncate max-w-[180px]">${p?.name}</span>
-                  <span class="text-[9px] px-1.5 py-0.5 rounded border ${config.badge} uppercase font-semibold">${p?.type}</span>
-                </div>
-                <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-800/80">
-                  <span class="text-cyan-400 font-bold text-[11px]">${gwStr} GW</span>
-                  <span>${p?.state} • ${p?.subsystem}</span>
-                </div>
+              <div class="px-2.5 py-1 rounded bg-[#07090e]/95 border border-slate-700/80 shadow-xl font-mono text-xs text-white font-semibold select-none pointer-events-none">
+                ${p?.name}
               </div>
             `)
             .addTo(mapInstance);
@@ -593,17 +524,6 @@ export const GridMap: React.FC<GridMapProps> = ({
 
 
 
-  // Sync power flow visibility
-  useEffect(() => {
-    if (!map.current || !isLoaded) return;
-    if (map.current.getLayer('lines-flow')) {
-      map.current.setLayoutProperty(
-        'lines-flow',
-        'visibility',
-        showPowerFlow ? 'visible' : 'none'
-      );
-    }
-  }, [showPowerFlow, isLoaded]);
 
   // Sync subsystems layers visibility
   useEffect(() => {
@@ -652,6 +572,11 @@ export const GridMap: React.FC<GridMapProps> = ({
 
     const lineId = selectedLine ? selectedLine.id : null;
 
+    if (map.current.getLayer('lines-selected')) {
+      const selectedId = lineId || '';
+      map.current.setFilter('lines-selected', ['==', ['get', 'id'], selectedId]);
+    }
+
     if (selectedLine && selectedLine.coordinates.length > 0 && lineId !== lastSelectedLineId.current) {
       lastSelectedLineId.current = lineId;
       const lons = selectedLine.coordinates.map((c) => c[0]);
@@ -681,46 +606,24 @@ export const GridMap: React.FC<GridMapProps> = ({
   useEffect(() => {
     if (!map.current || !isLoaded) return;
 
-    let lineFilterExpr: FilterSpecification | null = null;
-    if (voltageFilter === '800') {
-      lineFilterExpr = ['==', ['get', 'voltageKV'], 800];
-    } else if (voltageFilter === '500') {
-      lineFilterExpr = ['>=', ['get', 'voltageKV'], 500];
+    const lineFilterExpr = getLineMapLibreFilter(voltageFilter);
+    if (map.current.getLayer('lines-main')) {
+      map.current.setFilter('lines-main', lineFilterExpr);
     }
-
-    const lineLayers = ['lines-main', 'lines-glow', 'lines-flow'];
-    lineLayers.forEach((layerId) => {
-      if (map.current?.getLayer(layerId)) {
-        map.current.setFilter(layerId, lineFilterExpr);
-      }
-    });
   }, [voltageFilter, isLoaded]);
 
   // Update plant type filter in WebGL GPU layers
   useEffect(() => {
     if (!map.current || !isLoaded) return;
 
-    let plantFilterExpr: FilterSpecification | null = null;
-    if (plantTypeFilter !== 'all') {
-      plantFilterExpr = ['==', ['get', 'type'], plantTypeFilter];
-    }
-
+    const plantFilterExpr = getPlantMapLibreFilter(plantTypeFilter);
     const layers = ['plants-glow', 'plants-main', 'plants-inner'];
     layers.forEach((layerId) => {
       if (map.current?.getLayer(layerId)) {
         map.current.setFilter(layerId, plantFilterExpr);
       }
     });
-
-    if (map.current.getLayer('plants-selected')) {
-      const selectedId = selectedPlant ? selectedPlant.id : '';
-      if (plantFilterExpr) {
-        map.current.setFilter('plants-selected', ['all', plantFilterExpr, ['==', ['get', 'id'], selectedId]]);
-      } else {
-        map.current.setFilter('plants-selected', ['==', ['get', 'id'], selectedId]);
-      }
-    }
-  }, [plantTypeFilter, selectedPlant, isLoaded]);
+  }, [plantTypeFilter, isLoaded]);
 
   return (
     <div className="w-full h-full relative overflow-hidden bg-[#07090e]">

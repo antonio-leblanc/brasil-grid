@@ -15,23 +15,25 @@ import {
   Wind,
   Atom,
   Flame,
-  Activity,
   Layers,
   ArrowRightLeft
 } from 'lucide-react';
 import { FilterButton } from './FilterButton';
+import {
+  type LineVoltageFilter,
+  matchesLineFilter,
+  matchesPlantFilter
+} from '../../data/gridFilters';
 
 interface ConsoleSidebarProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  voltageFilter: 'all' | '800' | '500';
-  setVoltageFilter: (filter: 'all' | '800' | '500') => void;
+  voltageFilter: LineVoltageFilter;
+  setVoltageFilter: (filter: LineVoltageFilter) => void;
   plantTypeFilter: string;
   setPlantTypeFilter: (type: string) => void;
   onSelectPlant: (plant: PowerPlantFeature) => void;
   onSelectLine: (line: TransmissionLineFeature) => void;
-  showPowerFlow: boolean;
-  setShowPowerFlow: (show: boolean) => void;
   showSubsystems: boolean;
   setShowSubsystems: (show: boolean) => void;
   onOpenInterchangeModal?: (id?: InterchangeId) => void;
@@ -46,8 +48,6 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
   setPlantTypeFilter,
   onSelectPlant,
   onSelectLine,
-  showPowerFlow,
-  setShowPowerFlow,
   showSubsystems,
   setShowSubsystems,
   onOpenInterchangeModal
@@ -56,15 +56,13 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
 
   if (!isOpen) return null;
 
-  const filteredPlants = majorPowerPlants.filter(
-    (p) => plantTypeFilter === 'all' || p.type === plantTypeFilter
+  const filteredPlants = majorPowerPlants.filter((p) =>
+    matchesPlantFilter(p, plantTypeFilter)
   );
 
-  const filteredLines = majorTransmissionLines.filter((line) => {
-    if (voltageFilter === '800') return line.voltageKV === 800;
-    if (voltageFilter === '500') return line.voltageKV >= 500;
-    return true;
-  });
+  const filteredLines = majorTransmissionLines.filter((line) =>
+    matchesLineFilter(line, voltageFilter)
+  );
 
   return (
     <aside className="h-full flex flex-col shadow-2xl z-30 transition-all duration-200 w-full sm:w-[380px] lg:w-[410px] bg-[#090c13]/95 backdrop-blur-2xl border-r border-slate-800/90 animate-in slide-in-from-left">
@@ -96,32 +94,32 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
 
           {/* Voltage Filter */}
           <div className="space-y-1.5">
-            <span className="text-slate-500 text-[9px] uppercase block">Tensão de Transmissão:</span>
+            <span className="text-slate-500 text-[9px] uppercase block">Transmissão (Tecnologia & Tensão):</span>
             <div className="flex space-x-1">
               <FilterButton
                 active={voltageFilter === 'all'}
                 colorScheme="cyan"
                 onClick={() => setVoltageFilter('all')}
                 className="flex-1 text-[11px] py-1"
-                aria-label="Filtrar todas as tensões"
+                aria-label="Filtrar todas as linhas"
               >
                 Todas
               </FilterButton>
               <FilterButton
-                active={voltageFilter === '800'}
+                active={voltageFilter === 'CC'}
                 colorScheme="amber"
-                onClick={() => setVoltageFilter('800')}
+                onClick={() => setVoltageFilter('CC')}
                 className="flex-1 text-[11px] py-1"
-                aria-label="Filtrar linhas de ±800 kV CC"
+                aria-label="Filtrar bipolos HVDC em Corrente Contínua (±800 kV e ±600 kV)"
               >
-                ±800 kV
+                CC (HVDC)
               </FilterButton>
               <FilterButton
                 active={voltageFilter === '500'}
                 colorScheme="cyan"
                 onClick={() => setVoltageFilter('500')}
                 className="flex-1 text-[11px] py-1"
-                aria-label="Filtrar linhas de 500 kV"
+                aria-label="Filtrar linhas de 500 kV ou superior"
               >
                 ≥ 500 kV
               </FilterButton>
@@ -158,28 +156,16 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
           {/* Visual Layers Toggle */}
           <div className="space-y-1.5 pt-2 border-t border-slate-800/50">
             <span className="text-slate-500 text-[9px] uppercase block">Camadas Visuais:</span>
-            <div className="grid grid-cols-2 gap-1">
-              <FilterButton
-                active={showPowerFlow}
-                colorScheme="cyan"
-                icon={Activity}
-                onClick={() => setShowPowerFlow(!showPowerFlow)}
-                className="text-[9px] uppercase py-1"
-                aria-label="Alternar animação de fluxo"
-              >
-                Fluxo
-              </FilterButton>
-              <FilterButton
-                active={showSubsystems}
-                colorScheme="amber"
-                icon={Layers}
-                onClick={() => setShowSubsystems(!showSubsystems)}
-                className="text-[9px] uppercase py-1"
-                aria-label="Alternar subsistemas"
-              >
-                Regiões
-              </FilterButton>
-            </div>
+            <FilterButton
+              active={showSubsystems}
+              colorScheme="amber"
+              icon={Layers}
+              onClick={() => setShowSubsystems(!showSubsystems)}
+              className="w-full text-[9px] uppercase py-1"
+              aria-label="Alternar subsistemas"
+            >
+              4 Subsistemas (Regiões)
+            </FilterButton>
           </div>
         </div>
 

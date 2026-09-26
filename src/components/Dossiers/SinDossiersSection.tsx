@@ -52,13 +52,13 @@ export const SinDossiersSection: React.FC = () => {
       <div className="text-center max-w-3xl mx-auto space-y-2">
         <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono">
           <BookOpen className="w-3.5 h-3.5" />
-          <span>DOSSIÊS TÉCNICOS & FÍSICA DO SIN</span>
+          <span>DOSSIÊS TÉCNICOS & ENGENHARIA DE REDE</span>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-          Engenharia de Sistemas, Física & Despacho
+        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-wide font-mono uppercase">
+          Física da Operação & Despacho Hidrotérmico
         </h2>
-        <p className="text-sm sm:text-base text-slate-400">
-          Análises de engenharia sobre eventos críticos, modelagem matemática de despacho e dinâmica física de redes com alta penetração renovável.
+        <p className="text-xs font-mono text-slate-400">
+          Análise de eventos críticos, transitórios eletromecânicos, controle de frequência/tensão e modelagem matemática ONS/CCEE.
         </p>
       </div>
 
@@ -121,9 +121,12 @@ export const SinDossiersSection: React.FC = () => {
               {activeDossier.subtitle}
             </p>
           </div>
-          <p className="text-sm text-slate-300 leading-relaxed font-sans bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+          <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-800/90 font-mono text-xs text-slate-300 leading-normal">
+            <span className="text-cyan-400 font-bold uppercase tracking-wider text-[10px] block mb-1">
+              Síntese Operativa:
+            </span>
             {activeDossier.summary}
-          </p>
+          </div>
         </div>
 
         {/* Key Metrics Grid */}
@@ -139,7 +142,7 @@ export const SinDossiersSection: React.FC = () => {
               <div className="font-mono text-lg sm:text-xl font-bold text-white">
                 {metric.value}
               </div>
-              <p className="text-[11px] text-slate-500 font-sans leading-tight">
+              <p className="text-[11px] text-slate-500 font-mono leading-tight">
                 {metric.detail}
               </p>
             </div>
@@ -167,7 +170,7 @@ export const SinDossiersSection: React.FC = () => {
                   <div className="bg-black/60 p-3 rounded-lg border border-slate-800 font-mono text-sm text-emerald-400 font-semibold overflow-x-auto">
                     <code>{formula.formula}</code>
                   </div>
-                  <p className="text-xs text-slate-400 font-sans leading-relaxed">
+                  <p className="text-xs text-slate-400 font-mono leading-normal">
                     {formula.explanation}
                   </p>
                 </div>
@@ -204,7 +207,7 @@ export const SinDossiersSection: React.FC = () => {
                           <span>{step.time}</span>
                         </div>
                       )}
-                      <h4 className="font-bold text-white text-sm sm:text-base">
+                      <h4 className="font-bold text-white text-sm sm:text-base font-mono">
                         {step.title}
                       </h4>
                     </div>
@@ -221,15 +224,15 @@ export const SinDossiersSection: React.FC = () => {
                     )}
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+                  <p className="text-xs sm:text-sm text-slate-300 leading-normal font-mono">
                     {step.description}
                   </p>
 
                   {step.technicalDetail && (
-                    <div className="p-3 rounded-lg bg-slate-900/70 border border-slate-800/60 text-xs text-slate-400 font-sans flex items-start space-x-2">
-                      <Info className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
-                      <span className="leading-relaxed">
-                        <strong className="text-slate-300 font-mono">Nota Técnica: </strong>
+                    <div className="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 font-mono text-[11px] text-slate-400 flex items-start space-x-2">
+                      <Info className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
+                      <span className="leading-normal">
+                        <strong className="text-slate-200">Nota Técnica: </strong>
                         {step.technicalDetail}
                       </span>
                     </div>
@@ -253,15 +256,15 @@ export const SinDossiersSection: React.FC = () => {
             {activeDossier.lessonsLearned.map((lesson, idx) => (
               <div
                 key={idx}
-                className="bg-slate-950/60 border border-emerald-950/50 hover:border-emerald-500/40 transition rounded-xl p-4.5 space-y-2"
+                className="bg-slate-950/60 border border-emerald-950/50 hover:border-emerald-500/40 transition rounded-xl p-4 space-y-2"
               >
                 <div className="flex items-center space-x-2 text-emerald-400">
                   <CheckCircle2 className="w-4 h-4 shrink-0" />
-                  <h5 className="font-semibold text-white text-xs sm:text-sm leading-tight">
+                  <h5 className="font-semibold text-white text-xs sm:text-sm leading-tight font-mono">
                     {lesson.title}
                   </h5>
                 </div>
-                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                <p className="text-xs text-slate-300 leading-normal font-mono">
                   {lesson.desc}
                 </p>
               </div>

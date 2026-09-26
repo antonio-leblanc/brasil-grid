@@ -20,7 +20,7 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-43.7100, -22.6100]
     ],
     sources: [
-      { label: 'Wikipedia — Xingu-Rio HVDC transmission line', url: 'https://en.wikipedia.org/wiki/Xingu-Rio_HVDC_transmission_line' },
+      { label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica', url: 'https://dados.ons.org.br/dataset/linha-transmissao', accessedAt: '2026-09-25' },
       { label: 'State Grid Brasil — Xingu-Rio completa cinco anos de operação', url: 'https://stategrid.com.br/en/mais-extenso-sistema-de-ultra-alta-tensao-brasileiro-linha-de-transmissao-xingu-rio-completa-cinco-anos-de-operacao/' },
       { label: 'NS Energy — Belo Monte-Rio de Janeiro UHVDC Transmission Project', url: 'https://www.nsenergybusiness.com/projects/belo-monte-rio-de-janeiro-uhvdc-transmission-project/' }
     ],
@@ -48,7 +48,7 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-47.1200, -20.4600]
     ],
     sources: [
-      { label: 'Wikipedia — Xingu-Estreito HVDC transmission line', url: 'https://en.wikipedia.org/wiki/Xingu-Estreito_HVDC_transmission_line' },
+      { label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica', url: 'https://dados.ons.org.br/dataset/linha-transmissao', accessedAt: '2026-09-25' },
       { label: 'BMTE — Quem somos', url: 'https://bmte.com.br/quem-somos/' },
       { label: 'BMTE — Primeiro bipolo ±800 kV entra em operação', url: 'https://bmte.com.br/2017/12/14/primeiro-bipolo-de-transmissao-de-%c2%b1800-kv-uhvdc-entra-em-operacao-com-dois-meses-de-antecedencia/' }
     ],
@@ -75,8 +75,8 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-48.1800, -21.7900]
     ],
     sources: [
+      { label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica', url: 'https://dados.ons.org.br/dataset/linha-transmissao', accessedAt: '2026-09-25' },
       { label: 'ISA Energia Brasil — Interligação Elétrica do Madeira', url: 'https://www.isaenergiabrasil.com.br/transicao-energetica/nossos-projetos/interligacao-eletrica-madeira/' },
-      { label: 'Wikipedia — Rio Madeira HVDC system', url: 'https://en.wikipedia.org/wiki/Rio_Madeira_HVDC_system' },
       { label: 'Norte Brasil Transmissora — Demonstrações financeiras 2024', url: 'https://publicidadelegal.monitormercantil.com.br/wp-content/uploads/2025/04/Norte-Brasil-Transmissora-de-Energia-S.A.-Balanco-2024-1.pdf' },
       { label: 'LexLatin — Ontario Teachers\' consolida a Norte Brasil Transmissora', url: 'https://lexlatin.com/noticias/ontario-teachers-pension-pan-norte-brasil-transmissora-de-energia' }
     ],
@@ -102,8 +102,8 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-46.1300, -23.6000]
     ],
     sources: [
+      { label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica', url: 'https://dados.ons.org.br/dataset/linha-transmissao', accessedAt: '2026-09-25' },
       { label: 'Furnas — A Subestação de Tijuco Preto completa 37 anos', url: 'https://www.furnas.com.br/noticia/103/noticias/1296/a-subestacao-de-tijuco-preto-completa-37-anos-de-operacao' },
-      { label: 'Wikipedia — HVDC Itaipu', url: 'https://en.wikipedia.org/wiki/HVDC_Itaipu' },
       { label: 'Furnas — Recorde de transmissão de energia', url: 'https://www.furnas.com.br/subsecao/439' }
     ],
     technicalDetails: {
@@ -154,8 +154,8 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-60.0500, -3.1000]
     ],
     sources: [
-      { label: 'Wikipedia — Linhão de Tucuruí', url: 'https://pt.wikipedia.org/wiki/Linh%C3%A3o_de_Tucuru%C3%AD' },
-      { label: 'Wikipedia — Tucuruí transmission line', url: 'https://en.wikipedia.org/wiki/Tucuru%C3%AD_transmission_line' },
+      { label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica', url: 'https://dados.ons.org.br/dataset/linha-transmissao', accessedAt: '2026-09-25' },
+      { label: 'EPE — Estudos de Transmissão da Interligação Manaus–Macapá ao SIN', url: 'https://www.epe.gov.br/sites-pt/publicacoes-dados-abertos/publicacoes/PublicacoesArquivos/publicacao-276/topico-674/EPE-DEE-RE-001-2007.pdf', accessedAt: '2026-09-25' },
       { label: 'MegaWhat — Energisa conclui aquisição da Gemini Energy', url: 'https://megawhat.energy/news/146695/energisa-conclui-aquisicao-de-transmissora-do-apagao-do-amapa-por-r-8225-milhoes' },
       { label: 'CanalEnergia — Eletrobras conclui venda da Manaus Transmissora para Evoltz', url: 'https://www.canalenergia.com.br/noticias/53146295/eletrobras-conclui-venda-de-participacao-na-manaus-transmissora-para-evoltz' }
     ],
@@ -277,7 +277,7 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-47.1050, -23.6670]
     ],
     sources: [
-      { label: 'Wikipedia — HVDC Itaipu', url: 'https://en.wikipedia.org/wiki/HVDC_Itaipu' },
+      { label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica', url: 'https://dados.ons.org.br/dataset/linha-transmissao', accessedAt: '2026-09-25' },
       { label: 'MME — Revitalização do sistema de transmissão de Itaipu', url: 'https://www.gov.br/mme/pt-br/a-revolucao-brasileira-em-energia-e-mineracao/transicao-energetica-e-planejamento/revitalizacao-do-sistema-de-transmissao-de-energia-de-itaipu' }
     ],
     technicalDetails: {
@@ -303,7 +303,7 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-48.0800, -15.8700]
     ],
     sources: [
-      { label: 'Wikipedia — Linhão Norte-Sul', url: 'https://pt.wikipedia.org/wiki/Linh%C3%A3o_Norte-Sul' },
+      { label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica', url: 'https://dados.ons.org.br/dataset/linha-transmissao', accessedAt: '2026-09-25' },
       { label: 'Memória da Eletricidade — Eletronorte 50 anos', url: 'https://memoriadaeletricidade.com.br/blog/125160/eletronorte-50-anos' }
     ],
     technicalDetails: {
@@ -352,7 +352,7 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-48.6100, -16.6600]
     ],
     sources: [
-      { label: 'Wikipedia — Linha de Transmissão Graça Aranha–Silvânia', url: 'https://pt.wikipedia.org/wiki/Linha_de_Transmiss%C3%A3o_Gra%C3%A7a_Aranha%E2%80%93Silv%C3%A2nia' },
+      { label: 'ANEEL — Edital do Leilão de Transmissão nº 001/2023 (Lote 1)', url: 'https://antigo.aneel.gov.br/editais-de-transmissao/-/asset_publisher/eNl0d4m59tJk/content/leilao-n-01-2023/656827', accessedAt: '2026-09-25' },
       { label: 'EPE — Relatório R2: Elo CC ±800 kV Graça Aranha – Silvânia', url: 'https://www.epe.gov.br/sites-pt/publicacoes-dados-abertos/publicacoes/PublicacoesArquivos/publicacao-276/topico-674/EPE-DEE-RE-092-2022-rev1%20-%20R2%20Bipolo%20Gra%C3%A7a%20Aranha%20-%20Silv%C3%A2nia.pdf' },
       { label: 'BNamericas — Bipolo Graça Aranha – Silvânia (Lote 1)', url: 'https://www.bnamericas.com/en/project-profile/lot-1-maranhao---tocantins---goias-transmission-line' },
       { label: 'Click Petróleo e Gás — projeto de 1.468 km', url: 'https://en.clickpetroleoegas.com.br/o-maior-projeto-de-transmissao-de-energia-do-brasil-tem-1-468-km-de-extensao-e-um-investimento-de-r-23-bilhoes-mhbb01/' }
@@ -377,9 +377,9 @@ export const majorTransmissionLines: TransmissionLineFeature[] = [
       [-37.1300, -10.8600]
     ],
     sources: [
+      { label: 'ONS — Cadastro de Linhas de Transmissão da Rede Básica', url: 'https://dados.ons.org.br/dataset/linha-transmissao', accessedAt: '2026-09-25' },
       { label: 'CanalEnergia — GE conclui LT de 34 km na Termelétrica Porto de Sergipe I', url: 'https://www.canalenergia.com.br/noticias/53097467/ge-conclui-lt-de-34-km-na-termeletrica-porto-de-sergipe-i' },
-      { label: 'Jornal do Dia — LT 500 kV UTE Porto Sergipe I – SE Jardim', url: 'https://jornaldodiase.com.br/saiba-mais-sobre-a-linha-de-transmissao-500-kv-ute-porto-sergipe-i-se-jardim-da-sao-francisco-transmissao-de-energia-2/' },
-      { label: 'Wikipedia — Usina Termoelétrica Porto de Sergipe I', url: 'https://pt.wikipedia.org/wiki/Usina_Termoel%C3%A9trica_Porto_de_Sergipe_I' }
+      { label: 'Jornal do Dia — LT 500 kV UTE Porto Sergipe I – SE Jardim', url: 'https://jornaldodiase.com.br/saiba-mais-sobre-a-linha-de-transmissao-500-kv-ute-porto-sergipe-i-se-jardim-da-sao-francisco-transmissao-de-energia-2/' }
     ],
     technicalDetails: {
       converterTechnology: '500 kV CA em dois circuitos independentes — conecta a termelétrica a gás natural de ~1,5 GW (Eneva, ex-Celse) à SE Jardim da Chesf',

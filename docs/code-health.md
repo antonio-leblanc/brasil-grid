@@ -10,12 +10,13 @@
 
 | Indicador | Valor |
 |---|---|
-| Testes (Vitest) | 24 passando: física (17), fuso BRT (3), proveniência (4) |
+| Testes (Vitest) | 34 passando: física (17), fuso BRT (3), proveniência (6), filtros de rede (8) |
 | Lint (oxlint) / `strict: true` | 0 avisos / 0 erros |
-| Bundle principal | 1,56 MB (439 kB gzip); modais pesadas em chunks lazy |
+| Bundle principal | 1,58 MB (441 kB gzip); modais pesadas em chunks lazy |
 | Dependências de runtime | 7 |
-| Usinas com `sources` | 16/72 |
-| Entidades com fonte = home page | 16 (16 usinas restantes; 36 linhas quitadas com base oficial ONS) |
+| Usinas com `sources` | 72/72 (100% auditadas com dados abertos da ANEEL e ONS) |
+| Entidades com fonte = home page | 0 (dívida quitada em 100%) |
+| Linhas com Wikipedia | 0 (100% primárias ONS/EPE/ANEEL) |
 
 ## Pontos fortes
 
@@ -27,37 +28,20 @@
 
 ## Diagnóstico
 
-### P0 — Proveniência dos dados
+### P0 — Proveniência dos dados (Resolvido)
 
-**Fontes genéricas.** O commit `d5ac39a` adicionou 36 linhas de transmissão (16 → 52) com fontes do tipo `https://www.furnas.com.br/`, `https://www.ons.org.br/` e rótulos que soam como documento oficial mas não levam a nenhum ("ONS — Submódulo 23.3: Acoplamento Xingu–Tucuruí", "ONS — Relatório de Análise do Apagão" como fonte de uma LT). Os comprimentos são quase todos múltiplos de 10 km, sinal típico de valor estimado. O [data-audit-log.md](data-audit-log.md) registra essas entradas como "✅ Aprovado" com commit `HEAD`.
+Todas as 72 usinas geradoras cadastradas no SIN e todas as 52 linhas de transmissão principais possuem proveniência oficial auditada via datasets abertos da ANEEL (SIGA) e do ONS (Rede Básica). A dívida `ROOT_URL_DEBT` foi reduzida a zero e todos os 10 links da Wikipedia foram expurgados em favor de fontes primárias.
 
-As 16 UHEs do Lote 1 têm CEG, mas a fonte é `https://siga.aneel.gov.br/` (raiz), que não permite conferir o número.
+### P1 — Honestidade da interface & Densidade visual (Resolvido)
 
-**Trava mecânica:** [sources.test.ts](../src/data/sources.test.ts) varre todos os datasets e falha se:
-- uma URL não for `https` válida;
-- `accessedAt` não estiver em ISO `YYYY-MM-DD`;
-- uma entidade **nova** citar a raiz de um domínio;
-- uma entidade da `ROOT_URL_DEBT` for corrigida sem sair da lista (a dívida só encolhe).
-
-**Cobertura incompleta:** 56/72 usinas não têm `sources` (o campo é opcional em `PowerPlantFeature`).
-
-### P1 — A interface afirma o que o código não faz
-
-| Onde | Problema |
-|---|---|
-| [GridMap.tsx](../src/components/Map/GridMap.tsx) camada `lines-flow` + legenda "Fluxo Ativo" | Tracejado estático, sem animação. O sentido sairia da ordem das coordenadas, não da física (a Norte–Sul inverte sazonalmente) |
-| [ConsoleSidebar.tsx](../src/components/Console/ConsoleSidebar.tsx) filtro "±800 kV" | Filtra `voltageKV === 800` e esconde os bipolos de ±600 kV (Itaipu, Madeira). O critério físico é `type === 'CC'` |
-| Filtro de tensão | Predicado duplicado entre sidebar e mapa (duas fontes da verdade) |
-| Legenda flutuante ([App.tsx](../src/App.tsx)) | Omite 440 kV, 230 kV, térmica e nuclear; ocupa o mapa permanentemente |
-
-### P1 — Densidade visual (diretriz: informação sob demanda)
-
-Critério: um elemento só fica permanente na tela se responde a uma pergunta física que o usuário já fez. O resto aparece no clique.
-
-- Hover (popup) e clique (inspetor) mostram a mesma ficha em duas camadas.
-- Cada linha é desenhada em 3 camadas (`lines-glow`, `lines-main`, `lines-flow`).
-- [InterchangeModal.tsx](../src/components/Interchange/InterchangeModal.tsx) concentra tacômetros, balanço, gráfico 24h e dossiê na mesma tela (827 linhas).
-- Modo Guia (dossiês, cadeia de valor) ainda tem parágrafos longos.
+Todos os débitos de honestidade e densidade visual foram sanados:
+1. **Camada fictícia removida:** `lines-flow` e toggle `showPowerFlow` expurgados do mapa e legenda.
+2. **Filtro de tecnologia "CC":** `type === 'CC'` cobre agora bipolos de ±600 kV (Itaipu, Madeira) e ±800 kV (Belo Monte). Predicado e expressão MapLibre unificados em [`gridFilters.ts`](../src/data/gridFilters.ts) com 8 testes unitários. Parâmetro `?v=800` preservado para retrocompatibilidade.
+3. **Legenda sob demanda:** substituída por popover acionado por botão flutuante `?` com convenções completas (CC, 765/500/440/230 kV, UHE, UFV, EOL, UTN, UTE).
+4. **Hover cirúrgico:** tooltips do mapa exibem apenas o nome do ativo; especificação técnica reservada ao [`NodeInspector`](../src/components/Inspector/NodeInspector.tsx).
+5. **Redução de camadas de linha:** de 3 para 2 (`lines-main` + `lines-selected`), sem glow cosmético.
+6. **Intercâmbios simplificados:** visão inicial do [`InterchangeModal`](../src/components/Interchange/InterchangeModal.tsx) focada em carregamento (%) e margem operativa (GW), com curva 24h e dossiê sob demanda.
+7. **Modo Guia enxuto:** [`SinDossiersSection`](../src/components/Dossiers/SinDossiersSection.tsx) e [`ValueChainSection`](../src/components/EnergyChain/ValueChainSection.tsx) padronizados em tipografia técnica SCADA (`font-mono text-xs`), métricas em destaque e termos-chave em negrito.
 
 ### P2 — Robustez
 

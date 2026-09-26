@@ -14,8 +14,8 @@ export interface PowerPlantFeature {
   operator: string;
   coordinates: [number, number]; // [lon, lat]
   description: string;
-  // Optional until the plant audit is finished; see docs/code-health.md
-  sources?: SourceRef[];
+  sources: SourceRef[];
+  verification?: 'verified' | 'unverified';
   technicalDetails?: {
     commissionYear?: number;
     turbinesOrUnits?: string;
@@ -35,6 +35,7 @@ export interface TransmissionLineFeature {
   concessionaire: string;
   coordinates: [number, number][]; // Line coordinates [lon, lat]
   sources: SourceRef[];
+  verification?: 'verified' | 'unverified';
   technicalDetails?: {
     converterTechnology?: string;
     towerCount?: number;

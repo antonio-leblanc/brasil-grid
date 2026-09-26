@@ -70,6 +70,14 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant, line, onClo
                 <span className="text-xs font-mono text-slate-400">
                   {plant.state} — Subsistema {plant.subsystem}
                 </span>
+                {plant.verification === 'unverified' && (
+                  <span
+                    className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-mono uppercase font-semibold"
+                    title="Dados cadastrais aguardando auditoria de link profundo com fonte primária"
+                  >
+                    NÃO AUDITADA
+                  </span>
+                )}
               </div>
             </div>
 
@@ -140,6 +148,14 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant, line, onClo
                 <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-mono uppercase font-bold">
                   {line.voltageKV} kV {line.type === 'CC' ? 'UHVDC (Corrente Contínua)' : 'CA (Alternada)'}
                 </span>
+                {line.verification === 'unverified' && (
+                  <span
+                    className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-mono uppercase font-semibold"
+                    title="Dados cadastrais aguardando auditoria de link profundo com fonte primária"
+                  >
+                    NÃO AUDITADA
+                  </span>
+                )}
               </div>
             </div>
 

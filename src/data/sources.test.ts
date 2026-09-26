@@ -25,25 +25,8 @@ const DATASETS: Record<string, unknown> = {
 
 // Entidades cujas fontes ainda apontam para a raiz de um domínio (home page).
 // Uma home page não prova o número: a fonte precisa levar ao documento, ficha ou dataset específico.
-// Esta lista só pode encolher; ao corrigir uma entidade, remova-a daqui.
-const ROOT_URL_DEBT = new Set<string>([
-  'powerPlants:itaipu',
-  'powerPlants:belo-monte',
-  'powerPlants:tucurui',
-  'powerPlants:jirau',
-  'powerPlants:santo-antonio',
-  'powerPlants:xingó',
-  'powerPlants:paulo-afonso',
-  'powerPlants:ilha-solteira',
-  'powerPlants:foz-do-areia',
-  'powerPlants:marimbondo',
-  'powerPlants:sao-simao',
-  'powerPlants:teles-pires',
-  'powerPlants:porto-primavera',
-  'powerPlants:uhe-itumbiara',
-  'powerPlants:uhe-jupia',
-  'powerPlants:uhe-itaparica'
-]);
+// Esta lista só pode encolher; dívida quitada em 100% com auditoria oficial ANEEL/ONS.
+const ROOT_URL_DEBT = new Set<string>([]);
 
 function isSourceRef(value: unknown): value is SourceRef {
   return (
@@ -115,5 +98,21 @@ describe('proveniência dos dados (SourceRef)', () => {
 
     expect(newDebt, 'Fonte nova apontando para a raiz de um domínio: use o link do documento específico').toEqual([]);
     expect(paidDebt, 'Dívida quitada: remova estas entidades de ROOT_URL_DEBT').toEqual([]);
+  });
+
+  it('todas as usinas possuem fontes oficiais e status de verificação', () => {
+    for (const plant of majorPowerPlants) {
+      expect(plant.sources, `Usina ${plant.id} deve possuir fontes`).toBeDefined();
+      expect(plant.sources.length, `Usina ${plant.id} deve ter pelo menos uma fonte`).toBeGreaterThan(0);
+      expect(['verified', 'unverified']).toContain(plant.verification ?? 'verified');
+    }
+  });
+
+  it('entidades na ROOT_URL_DEBT exigem marcação explícita unverified', () => {
+    for (const plant of majorPowerPlants) {
+      if (ROOT_URL_DEBT.has(`powerPlants:${plant.id}`)) {
+        expect(plant.verification).toBe('unverified');
+      }
+    }
   });
 });

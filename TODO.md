@@ -15,42 +15,40 @@
   - As 36 linhas tiveram `voltageKV`, `lengthKm`, `nom_agenteproprietario` e códigos de equipamento ONS retificados com links profundos.
   - As 36 entidades foram removidas de `ROOT_URL_DEBT` em [`sources.test.ts`](src/data/sources.test.ts) (dívida reduzida de 52 para 16).
 
-- [ ] **Selo "não verificada" para as entidades restantes da `ROOT_URL_DEBT`** (16 UHEs do Lote 1).
-  - Adicionar `verification: 'verified' | 'unverified'` em `PowerPlantFeature` ([`gridData.ts`](src/data/gridData.ts)).
-  - Exibir no [`NodeInspector`](src/components/Inspector/NodeInspector.tsx) um selo discreto (âmbar, monoespaçado), no mesmo espírito do `REF` da telemetria.
-  - Fazer o [`sources.test.ts`](src/data/sources.test.ts) exigir `unverified` para toda entidade da `ROOT_URL_DEBT`.
+- [x] **Selo "não verificada" para as entidades restantes da `ROOT_URL_DEBT`** (16 UHEs do Lote 1).
+  - Adicionado `verification?: 'verified' | 'unverified'` em `PowerPlantFeature` e `TransmissionLineFeature` ([`gridData.ts`](src/data/gridData.ts)).
+  - Exibido no [`NodeInspector`](src/components/Inspector/NodeInspector.tsx) selo discreto (âmbar, monoespaçado `[NÃO AUDITADA]`).
+  - Implementada validação no [`sources.test.ts`](src/data/sources.test.ts).
 
-- [ ] **Quitar a `ROOT_URL_DEBT` das 16 UHEs do Lote 1** ([`powerPlantsData.ts`](src/data/powerPlantsData.ts)).
-  - As usinas já têm CEG. Trocar `https://siga.aneel.gov.br/` pelo dataset do SIGA nos dados abertos da ANEEL (link direto para o dataset) e manter o CEG como chave de conferência.
+- [x] **Quitar a `ROOT_URL_DEBT` das 16 UHEs do Lote 1** ([`powerPlantsData.ts`](src/data/powerPlantsData.ts)).
+  - As 16 usinas foram atualizadas com o link direto do dataset SIGA nos dados abertos da ANEEL e cadastro ONS, com CEG mantido como identificador canônico.
+  - `ROOT_URL_DEBT` esvaziada em [`sources.test.ts`](src/data/sources.test.ts) (dívida reduzida a 0).
 
-- [ ] **Auditoria dos Lotes 2 e 3 de usinas** (56 usinas sem `sources`).
-  - Checklists no [`data-audit-log.md`](docs/data-audit-log.md): Lote 2 (23 UHEs), Lote 3 (33 térmicas, nuclear, eólicas, solares).
-  - Ao terminar, tornar `sources` obrigatório em `PowerPlantFeature`, para o TypeScript travar novas usinas sem fonte.
+- [x] **Auditoria dos Lotes 2 e 3 de usinas** (56 usinas auditadas).
+  - 23 UHEs do Lote 2 e 33 usinas do Lote 3 (nuclear, térmicas, eólicas, solares, biomassa) auditadas contra o CSV oficial da ANEEL (`siga-empreendimentos-geracao.csv`) e registradas no [`data-audit-log.md`](docs/data-audit-log.md).
+  - Atributo `sources: SourceRef[]` tornado obrigatório em `PowerPlantFeature` ([`gridData.ts`](src/data/gridData.ts)).
 
-- [ ] **Trocar fontes secundárias por primárias** onde houver Wikipedia ou imprensa como única fonte (`grep -ri wikipedia src/data`).
+- [x] **Trocar fontes secundárias por primárias** onde houver Wikipedia ou imprensa como única fonte.
+  - Expurgados todos os 10 links da Wikipedia em [`transmissionLinesData.ts`](src/data/transmissionLinesData.ts) (Bipolos Belo Monte, Madeira, Itaipu HVDC/765 kV, Linhão de Tucuruí, Norte-Sul, Graça Aranha–Silvânia, Porto de Sergipe–Jardim) e substituídos por cadastros ONS/EPE/ANEEL.
 
-- [ ] **Registrar a regra do link profundo no [`AGENTS.md`](AGENTS.md) §5.4:** "fonte = documento, ficha ou dataset específico; home page é rejeitada pelo `sources.test.ts`".
+- [x] **Registrar a regra do link profundo no [`AGENTS.md`](AGENTS.md) §5.4:** "fonte = documento, ficha ou dataset específico; home page é rejeitada pelo `sources.test.ts`".
 
 ## P1 — Honestidade da interface
 
-- [ ] **Camada "Fluxo".** Hoje `lines-flow` em [`GridMap.tsx`](src/components/Map/GridMap.tsx) é um tracejado estático, e o sentido sairia da ordem das coordenadas.
-  - Recomendado: remover a camada, o toggle e o item "Fluxo Ativo" da legenda até existir dado real.
-  - Versão futura: sentido e intensidade derivados do intercâmbio verificado do ONS, animados via `line-dasharray` só nos corredores de fronteira.
-
-- [ ] **Filtro de tecnologia no lugar do "±800 kV".** Trocar por "CC" (`type === 'CC'`), que inclui os bipolos de ±600 kV (Itaipu, Madeira) hoje escondidos.
-  - Extrair um único predicado (ex.: `src/data/gridFilters.ts`) usado pelo [`ConsoleSidebar`](src/components/Console/ConsoleSidebar.tsx) e pela expressão do MapLibre, com teste.
-  - Manter compatibilidade do parâmetro `?v=` na URL ([`App.tsx`](src/App.tsx)).
-
-- [ ] **Legenda sob demanda.** Substituir a legenda fixa do canto inferior esquerdo ([`App.tsx`](src/App.tsx)) por um botão "?" que abre a legenda completa, incluindo 440 kV, 230 kV, térmica e nuclear.
+- [x] **Camada "Fluxo".** Removida a camada `lines-flow` e o toggle `showPowerFlow` em [`GridMap.tsx`](src/components/Map/GridMap.tsx), [`ConsoleSidebar.tsx`](src/components/Console/ConsoleSidebar.tsx) e [`App.tsx`](src/App.tsx), eliminando animações fictícias sem telemetria real de linha.
+- [x] **Filtro de tecnologia no lugar do "±800 kV".** Substituído por "CC (HVDC)" (`type === 'CC'`), revelando os bipolos de ±600 kV de Itaipu e Madeira.
+  - Predicado TypeScript e expressão MapLibre unificados em [`gridFilters.ts`](src/data/gridFilters.ts) com suíte de testes em [`gridFilters.test.ts`](src/data/gridFilters.test.ts).
+  - Compatibilidade legada preservada para `?v=800` via `normalizeLineFilter()` em [`App.tsx`](src/App.tsx).
+- [x] **Legenda sob demanda.** Substituída a legenda fixa permanente por um botão flutuante `? / Legenda` em [`App.tsx`](src/App.tsx) que abre popover técnico completo (CC ±800/±600 kV, CA 765/500 kV, CA 440/230 kV, UHE, UFV, EOL, UTN, UTE e subsistemas).
 
 ## P1 — Densidade visual (informação sob demanda)
 
 Critério: um elemento só fica permanente na tela se responde a uma pergunta física que o usuário já fez.
 
-- [ ] **Hover só com o nome** do ativo; a ficha fica no inspetor, aberto no clique ([`GridMap.tsx`](src/components/Map/GridMap.tsx)).
-- [ ] **Reduzir as camadas de linha** de 3 para 2: `lines-main` + destaque da selecionada. O glow sai.
-- [ ] **Enxugar o [`InterchangeModal`](src/components/Interchange/InterchangeModal.tsx):** visão inicial com carregamento (%) e margem por fronteira; gráfico 24h e dossiê atrás de clique.
-- [ ] **Enxugar o Modo Guia** ([`SinDossiersSection`](src/components/Dossiers/SinDossiersSection.tsx), [`ValueChainSection`](src/components/EnergyChain/ValueChainSection.tsx)): parágrafo vira métrica monoespaçada ou linha com termo em negrito (`AGENTS.md` §5.5).
+- [x] **Hover só com o nome** do ativo em [`GridMap.tsx`](src/components/Map/GridMap.tsx); a ficha técnica completa fica reservada ao clique via [`NodeInspector`](src/components/Inspector/NodeInspector.tsx).
+- [x] **Reduzir as camadas de linha** de 3 para 2: `lines-main` + destaque de seleção `lines-selected`. Camadas cosméticas `lines-glow` e `lines-flow` expurgadas.
+- [x] **Enxugar o [`InterchangeModal`](src/components/Interchange/InterchangeModal.tsx):** visão inicial com carregamento (%) e margem operativa livre destacados em primeiro plano; gráfico 24h e dossiê físico acessíveis sob demanda por clique.
+- [x] **Enxugar o Modo Guia** ([`SinDossiersSection`](src/components/Dossiers/SinDossiersSection.tsx), [`ValueChainSection`](src/components/EnergyChain/ValueChainSection.tsx)): parágrafos narrativos prolixos convertidos em métricas monoespaçadas, sínteses operativas de alta densidade e termos-chave em negrito (`AGENTS.md` §5.5).
 
 ## P2 — Robustez
 

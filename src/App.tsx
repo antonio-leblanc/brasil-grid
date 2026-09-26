@@ -10,6 +10,7 @@ import { useOnsTelemetry } from './services/onsApi';
 import { majorPowerPlants, majorTransmissionLines } from './data/gridData';
 import type { PowerPlantFeature, TransmissionLineFeature } from './data/gridData';
 import type { InterchangeId } from './data/interchangeData';
+import { normalizeLineFilter, type LineVoltageFilter } from './data/gridFilters';
 
 const DispatchSimulatorModal = lazy(() =>
   import('./components/Simulator/DispatchSimulatorModal').then((m) => ({ default: m.DispatchSimulatorModal }))
@@ -22,7 +23,6 @@ const InterchangeModal = lazy(() =>
 type AppMode = 'mapa' | 'guia';
 
 const LEARN_TABS = ['cadeia', 'dossies', 'escalas', 'mercado'];
-const VALID_VOLTAGES: ('all' | '800' | '500')[] = ['all', '800', '500'];
 const VALID_PLANT_TYPES = ['all', 'hidro', 'solar', 'eolica', 'nuclear', 'termica'];
 const VALID_INTERCHANGES: InterchangeId[] = ['NE_SECO', 'N_SECO', 'N_NE', 'S_SECO'];
 
@@ -31,7 +31,7 @@ interface UrlState {
   tab: string;
   plant: PowerPlantFeature | null;
   line: TransmissionLineFeature | null;
-  voltage: 'all' | '800' | '500';
+  voltage: LineVoltageFilter;
   type: string;
   sim: boolean;
   interchange: InterchangeId | null;
@@ -66,9 +66,7 @@ function parseUrlState(): UrlState {
   const mode: AppMode = modeParam === 'guia' || modeParam === 'aprender' || (!modeParam && tabParam && LEARN_TABS.includes(tabParam))
     ? 'guia'
     : 'mapa';
-  const voltage = vParam && VALID_VOLTAGES.includes(vParam as 'all' | '800' | '500')
-    ? (vParam as 'all' | '800' | '500')
-    : 'all';
+  const voltage = normalizeLineFilter(vParam);
   const type = typeParam && VALID_PLANT_TYPES.includes(typeParam) ? typeParam : 'all';
 
   const plant = plantParam
@@ -95,10 +93,10 @@ export function App() {
   });
   const [selectedPlant, setSelectedPlant] = useState<PowerPlantFeature | null>(initialState.plant);
   const [selectedLine, setSelectedLine] = useState<TransmissionLineFeature | null>(initialState.line);
-  const [voltageFilter, setVoltageFilter] = useState<'all' | '800' | '500'>(initialState.voltage);
+  const [voltageFilter, setVoltageFilter] = useState<LineVoltageFilter>(initialState.voltage);
   const [plantTypeFilter, setPlantTypeFilter] = useState<string>(initialState.type);
-  const [showPowerFlow, setShowPowerFlow] = useState<boolean>(true);
   const [showSubsystems, setShowSubsystems] = useState<boolean>(true);
+  const [isLegendOpen, setIsLegendOpen] = useState<boolean>(false);
   const [isLoadCurveOpen, setIsLoadCurveOpen] = useState<boolean>(false);
   const [isSimulatorOpen, setIsSimulatorOpen] = useState<boolean>(initialState.sim);
   const [isInterchangeOpen, setIsInterchangeOpen] = useState<boolean>(!!initialState.interchange);
@@ -211,8 +209,6 @@ export function App() {
             setSelectedLine(line);
             setSelectedPlant(null);
           }}
-          showPowerFlow={showPowerFlow}
-          setShowPowerFlow={setShowPowerFlow}
           showSubsystems={showSubsystems}
           setShowSubsystems={setShowSubsystems}
           onOpenInterchangeModal={(id) => {
@@ -230,46 +226,105 @@ export function App() {
             setSelectedLine={setSelectedLine}
             voltageFilter={voltageFilter}
             plantTypeFilter={plantTypeFilter}
-            showPowerFlow={showPowerFlow}
             showSubsystems={showSubsystems}
             telemetry={telemetry}
           />
 
-          {/* Floating Subtle Map Legend (Bottom-Left) */}
-          <div className="absolute bottom-3 left-3 z-10 bg-slate-950/80 backdrop-blur-md border border-slate-800/90 rounded-md px-3 py-1.5 flex items-center space-x-3 text-[10px] font-mono text-slate-400">
-            <span className="text-slate-500 uppercase font-bold">REDE:</span>
-            <div className="flex items-center space-x-1">
-              <span className="w-2.5 h-0.5 rounded bg-amber-400"></span>
-              <span className="text-slate-300">CC ±600/±800 · CA 765 kV</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <span className="w-2.5 h-0.5 rounded bg-cyan-400"></span>
-              <span className="text-slate-300">500–525 kV CA</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-              <span className="text-slate-300">Hidro</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <span className="w-2 h-2 rounded-full bg-yellow-400"></span>
-              <span className="text-slate-300">Solar</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <span className="w-2 h-2 rounded-full bg-sky-400"></span>
-              <span className="text-slate-300">Eólica</span>
-            </div>
-            {showPowerFlow && (
-              <div className="hidden sm:flex items-center space-x-1 text-cyan-300 pl-1 border-l border-slate-800">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                <span>Fluxo Ativo</span>
+          {/* On-Demand SCADA Map Legend (Bottom-Left) */}
+          <div className="absolute bottom-3 left-3 z-10 font-mono">
+            {isLegendOpen && (
+              <div className="mb-2 w-72 rounded-lg border border-slate-800 bg-slate-950/95 p-3 text-[11px] shadow-2xl backdrop-blur-md">
+                <div className="flex items-center justify-between border-b border-slate-800/80 pb-1.5 mb-2">
+                  <span className="font-bold text-slate-200 uppercase tracking-wider text-[10px]">
+                    Convenções da Rede (SIN)
+                  </span>
+                  <button
+                    onClick={() => setIsLegendOpen(false)}
+                    className="text-slate-500 hover:text-slate-300 px-1 py-0.5 text-xs leading-none"
+                    aria-label="Fechar legenda"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* Linhas de Transmissão */}
+                <div className="space-y-1.5 mb-3">
+                  <div className="text-[10px] uppercase font-bold text-slate-400">Transmissão</div>
+                  <div className="flex items-center justify-between text-slate-300">
+                    <div className="flex items-center space-x-1.5">
+                      <span className="w-3 h-0.5 rounded bg-amber-400"></span>
+                      <span>CC ±800 / ±600 kV</span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-mono">HVDC</span>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-300">
+                    <div className="flex items-center space-x-1.5">
+                      <span className="w-3 h-0.5 rounded bg-cyan-400"></span>
+                      <span>CA 765 / 500–525 kV</span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-mono">Rede Básica</span>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-300">
+                    <div className="flex items-center space-x-1.5">
+                      <span className="w-3 h-0.5 rounded bg-purple-400"></span>
+                      <span>CA 440 / 230 kV</span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-mono">Regional</span>
+                  </div>
+                </div>
+
+                {/* Usinas Geradoras */}
+                <div className="space-y-1.5 mb-2.5">
+                  <div className="text-[10px] uppercase font-bold text-slate-400">Geração</div>
+                  <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-slate-300">
+                    <div className="flex items-center space-x-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                      <span>Hidro (UHE)</span>
+                    </div>
+                    <div className="flex items-center space-x-1.5">
+                      <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                      <span>Solar (UFV)</span>
+                    </div>
+                    <div className="flex items-center space-x-1.5">
+                      <span className="w-2 h-2 rounded-full bg-sky-400"></span>
+                      <span>Eólica (EOL)</span>
+                    </div>
+                    <div className="flex items-center space-x-1.5">
+                      <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+                      <span>Nuclear (UTN)</span>
+                    </div>
+                    <div className="flex items-center space-x-1.5 col-span-2">
+                      <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+                      <span>Térmica / Biomassa (UTE)</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Limites de Subsistemas */}
+                {showSubsystems && (
+                  <div className="pt-2 border-t border-slate-800/80 flex items-center space-x-2 text-slate-400 text-[10px]">
+                    <span className="w-2 h-2 rounded-sm bg-amber-500/30 border border-amber-500/70 border-dashed"></span>
+                    <span>4 Subsistemas ONS (SE/CO, S, NE, N)</span>
+                  </div>
+                )}
               </div>
             )}
-            {showSubsystems && (
-              <div className="hidden sm:flex items-center space-x-1 text-amber-300/90 pl-1 border-l border-slate-800">
-                <span className="w-1.5 h-1.5 rounded-sm bg-amber-500/40 border border-amber-500/60"></span>
-                <span>4 Subsistemas</span>
-              </div>
-            )}
+
+            <button
+              onClick={() => setIsLegendOpen((prev) => !prev)}
+              aria-label="Abrir legenda técnica do mapa"
+              title="Legenda do mapa"
+              className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-md border text-xs font-mono transition-all backdrop-blur-md ${
+                isLegendOpen
+                  ? 'bg-cyan-950/80 border-cyan-500/60 text-cyan-300 shadow-lg shadow-cyan-950/50'
+                  : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+              }`}
+            >
+              <span className="flex items-center justify-center w-4 h-4 rounded-full border border-current text-[10px] font-bold">
+                ?
+              </span>
+              <span className="hidden sm:inline text-[10px] tracking-wide uppercase font-semibold">Legenda</span>
+            </button>
           </div>
         </div>
 
