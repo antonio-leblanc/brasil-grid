@@ -5,24 +5,12 @@ O Brasil (SIN) é a soma da água das regiões dividida pela soma das
 capacidades, então o Sudeste, com ~70% da capacidade, pesa ~70% da linha.
 """
 
-from datetime import date
-
 import matplotlib.pyplot as plt
-import pandas as pd
 
-import ons
+import dados
 
-df = ons.carregar("ear-diario-por-subsistema", range(2020, date.today().year + 1))
-df["ear_data"] = pd.to_datetime(df["ear_data"])
-# Até 2022 o ONS publicou os números como texto; de 2023 em diante, como float.
-for col in ["ear_max_subsistema", "ear_verif_subsistema_mwmes", "ear_verif_subsistema_percentual"]:
-    df[col] = pd.to_numeric(df[col])
-
-total = df.groupby("ear_data")[["ear_verif_subsistema_mwmes", "ear_max_subsistema"]].sum()
-brasil = total["ear_verif_subsistema_mwmes"] / total["ear_max_subsistema"] * 100
-
-regioes = df.pivot(index="ear_data", columns="nom_subsistema",
-                   values="ear_verif_subsistema_percentual")
+brasil = dados.ear_brasil()
+regioes = dados.ear_regioes()
 
 fig, (ax_br, ax_reg) = plt.subplots(2, 1, figsize=(12, 8), sharex=True,
                                     height_ratios=[2, 1])
