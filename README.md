@@ -35,7 +35,7 @@ Laboratório pessoal para entender o mercado de energia elétrica brasileiro a p
 - **Dias sem CMO:** o ONS não publicou o CMO semi-horário do Sudeste em 42 dias inteiros entre 2020 e 2026 (quase metade em dez/2022–jan/2023). `dados.cmo()` avisa e deixa esses dias vazios: a média do mês usa os dias que existem e os gráficos de linha quebram no buraco. O impacto é pequeno (em jan/2023 o CMO era zero de qualquer jeito; ago/2021 é média de 29 dias).
 - **CMO negativo:** há 21 meias-horas negativas, 18 delas em 01/01/2022 (mínimo de −R$ 6,18). O dicionário do ONS permite valor negativo; ficam como estão.
 - **Horário:** CMO e carga marcam o início do intervalo (o dia começa em 00:00 e termina em 23:30/23:00 nos dois). O dicionário de dados do ONS não diz isso explicitamente. Se a carga estivesse 1h deslocada, o custo médio de modulação de 2025–2026 iria de R$ 5,6 pra R$ 4,8 ou R$ 6,0/MWh, dentro da faixa de R$ 2–9.
-- **Ano corrente:** o arquivo do ano em curso é baixado de novo quando tem mais de 12h.
+- **Ano corrente:** um ano baixado antes de terminar é baixado de novo quando o arquivo tem mais de 12h, inclusive depois da virada. Sem acesso ao ONS, segue com o cache.
 
 ## Fontes
 

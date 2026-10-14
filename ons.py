@@ -1,14 +1,15 @@
 """Baixa datasets do portal de dados abertos do ONS (dados.ons.org.br).
 
 Cada dataset é um "pacote" CKAN com um arquivo por ano. O Parquet de cada ano
-vai pra data/ons/<dataset>/ na primeira vez e é lido do disco depois. O ano
-corrente ainda está sendo publicado, então é baixado de novo quando o arquivo
-tem mais de MAX_IDADE_ANO_CORRENTE.
+vai pra data/ons/<dataset>/ na primeira vez e é lido do disco depois. Um ano
+cujo arquivo foi baixado antes de o ano acabar (o corrente, ou o anterior
+baixado em dezembro) é baixado de novo quando tem mais de MAX_IDADE. Se a API
+ou a rede falhar, segue com o cache que já existe.
 """
 
 import json
 import time
-from datetime import date
+from datetime import datetime
 from pathlib import Path
 from urllib.request import urlopen, urlretrieve
 
@@ -16,7 +17,7 @@ import pandas as pd
 
 API = "https://dados.ons.org.br/api/3/action/package_show?id="
 CACHE = Path(__file__).parent / "data" / "ons"
-MAX_IDADE_ANO_CORRENTE = 12 * 3600  # segundos
+MAX_IDADE = 12 * 3600  # segundos
 
 
 def urls_parquet(dataset: str) -> dict[int, str]:
@@ -34,7 +35,9 @@ def urls_parquet(dataset: str) -> dict[int, str]:
 def _desatualizado(arquivo: Path, ano: int) -> bool:
     if not arquivo.exists():
         return True
-    return ano == date.today().year and time.time() - arquivo.stat().st_mtime > MAX_IDADE_ANO_CORRENTE
+    baixado = datetime.fromtimestamp(arquivo.stat().st_mtime)
+    incompleto = baixado.year <= ano  # baixado antes de o ano terminar
+    return incompleto and (datetime.now() - baixado).total_seconds() > MAX_IDADE
 
 
 def carregar(dataset: str, anos: range) -> pd.DataFrame:
@@ -49,13 +52,21 @@ def carregar(dataset: str, anos: range) -> pd.DataFrame:
     for ano in anos:
         arquivo = pasta / f"{ano}.parquet"
         if _desatualizado(arquivo, ano):
-            urls = urls or urls_parquet(dataset)
-            if ano not in urls:
-                print(f"aviso: {dataset} {ano} ainda não publicado pelo ONS, pulando")
-                continue
-            print(f"baixando {dataset} {ano}")
-            parcial = arquivo.with_suffix(".tmp")
-            urlretrieve(urls[ano], parcial)
-            parcial.replace(arquivo)  # só substitui o cache se o download terminou
+            try:
+                urls = urls if urls is not None else urls_parquet(dataset)
+                if ano in urls:
+                    print(f"baixando {dataset} {ano}")
+                    parcial = arquivo.with_suffix(".tmp")
+                    try:
+                        urlretrieve(urls[ano], parcial)
+                        parcial.replace(arquivo)  # só substitui o cache se o download terminou
+                    finally:
+                        parcial.unlink(missing_ok=True)
+            except OSError as erro:
+                urls = {}
+                print(f"aviso: sem acesso ao ONS ({erro}), usando o cache de {dataset}")
+        if not arquivo.exists():
+            print(f"aviso: {dataset} {ano} ainda não publicado pelo ONS, pulando")
+            continue
         partes.append(pd.read_parquet(arquivo))
     return pd.concat(partes, ignore_index=True)
