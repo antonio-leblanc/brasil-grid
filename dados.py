@@ -38,3 +38,10 @@ def cmo(subsistema: str = "SE") -> pd.Series:
     df = ons.carregar("cmo-semi-horario", ANOS)
     df = df[df["id_subsistema"] == subsistema]
     return pd.to_numeric(df.set_index("din_instante")["val_cmo"])
+
+
+def carga(subsistema: str = "SE") -> pd.Series:
+    """Carga de hora em hora, em MW médio."""
+    df = ons.carregar("curva-carga", ANOS)
+    df = df[df["id_subsistema"] == subsistema]
+    return pd.to_numeric(df.set_index("din_instante")["val_cargaenergiahomwmed"])

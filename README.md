@@ -14,11 +14,11 @@ Laboratório pessoal para entender o mercado de energia elétrica brasileiro a p
 
 - [x] `ear.py`: EAR do Brasil (SIN) e por região, 2020 até hoje
 - [x] `cmo.py`: CMO médio do mês do Sudeste × EAR, e uma semana de 2026 de meia em meia hora
-- [ ] Perfil médio do CMO por hora, um por ano: a curva "zero ao meio-dia, pico às 18h" só aparece de 2025 em diante?
+- [x] `perfil_horario.py`: perfil médio do CMO do Sudeste por hora do dia, uma curva por ano
 - [ ] Simulação: posição vendida a preço fixo contra o PLD real, mês a mês, e o resultado acumulado. Depende do PLD da CCEE em `data/ccee/`
 - [ ] ENA × CMO (a relação entre chuva e preço, que não é linear)
 - [ ] Spread de preço entre submercados (risco de vender numa região com energia comprada em outra)
-- [ ] Custo de modulação: PLD horário ponderado pela curva de carga contra a média flat (`curva-carga` do ONS)
+- [x] `modulacao.py`: custo de modulação do Sudeste, CMO ponderado pela curva de carga contra a média flat, mês a mês
 
 ## O que os dados mostraram
 
@@ -27,6 +27,8 @@ Laboratório pessoal para entender o mercado de energia elétrica brasileiro a p
 - **2024 não foi seca de reservatório:** o Brasil não ficou abaixo de ~44%. Houve só um pico curto de preço em out/2024 (média de R$ 516).
 - **De 2025 em diante o preço descolou da água:** CMO médio de R$ 200–330 com reservatório entre 45% e 70%. Em 2023, com água parecida, era zero.
 - **O risco agora é a hora do dia:** em 28/08–04/09/2026 o CMO zerou todo dia no meio do dia e disparou por volta das 18h, chegando a R$ 7.849 em 31/08, com reservatório em ~62%.
+- **A curva do pato começou em 2024 e se aprofunda todo ano:** até 2023 o CMO médio era plano ao longo do dia. A razão entre 18h e meio-dia foi ~2× em 2024 (R$ 171 × 82), ~3× em 2025 (285 × 101) e ~7× em 2026 (374 × 52). Vender energia flat ficou barato de comprar ao meio-dia e caro de entregar no fim da tarde.
+- **Pra carga média do Sudeste, a curva do pato custa pouco:** a modulação ficou em R$ 2–9/MWh por mês em 2025–2026. A carga às 19h é só ~13% maior que ao meio-dia, então o pico de preço pesa pouco na média. O custo depende da forma da carga de cada cliente: entregar só o bloco das 18h às 21h custou R$ 338/MWh em 2026, contra R$ 193 do flat. Cliente com consumo concentrado no fim da tarde fica entre os dois.
 
 ## Fontes
 
