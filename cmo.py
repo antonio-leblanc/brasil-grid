@@ -1,8 +1,9 @@
 """CMO do Sudeste: o custo de gerar o próximo MWh, calculado pelo ONS.
 
-Em cima, a média de cada mês contra a água guardada no Brasil: até 2023 os
-dois andam juntos (pouca água, preço alto). De 2025 em diante o preço sobe
-com reservatório no meio.
+Em cima, a média de cada mês contra a água guardada no Brasil. Até 2024 os
+dois andam juntos (pouca água, preço alto). De 2025 em diante o preço fica
+mais alto do que o reservatório explicaria: com a mesma água de 2022, o CMO
+médio do mês é várias vezes maior. A média de cada mês é marcada no dia 15.
 
 Embaixo, uma semana de 2026 de meia em meia hora: o preço zera no meio do
 dia, com sol sobrando, e dispara no fim da tarde, quando a solar sai e a
@@ -10,10 +11,11 @@ demanda continua. A média do mês esconde esse pico.
 """
 
 import matplotlib.pyplot as plt
+import pandas as pd
 
 import dados
 
-TETO_PLD_2026 = 1611  # R$/MWh, teto horário definido pela Aneel
+TETO_PLD_2026 = 1611  # R$/MWh, teto horário definido pela Aneel pra 2026
 
 cmo = dados.cmo("SE")
 ear = dados.ear_brasil()
@@ -21,7 +23,9 @@ ear = dados.ear_brasil()
 fig, (ax_mes, ax_semana) = plt.subplots(2, 1, figsize=(12, 9))
 
 # Média mensal do CMO contra a EAR
-ax_mes.plot(cmo.resample("ME").mean(), color="tab:red", linewidth=1.5)
+media_mes = cmo.resample("MS").mean()
+media_mes.index += pd.Timedelta(days=14)  # média do mês no meio do mês
+ax_mes.plot(media_mes, color="tab:red", linewidth=1.5)
 ax_mes.set_ylabel("CMO médio do mês (R$/MWh)", color="tab:red")
 ax_mes.set_title("Sudeste: preço médio do mês × água guardada no Brasil")
 ax_mes.grid(alpha=0.3)

@@ -8,7 +8,9 @@ do mês.
 Usa o CMO, não o PLD: sem o piso e o teto da Aneel, os picos aparecem
 maiores do que o mercado paga. E a carga é a do Sudeste inteiro; a de
 residência e comércio pequeno tem pico mais concentrado no fim da tarde,
-então o custo pra esse cliente tende a ser maior que o daqui.
+então o custo pra esse cliente tende a ser maior que o daqui. Pra dar a
+ordem de grandeza do extremo, o script imprime o preço médio de 2026 de um
+cliente que só consome das 18h às 22h (horas 18, 19, 20 e 21) contra o flat.
 """
 
 import matplotlib.pyplot as plt
@@ -20,11 +22,17 @@ cmo = dados.cmo("SE").resample("h").mean()
 carga = dados.carga("SE")
 
 df = pd.concat({"cmo": cmo, "carga": carga}, axis=1).dropna()
-df["receita"] = df["cmo"] * df["carga"]
+df["valor"] = df["cmo"] * df["carga"]  # R$ por hora: custo de entregar a carga ao CMO
 
-mes = df.resample("ME").agg({"cmo": "mean", "carga": "sum", "receita": "sum"})
-mes["ponderado"] = mes["receita"] / mes["carga"]
+mes = df.resample("MS").agg({"cmo": "mean", "carga": "sum", "valor": "sum"})
+mes["ponderado"] = mes["valor"] / mes["carga"]
 mes["custo"] = mes["ponderado"] - mes["cmo"]
+mes.index += pd.Timedelta(days=14)  # barra no meio do mês
+
+ano = cmo["2026"]
+bloco = ano[(ano.index.hour >= 18) & (ano.index.hour < 22)]
+print(f"2026 até {ano.dropna().index.max():%d/%m}: flat R$ {ano.mean():.0f}/MWh, "
+      f"só 18h–22h R$ {bloco.mean():.0f}/MWh")
 
 fig, (ax_preco, ax_custo) = plt.subplots(2, 1, figsize=(12, 9), sharex=True)
 
