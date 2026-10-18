@@ -9,13 +9,19 @@ import {
   UNDERFREQUENCY_COLLAPSE_HZ,
   advanceSimulation,
   applyGeneratorTrip,
-  calculateLoadAtTime,
+  DAY_END_SECONDS,
+  DAY_SCHEDULED_TRIPS,
+  EVENT_SLOWDOWN_SECONDS,
+  SECONDARY_CONTROL_TIME_S,
   createInitialSimulation,
+  dayScheduleAt,
+  effectiveSpeed,
   eracShedPercent,
   frequencyWattDerate,
   stepSimulation
 } from './gridPhysics';
 import type { GridSimulationState } from './gridPhysics';
+import { simulatorDay } from '../data/simulatorDayData';
 
 function runFor(state: GridSimulationState, seconds: number, frameSeconds = 1 / 60): GridSimulationState {
   let s = state;
@@ -151,19 +157,61 @@ describe('IBR frequency-watt response', () => {
   });
 });
 
-describe('load profile', () => {
-  it('peaks at 19h and bottoms out overnight', () => {
-    const at = (h: number) => calculateLoadAtTime(h * 3600, 88000);
-    expect(at(19)).toBe(88000);
-    expect(at(4)).toBeLessThan(at(0));
-    expect(at(17.5)).toBeLessThan(at(19));
-    for (let h = 0; h < 24; h += 0.25) expect(at(h)).toBeLessThanOrEqual(88000);
+describe('real day (ONS balance, 31/08/2026)', () => {
+  const quietDay = (overrides: Partial<GridSimulationState> = {}) => ({
+    ...createInitialSimulation('dia'),
+    scheduledTrips: [],
+    ...overrides
   });
 
-  it('starts every scenario balanced', () => {
-    for (const id of ['pato', 'alta_renovavel', 'livre'] as const) {
-      const s = runFor(createInitialSimulation(id), 5);
-      expect(Math.abs(s.frequencyHz - F_NOMINAL), id).toBeLessThan(0.1);
+  it('interpolates hourly MWmed at each hour midpoint', () => {
+    const [h11, h12] = [simulatorDay.hours[11], simulatorDay.hours[12]];
+    expect(dayScheduleAt(simulatorDay, 11.5 * 3600).solarMW).toBeCloseTo(h11.solarMW, 6);
+    expect(dayScheduleAt(simulatorDay, 12 * 3600).solarMW).toBeCloseTo((h11.solarMW + h12.solarMW) / 2, 6);
+    expect(dayScheduleAt(simulatorDay, 0).hydroMW).toBe(simulatorDay.hours[0].hydroMW);
+  });
+
+  it('closes demand on verified generation', () => {
+    const s = dayScheduleAt(simulatorDay, 18.5 * 3600);
+    expect(s.demandMW).toBeCloseTo(s.hydroMW + s.thermalMW + s.windMW + s.solarMW, 6);
+  });
+
+  it('follows the schedule all day near 60 Hz without contingencies', () => {
+    let s = quietDay({ speedMultiplier: 900 });
+    let worst = 0;
+    while (!s.isDayFinished) {
+      s = advanceSimulation(s, 1 / 60);
+      worst = Math.max(worst, Math.abs(s.frequencyHz - F_NOMINAL));
     }
+    expect(s.simTimeSeconds).toBeGreaterThanOrEqual(DAY_END_SECONDS);
+    expect(worst).toBeLessThan(0.05);
+  }, 30_000);
+
+  it('fires the scheduled trips and slows the clock for the transient', () => {
+    const noon = DAY_SCHEDULED_TRIPS[0].atSeconds;
+    let s = createInitialSimulation('dia', simulatorDay, noon - 1);
+    s = runFor(s, 1);
+    expect(s.hydroTrippedMW).toBe(DAY_SCHEDULED_TRIPS[0].mw);
+    expect(s.scheduledTrips).toHaveLength(DAY_SCHEDULED_TRIPS.length - 1);
+    expect(s.eventSlowdownUntilSeconds - noon - EVENT_SLOWDOWN_SECONDS).toBeGreaterThanOrEqual(0);
+    expect(s.eventSlowdownUntilSeconds - noon - EVENT_SLOWDOWN_SECONDS).toBeLessThan(SIM_STEP_SECONDS * 2);
+    expect(effectiveSpeed(s)).toBe(1);
+  });
+
+  it('a midday loss has a steeper RoCoF than the same loss at the evening peak', () => {
+    const rocofAt = (seconds: number) => {
+      const s = { ...createInitialSimulation('dia', simulatorDay, seconds), scheduledTrips: [] };
+      return stepSimulation(applyGeneratorTrip(s, 2800), SIM_STEP_SECONDS).rocofHzS;
+    };
+    const noon = rocofAt(12 * 3600);
+    const evening = rocofAt(19 * 3600);
+    expect(Math.abs(noon)).toBeGreaterThan(1.5 * Math.abs(evening));
+  });
+
+  it('CAG restores 60 Hz after a trip; without it the droop offset remains', () => {
+    const after = (cag: boolean) =>
+      runFor(applyGeneratorTrip(sandbox({ isSecondaryControlEnabled: cag }), 2800), 6 * SECONDARY_CONTROL_TIME_S);
+    expect(Math.abs(after(true).frequencyHz - F_NOMINAL)).toBeLessThan(0.005);
+    expect(after(false).frequencyHz).toBeLessThan(F_NOMINAL - 0.05);
   });
 });

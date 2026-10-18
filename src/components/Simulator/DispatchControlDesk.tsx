@@ -1,5 +1,6 @@
 import React from 'react';
 import type { GridSimulationState, PlantFleetState } from '../../services/gridPhysics';
+import { formatDecimal } from '../../utils/format';
 
 interface DispatchControlDeskProps {
   state: GridSimulationState;
@@ -10,13 +11,14 @@ interface DispatchControlDeskProps {
   onSetCurtailment: (percent: number) => void;
   onTriggerGeneratorTrip: () => void;
   onTogglePrimaryControl: () => void;
+  onToggleSecondaryControl: () => void;
 }
 
 const BALANCE_SCALE_MW = 110000;
 const BALANCED_BAND_MW = 400;
 const CURTAILMENT_STEP_PERCENT = 50;
 
-const gw = (mw: number, digits = 1) => (mw / 1000).toFixed(digits);
+const gw = (mw: number, digits = 1) => formatDecimal(mw / 1000, digits);
 
 const Num: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
   <span className={`font-mono tabular-nums ${className}`}>{children}</span>
@@ -56,9 +58,22 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
   onUpdateThermalTarget,
   onSetCurtailment,
   onTriggerGeneratorTrip,
-  onTogglePrimaryControl
+  onTogglePrimaryControl,
+  onToggleSecondaryControl
 }) => {
-  const { hydro, thermal, solar, wind, actualLoadMW, eracStage, shedLoadMW, isPrimaryControlEnabled } = state;
+  const {
+    hydro,
+    thermal,
+    solar,
+    wind,
+    actualLoadMW,
+    eracStage,
+    shedLoadMW,
+    isPrimaryControlEnabled,
+    isSecondaryControlEnabled,
+    secondaryControlMW
+  } = state;
+  const isDay = state.scenarioId === 'dia';
 
   const deltaMW = totalGenMW - actualLoadMW;
   const isBalanced = Math.abs(deltaMW) < BALANCED_BAND_MW;
@@ -74,12 +89,30 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
 
   const smallButton =
     'px-2 py-0.5 rounded border border-slate-800 text-[11px] text-slate-400 hover:text-slate-100 hover:border-slate-700 transition-colors cursor-pointer';
-  const slider = 'w-full h-1 cursor-pointer [color-scheme:dark]';
+  const slider = 'sim-range w-full cursor-pointer';
 
   const target = (fleet: PlantFleetState) => (
     <span className="ml-1">
-      / alvo <Num>{gw(fleet.targetMW)}</Num>
+      / {isDay ? 'programa' : 'alvo'} <Num>{gw(fleet.targetMW)}</Num>
     </span>
+  );
+
+  const toggle = (label: string, checked: boolean, onClick: () => void, title: string) => (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={onClick}
+      className="flex items-center gap-2 text-slate-300 hover:text-slate-100 cursor-pointer"
+      title={title}
+    >
+      <span className={`relative w-7 h-4 rounded-full transition-colors ${checked ? 'bg-emerald-500/70' : 'bg-slate-700'}`}>
+        <span
+          className={`absolute top-0.5 w-3 h-3 rounded-full bg-slate-100 transition-[left] ${checked ? 'left-3.5' : 'left-0.5'}`}
+        />
+      </span>
+      {label}
+    </button>
   );
 
   return (
@@ -97,7 +130,7 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
           <div>
             <div className="text-slate-500">ΔP</div>
             <Num className={`text-lg ${deltaTone}`}>
-              {Number(gw(Math.abs(deltaMW), 2)) === 0 || deltaMW > 0 ? '+' : '−'}
+              {Math.abs(deltaMW) < 5 || deltaMW > 0 ? '+' : '−'}
               {gw(Math.abs(deltaMW), 2)}
             </Num>{' '}
             <span className="text-slate-500">GW</span>
@@ -125,90 +158,107 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
         <div className="divide-y divide-slate-800/70 border-y border-slate-800/70">
           <FleetRow label="Hidrelétricas" dotClass="bg-emerald-400" fleet={hydro} detail={target(hydro)}>
-            <input
-              type="range"
-              min={hydro.minTechnicalMW}
-              max={hydro.maxCapacityMW}
-              step={500}
-              value={hydro.targetMW}
-              onChange={(e) => onUpdateHydroTarget(Number(e.target.value))}
-              className={`${slider} accent-emerald-400`}
-              aria-label="Alvo das hidrelétricas"
-            />
-            <div className="mt-1.5 flex gap-1">
-              <button type="button" onClick={() => onUpdateHydroTarget(clampHydro(hydro.targetMW - 2000))} className={smallButton}>
-                −2 GW
-              </button>
-              <button type="button" onClick={() => onUpdateHydroTarget(clampHydro(hydro.targetMW + 2000))} className={smallButton}>
-                +2 GW
-              </button>
-              <button
-                type="button"
-                onClick={balanceHydro}
-                className={smallButton}
-                title="Leva o alvo das hidrelétricas ao valor que zera ΔP"
-              >
-                Zerar ΔP
-              </button>
-            </div>
+            {!isDay && (
+              <>
+                <input
+                  type="range"
+                  min={hydro.minTechnicalMW}
+                  max={hydro.maxCapacityMW}
+                  step={500}
+                  value={hydro.targetMW}
+                  onChange={(e) => onUpdateHydroTarget(Number(e.target.value))}
+                  className={`${slider} text-emerald-400`}
+                  aria-label="Alvo das hidrelétricas"
+                />
+                <div className="mt-1.5 flex gap-1">
+                  <button type="button" onClick={() => onUpdateHydroTarget(clampHydro(hydro.targetMW - 2000))} className={smallButton}>
+                    −2 GW
+                  </button>
+                  <button type="button" onClick={() => onUpdateHydroTarget(clampHydro(hydro.targetMW + 2000))} className={smallButton}>
+                    +2 GW
+                  </button>
+                  <button
+                    type="button"
+                    onClick={balanceHydro}
+                    className={smallButton}
+                    title="Leva o alvo das hidrelétricas ao valor que zera ΔP"
+                  >
+                    Zerar ΔP
+                  </button>
+                </div>
+              </>
+            )}
           </FleetRow>
 
           <FleetRow label="Termelétricas" dotClass="bg-rose-500" fleet={thermal} detail={target(thermal)}>
-            <input
-              type="range"
-              min={thermal.minTechnicalMW}
-              max={thermal.maxCapacityMW}
-              step={200}
-              value={thermal.targetMW}
-              onChange={(e) => onUpdateThermalTarget(Number(e.target.value))}
-              className={`${slider} accent-rose-500`}
-              aria-label="Alvo das termelétricas"
-            />
-            <div className="mt-1 flex justify-between font-mono text-[10px] text-slate-600">
-              <span>mín {gw(thermal.minTechnicalMW, 0)}</span>
-              <span>máx {gw(thermal.maxCapacityMW, 0)}</span>
-            </div>
+            {!isDay && (
+              <>
+                <input
+                  type="range"
+                  min={thermal.minTechnicalMW}
+                  max={thermal.maxCapacityMW}
+                  step={200}
+                  value={thermal.targetMW}
+                  onChange={(e) => onUpdateThermalTarget(Number(e.target.value))}
+                  className={`${slider} text-rose-500`}
+                  aria-label="Alvo das termelétricas"
+                />
+                <div className="mt-1 flex justify-between font-mono text-[10px] text-slate-600">
+                  <span>mín {gw(thermal.minTechnicalMW, 0)}</span>
+                  <span>máx {gw(thermal.maxCapacityMW, 0)}</span>
+                </div>
+              </>
+            )}
           </FleetRow>
         </div>
 
         <div className="divide-y divide-slate-800/70 border-y border-slate-800/70 md:border-t">
           <FleetRow label="Solar" dotClass="bg-amber-400" fleet={solar} />
           <FleetRow label="Eólica" dotClass="bg-sky-400" fleet={wind} />
-          <div className="py-2.5 flex items-center justify-between text-xs">
-            <span className="text-slate-400">Curtailment solar + eólica</span>
-            <button
-              type="button"
-              onClick={() => onSetCurtailment(isCurtailing ? 0 : CURTAILMENT_STEP_PERCENT)}
-              className={`${smallButton} ${isCurtailing ? 'text-amber-300 border-amber-500/40' : ''}`}
-            >
-              <Num>{isCurtailing ? `${curtailmentPercent}%` : '0%'}</Num>
-            </button>
-          </div>
+          {isSecondaryControlEnabled && (
+            <div className="py-2.5 flex items-baseline justify-between text-xs">
+              <span className="text-slate-400" title="Correção da regulação secundária sobre o programa das hidrelétricas">
+                Ajuste do CAG
+              </span>
+              <span className="text-slate-500">
+                <Num className="text-slate-100">
+                  {secondaryControlMW >= 0 ? '+' : '−'}
+                  {gw(Math.abs(secondaryControlMW), 2)}
+                </Num>
+                <span className="ml-1">GW</span>
+              </span>
+            </div>
+          )}
+          {!isDay && (
+            <div className="py-2.5 flex items-center justify-between text-xs">
+              <span className="text-slate-400">Curtailment solar + eólica</span>
+              <button
+                type="button"
+                onClick={() => onSetCurtailment(isCurtailing ? 0 : CURTAILMENT_STEP_PERCENT)}
+                className={`${smallButton} ${isCurtailing ? 'text-amber-300 border-amber-500/40' : ''}`}
+              >
+                <Num>{isCurtailing ? `${curtailmentPercent}%` : '0%'}</Num>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-        <button
-          type="button"
-          role="switch"
-          aria-checked={isPrimaryControlEnabled}
-          onClick={onTogglePrimaryControl}
-          className="flex items-center gap-2 text-slate-300 hover:text-slate-100 cursor-pointer"
-          title="Resposta automática das hidrelétricas ao desvio de frequência (estatismo)"
-        >
-          <span
-            className={`relative w-7 h-4 rounded-full transition-colors ${
-              isPrimaryControlEnabled ? 'bg-emerald-500/70' : 'bg-slate-700'
-            }`}
-          >
-            <span
-              className={`absolute top-0.5 w-3 h-3 rounded-full bg-slate-100 transition-[left] ${
-                isPrimaryControlEnabled ? 'left-3.5' : 'left-0.5'
-              }`}
-            />
-          </span>
-          Regulação primária
-        </button>
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+          {toggle(
+            'Regulação primária',
+            isPrimaryControlEnabled,
+            onTogglePrimaryControl,
+            'Resposta automática das hidrelétricas ao desvio de frequência (estatismo)'
+          )}
+          {toggle(
+            'CAG',
+            isSecondaryControlEnabled,
+            onToggleSecondaryControl,
+            'Controle automático de geração: corrige o programa das hidrelétricas até a frequência voltar a 60 Hz'
+          )}
+        </div>
 
         <button
           type="button"

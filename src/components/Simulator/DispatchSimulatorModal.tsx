@@ -8,13 +8,21 @@ import {
   advanceSimulation,
   applyGeneratorTrip,
   createInitialSimulation,
+  effectiveSpeed,
   formatSimClock,
+  DAY_SCHEDULED_TRIPS,
+  DAY_SPEEDS,
+  DEFAULT_TRIP_MW,
   ERAC_STAGES,
   GOVERNOR_DROOP_R
 } from '../../services/gridPhysics';
+import { simulatorDay } from '../../data/simulatorDayData';
+import { SourcesList } from '../Sources/SourcesList';
+import { DayChart } from './DayChart';
 import { FrequencyGauge } from './FrequencyGauge';
 import { FrequencyStripChart } from './FrequencyStripChart';
 import { DispatchControlDesk } from './DispatchControlDesk';
+import { formatDecimal } from '../../utils/format';
 
 interface DispatchSimulatorModalProps {
   isOpen: boolean;
@@ -23,27 +31,25 @@ interface DispatchSimulatorModalProps {
 
 type ScenarioId = GridSimulationState['scenarioId'];
 
+const tripHours = DAY_SCHEDULED_TRIPS.map((t) => `${t.atSeconds / 3600}h`).join(' e às ');
+
 const SCENARIOS: { id: ScenarioId; label: string; description: string }[] = [
   {
-    id: 'pato',
-    label: 'Pôr do sol',
-    description: 'A solar cai com o pôr do sol enquanto a carga sobe rumo ao pico das 19h. Compense com hidro e térmica.'
-  },
-  {
-    id: 'alta_renovavel',
-    label: 'Excesso renovável',
-    description: 'Solar e eólica dominam o meio-dia e a inércia síncrona fica baixa. Qualquer desbalanço move a frequência rápido.'
+    id: 'dia',
+    label: simulatorDay.dateLabel,
+    description: `Despacho verificado do SIN, hora a hora. Quedas de ${formatDecimal(DEFAULT_TRIP_MW / 1000, 1)} GW às ${tripHours}: mesma perda, inércia diferente.`
   },
   {
     id: 'livre',
     label: 'Livre',
-    description: 'Sem eventos programados. Ajuste as fontes ou dispare uma contingência.'
+    description: 'Sem programa nem eventos. Ajuste as fontes ou dispare uma contingência.'
   }
 ];
 
-const SPEEDS = [1, 2, 5] as const;
-
-const TRIP_MW = 2800;
+const SPEEDS: Record<ScenarioId, { value: number; label: string }[]> = {
+  dia: DAY_SPEEDS.map((value) => ({ value, label: `${value / 60} min/s` })),
+  livre: [1, 2, 5].map((value) => ({ value, label: `${value}×` }))
+};
 
 const toHistoryPoint = (s: GridSimulationState): HistoryPoint => ({
   timeSeconds: s.simTimeSeconds,
@@ -59,8 +65,8 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
   isOpen,
   onClose
 }) => {
-  const [scenarioId, setScenarioId] = useState<ScenarioId>('pato');
-  const [simState, setSimState] = useState<GridSimulationState>(() => createInitialSimulation('pato'));
+  const [scenarioId, setScenarioId] = useState<ScenarioId>('dia');
+  const [simState, setSimState] = useState<GridSimulationState>(() => createInitialSimulation('dia'));
   const [history, setHistory] = useState<HistoryPoint[]>([]);
 
   // The ref is the source of truth so React state re-renders don't drop physics steps
@@ -71,6 +77,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
     setSimState(stateRef.current);
   }, []);
 
+  const lastSpeedRef = useRef<number>(simState.speedMultiplier);
   const lastFrameTimeRef = useRef<number>(0);
   const animFrameIdRef = useRef<number | null>(null);
   const lastHistoryPushRef = useRef<number>(0);
@@ -87,6 +94,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
 
   const handleReset = useCallback((scenario: ScenarioId = scenarioId) => {
     const fresh = createInitialSimulation(scenario);
+    lastSpeedRef.current = fresh.speedMultiplier;
     updateSim(() => fresh);
     setHistory([toHistoryPoint(fresh)]);
   }, [scenarioId, updateSim]);
@@ -97,6 +105,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
   };
 
   const handleSetSpeed = (speed: number) => {
+    if (speed > 0) lastSpeedRef.current = speed;
     updateSim((prev) => ({ ...prev, speedMultiplier: speed }));
   };
 
@@ -110,7 +119,8 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
       const deltaMs = now - lastFrameTimeRef.current;
       lastFrameTimeRef.current = now;
 
-      if (stateRef.current.speedMultiplier > 0 && !stateRef.current.isBlackout) {
+      const current = stateRef.current;
+      if (effectiveSpeed(current) > 0 && !current.isBlackout && !current.isDayFinished) {
         const nextState = advanceSimulation(stateRef.current, deltaMs / 1000);
         stateRef.current = nextState;
         setSimState(nextState);
@@ -146,6 +156,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
 
   const activeScenario = SCENARIOS.find((s) => s.id === scenarioId) ?? SCENARIOS[0];
   const isPaused = simState.speedMultiplier === 0;
+  const isEventSlowdown = !isPaused && effectiveSpeed(simState) < simState.speedMultiplier;
 
   const iconButton =
     'p-1.5 rounded-md text-slate-500 hover:text-slate-200 hover:bg-slate-900 transition-colors cursor-pointer';
@@ -167,13 +178,14 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
           <h2 className="text-sm font-semibold text-slate-100">Simulador 60 Hz</h2>
 
           <div className="flex items-center gap-2">
+            {isEventSlowdown && <span className="text-xs text-amber-400">tempo real</span>}
             <span className="font-mono tabular-nums text-xs text-slate-400">
               {formatSimClock(simState.simTimeSeconds)}
             </span>
             <div className="flex items-center gap-0.5 rounded-md border border-slate-800 p-0.5">
               <button
                 type="button"
-                onClick={() => handleSetSpeed(isPaused ? 1 : 0)}
+                onClick={() => handleSetSpeed(isPaused ? lastSpeedRef.current : 0)}
                 className={`p-1 rounded transition-colors cursor-pointer ${
                   isPaused ? 'text-amber-400' : 'text-slate-500 hover:text-slate-200'
                 }`}
@@ -181,14 +193,14 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
               >
                 {isPaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
               </button>
-              {SPEEDS.map((speed) => (
+              {SPEEDS[scenarioId].map((speed) => (
                 <button
-                  key={speed}
+                  key={speed.value}
                   type="button"
-                  onClick={() => handleSetSpeed(speed)}
-                  className={`${segment(simState.speedMultiplier === speed)} font-mono`}
+                  onClick={() => handleSetSpeed(speed.value)}
+                  className={`${segment(simState.speedMultiplier === speed.value)} font-mono`}
                 >
-                  {speed}×
+                  {speed.label}
                 </button>
               ))}
             </div>
@@ -236,6 +248,23 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
             </div>
           )}
 
+          {simState.isDayFinished && (
+            <div className="px-3 py-2.5 rounded-md border border-slate-700 flex items-center justify-between gap-3">
+              <p className="text-sm text-slate-300">Fim do dia.</p>
+              <button
+                type="button"
+                onClick={() => handleReset()}
+                className="shrink-0 px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs transition-colors cursor-pointer"
+              >
+                Recomeçar
+              </button>
+            </div>
+          )}
+
+          {scenarioId === 'dia' && (
+            <DayChart day={simulatorDay} simTimeSeconds={simState.simTimeSeconds} pendingTrips={simState.scheduledTrips} />
+          )}
+
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="w-full lg:w-64 shrink-0">
               <FrequencyGauge
@@ -257,7 +286,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
           <DispatchControlDesk
             state={simState}
             totalGenMW={totalGenMW}
-            tripMW={TRIP_MW}
+            tripMW={DEFAULT_TRIP_MW}
             onUpdateHydroTarget={(targetMW) => updateSim((prev) => ({ ...prev, hydro: { ...prev.hydro, targetMW } }))}
             onUpdateThermalTarget={(targetMW) => updateSim((prev) => ({ ...prev, thermal: { ...prev.thermal, targetMW } }))}
             onSetCurtailment={(percent) =>
@@ -267,9 +296,16 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
                 wind: { ...prev.wind, curtailmentPercent: percent }
               }))
             }
-            onTriggerGeneratorTrip={() => updateSim((prev) => applyGeneratorTrip(prev, TRIP_MW))}
+            onTriggerGeneratorTrip={() => updateSim((prev) => applyGeneratorTrip(prev, DEFAULT_TRIP_MW))}
             onTogglePrimaryControl={() =>
               updateSim((prev) => ({ ...prev, isPrimaryControlEnabled: !prev.isPrimaryControlEnabled }))
+            }
+            onToggleSecondaryControl={() =>
+              updateSim((prev) => ({
+                ...prev,
+                isSecondaryControlEnabled: !prev.isSecondaryControlEnabled,
+                secondaryControlMW: 0
+              }))
             }
           />
 
@@ -284,11 +320,18 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
               <p>
                 A regulação primária das hidrelétricas (estatismo{' '}
                 <span className="font-mono">{(GOVERNOR_DROOP_R * 100).toFixed(0)}%</span>) reage em segundos. Abaixo de{' '}
-                <span className="font-mono">{ERAC_STAGES[0].thresholdHz.toFixed(1)} Hz</span> o ERAC corta carga em{' '}
+                <span className="font-mono">{formatDecimal(ERAC_STAGES[0].thresholdHz, 1)} Hz</span> o ERAC corta carga em{' '}
                 {ERAC_STAGES.length} estágios.
+              </p>
+              <p>
+                O CAG (regulação secundária) corrige o programa das hidrelétricas nos minutos seguintes até a frequência
+                voltar a 60 Hz. Inércia H = energia cinética das máquinas síncronas ÷ geração total: cai ao meio-dia,
+                quando solar e eólica, sem massa girante, dominam.
               </p>
             </div>
           </details>
+
+          {scenarioId === 'dia' && <SourcesList sources={simulatorDay.sources} />}
         </div>
       </div>
     </div>

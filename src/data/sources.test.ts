@@ -4,6 +4,7 @@ import { referenceGridSnapshot } from './gridData';
 import { regionalInterchanges } from './interchangeData';
 import { majorPowerPlants } from './powerPlantsData';
 import { powerVsEnergyExplainer, scaleLevels } from './scaleData';
+import { simulatorDay } from './simulatorDayData';
 import { sinDossiers } from './sinDossiersData';
 import type { SourceRef } from './sources';
 import { majorTransmissionLines } from './transmissionLinesData';
@@ -20,6 +21,7 @@ const DATASETS: Record<string, unknown> = {
   powerPlants: majorPowerPlants,
   scales: { powerVsEnergyExplainer, scaleLevels },
   dossiers: sinDossiers,
+  simulatorDay,
   transmissionLines: majorTransmissionLines
 };
 
@@ -66,7 +68,7 @@ function isRootUrl(url: string): boolean {
 describe('proveniência dos dados (SourceRef)', () => {
   it('encontra fontes em todos os datasets', () => {
     const datasetsWithSources = new Set(allSources.map(({ owner }) => owner.split(':')[0]));
-    for (const dataset of ['energyChain', 'interchanges', 'powerPlants', 'scales', 'dossiers', 'transmissionLines']) {
+    for (const dataset of ['energyChain', 'interchanges', 'powerPlants', 'scales', 'dossiers', 'simulatorDay', 'transmissionLines']) {
       expect(datasetsWithSources).toContain(dataset);
     }
   });

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ERAC_STAGES, OVERFREQUENCY_ALERT_HZ } from '../../services/gridPhysics';
+import { formatDecimal } from '../../utils/format';
 
 interface FrequencyGaugeProps {
   frequencyHz: number;
@@ -19,8 +20,8 @@ const toPercent = (hz: number) =>
   ((Math.max(SCALE_MIN_HZ, Math.min(SCALE_MAX_HZ, hz)) - SCALE_MIN_HZ) / (SCALE_MAX_HZ - SCALE_MIN_HZ)) * 100;
 
 const signed = (value: number, digits: number) => {
-  const text = Math.abs(value).toFixed(digits);
-  return `${Number(text) === 0 || value > 0 ? '+' : '−'}${text}`;
+  const isZero = Math.abs(value) < 0.5 * 10 ** -digits;
+  return `${isZero || value > 0 ? '+' : '−'}${formatDecimal(Math.abs(value), digits)}`;
 };
 
 export const FrequencyGauge: React.FC<FrequencyGaugeProps> = ({
@@ -65,7 +66,7 @@ export const FrequencyGauge: React.FC<FrequencyGaugeProps> = ({
 
       <div className="mt-1 flex items-baseline gap-1.5">
         <span className={`font-mono tabular-nums text-4xl font-semibold tracking-tight ${tone}`}>
-          {frequencyHz.toFixed(3)}
+          {formatDecimal(frequencyHz, 3)}
         </span>
         <span className="text-sm text-slate-500">Hz</span>
       </div>
@@ -94,11 +95,11 @@ export const FrequencyGauge: React.FC<FrequencyGaugeProps> = ({
         </div>
         <div className="py-1.5 flex justify-between">
           <dt className="text-slate-500">Inércia equivalente</dt>
-          <dd className="font-mono tabular-nums text-slate-200">{inertiaH.toFixed(2)} s</dd>
+          <dd className="font-mono tabular-nums text-slate-200">{formatDecimal(inertiaH, 2)} s</dd>
         </div>
         <div className="py-1.5 flex justify-between">
           <dt className="text-slate-500">Início do ERAC</dt>
-          <dd className="font-mono tabular-nums text-slate-200">{eracStartHz.toFixed(1)} Hz</dd>
+          <dd className="font-mono tabular-nums text-slate-200">{formatDecimal(eracStartHz, 1)} Hz</dd>
         </div>
       </dl>
     </div>

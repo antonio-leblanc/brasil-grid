@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import type { HistoryPoint } from '../../services/gridPhysics';
 import { ERAC_STAGES } from '../../services/gridPhysics';
+import { formatDecimal } from '../../utils/format';
 
 interface FrequencyStripChartProps {
   history: HistoryPoint[];
@@ -68,7 +69,7 @@ export const FrequencyStripChart: React.FC<FrequencyStripChartProps> = ({
       ctx.lineTo(padLeft + plotW, y);
       ctx.stroke();
       ctx.fillStyle = line.label;
-      ctx.fillText(line.hz.toFixed(1), padLeft - 6, y + 3);
+      ctx.fillText(formatDecimal(line.hz, 1), padLeft - 6, y + 3);
     }
     ctx.setLineDash([]);
 
