@@ -1,32 +1,34 @@
 import React from 'react';
 import { PanelLeftOpen, PanelLeftClose, RefreshCw } from 'lucide-react';
 import type { NationalTelemetrySnapshot } from '../../services/onsApi';
+import type { AppView } from '../System/sections';
+import { SegmentedControl, type SegmentOption } from '../Controls/SegmentedControl';
 
 interface ConsoleHeaderProps {
+  view: AppView;
+  onNavigate: (view: AppView) => void;
   isSidebarOpen: boolean;
   setIsSidebarOpen: (open: boolean) => void;
   telemetry: NationalTelemetrySnapshot;
   isLive: boolean;
   isLoading: boolean;
   onRefresh: () => void;
-  onOpenCurve: () => void;
-  onOpenSimulator: () => void;
-  onOpenLearn: () => void;
 }
 
-const ghostButton =
-  'h-7 px-2.5 rounded-md text-xs text-slate-400 hover:text-slate-100 hover:bg-slate-900 transition-colors cursor-pointer';
+const VIEW_OPTIONS: SegmentOption<AppView>[] = [
+  { value: 'mapa', label: 'Mapa' },
+  { value: 'sistema', label: 'Sistema' }
+];
 
 export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
+  view,
+  onNavigate,
   isSidebarOpen,
   setIsSidebarOpen,
   telemetry,
   isLive,
   isLoading,
-  onRefresh,
-  onOpenCurve,
-  onOpenSimulator,
-  onOpenLearn
+  onRefresh
 }) => {
   const currentSinLoadGW = (telemetry.currentSinLoadMW / 1000).toLocaleString('pt-BR', {
     minimumFractionDigits: 1,
@@ -36,43 +38,29 @@ export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
   return (
     <header className="h-11 bg-[#080b11] border-b border-slate-800 flex items-center justify-between px-2 sm:px-3 z-40 relative select-none">
       <div className="flex items-center gap-2">
-        <button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="p-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-900 transition-colors cursor-pointer"
-          aria-label="Alternar menu lateral"
-          aria-pressed={isSidebarOpen}
-        >
-          {isSidebarOpen ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeftOpen className="w-4 h-4" />}
-        </button>
-        <span className="text-sm font-semibold text-slate-100">brasil-grid</span>
-        <span className="text-xs text-slate-500 hidden sm:inline">Laboratório do SIN</span>
+        {view === 'mapa' && (
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="p-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-900 transition-colors cursor-pointer"
+            aria-label="Alternar menu lateral"
+            aria-pressed={isSidebarOpen}
+          >
+            {isSidebarOpen ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeftOpen className="w-4 h-4" />}
+          </button>
+        )}
+        <span className="text-sm font-semibold text-slate-100 px-1">brasil-grid</span>
+        <SegmentedControl options={VIEW_OPTIONS} value={view} onChange={onNavigate} />
       </div>
 
       <div className="flex items-center gap-1">
-        <button
-          onClick={onOpenCurve}
-          className={`${ghostButton} flex items-baseline gap-2`}
-          title={`Carga instantânea do SIN (${isLive ? 'ONS' : 'snapshot de referência'}) · abrir curva de carga 24h`}
-          aria-label="Abrir Curva de Carga 24h"
+        <span
+          className="h-7 px-2.5 flex items-center gap-2 text-xs"
+          title={`Carga global do SIN na última meia hora (${isLive ? 'ONS' : 'snapshot de referência'})`}
         >
           <span className="font-mono tabular-nums text-slate-100">{currentSinLoadGW} GW</span>
           <span className="font-mono tabular-nums text-slate-500 hidden sm:inline">{telemetry.latestTimeLabel}</span>
           <span className={isLive ? 'text-slate-500' : 'text-amber-400'}>{isLive ? 'ONS' : 'ref.'}</span>
-        </button>
-
-        <span className="w-px h-4 bg-slate-800 mx-1" />
-
-        <button
-          onClick={onOpenSimulator}
-          className="h-7 px-2.5 rounded-md text-xs text-cyan-300 hover:bg-cyan-500/10 transition-colors cursor-pointer"
-          aria-label="Abrir Simulador de Despacho 60 Hz"
-        >
-          Simulador 60 Hz
-        </button>
-
-        <button type="button" onClick={onOpenLearn} className={ghostButton} aria-label="Abrir guia do setor">
-          Guia
-        </button>
+        </span>
 
         <button
           onClick={onRefresh}

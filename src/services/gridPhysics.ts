@@ -247,6 +247,8 @@ export interface DaySchedule {
   thermalMW: number;
   windMW: number;
   solarMW: number;
+  // Share of solarMW behind the meter: shown apart in the day chart, dispatched as solar like the rest
+  mmgdMW: number;
   // Sum of verified generation: ONS val_carga runs up to ~1.1 GW below it in daylight hours and the
   // dataset dictionary does not attribute the gap, so demand is closed on the generation side
   demandMW: number;
@@ -268,7 +270,7 @@ export function dayScheduleAt(day: SimulatorDay, simTimeSeconds: number): DaySch
   const thermalMW = lerp('thermalMW');
   const windMW = lerp('windMW');
   const solarMW = lerp('solarMW');
-  return { hydroMW, thermalMW, windMW, solarMW, demandMW: hydroMW + thermalMW + windMW + solarMW };
+  return { hydroMW, thermalMW, windMW, solarMW, mmgdMW: lerp('mmgdMW'), demandMW: hydroMW + thermalMW + windMW + solarMW };
 }
 
 export function synchronousInertiaH(hydroMW: number, thermalMW: number, totalMW: number): number {

@@ -11,9 +11,9 @@ interface NodeInspectorProps {
 }
 
 const PLANT_TYPE_LABEL: Record<PowerPlantFeature['type'], { code: string; color: string }> = {
-  hidro: { code: 'UHE', color: 'bg-emerald-400' },
+  hidro: { code: 'UHE', color: 'bg-sky-400' },
   solar: { code: 'UFV', color: 'bg-amber-400' },
-  eolica: { code: 'EOL', color: 'bg-sky-400' },
+  eolica: { code: 'EOL', color: 'bg-emerald-400' },
   nuclear: { code: 'UTN', color: 'bg-orange-500' },
   termica: { code: 'UTE', color: 'bg-rose-500' }
 };

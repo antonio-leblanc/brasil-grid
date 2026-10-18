@@ -34,6 +34,34 @@ const hours = rows
 
 if (hours.length !== 24) throw new Error(`Esperava 24 horas do SIN em ${date}, veio ${hours.length}`);
 
+const loadAreas = ['SECO', 'S', 'NE', 'N'];
+const loadApiUrl = (area) =>
+  `https://apicarga.ons.org.br/prd/cargaverificada?dat_inicio=${date}&dat_fim=${date}&cod_areacarga=${area}`;
+const mmgdHalfHours = new Map();
+for (const area of loadAreas) {
+  const res = await fetch(loadApiUrl(area));
+  if (!res.ok) throw new Error(`ONS respondeu ${res.status} para ${loadApiUrl(area)}`);
+  for (const record of await res.json()) {
+    const stamp = record.din_referenciautc;
+    mmgdHalfHours.set(stamp, (mmgdHalfHours.get(stamp) ?? 0) + (record.val_cargammgd ?? 0));
+  }
+}
+if (mmgdHalfHours.size !== 48) throw new Error(`Esperava 48 meias horas de MMGD em ${date}, veio ${mmgdHalfHours.size}`);
+
+// The load API stamps each half hour at its end (00:30 ... 24:00 BRT), so hour h averages h:30 and h+1:00.
+const mmgdByHour = Array.from({ length: 24 }, () => []);
+for (const [stamp, mw] of mmgdHalfHours) {
+  const periodStartBrt = new Date(Date.parse(stamp) - 3 * 3600_000 - 1800_000);
+  mmgdByHour[periodStartBrt.getUTCHours()].push(mw);
+}
+// The Balanço solar already includes the MMGD estimate (its val_carga tracks the API's carga global within
+// ~2 GW, day and night). The clamp drops the ~200 MW night floor of the ONS estimate where solar is zero.
+for (const h of hours) {
+  const samples = mmgdByHour[h.hour];
+  const mean = samples.reduce((sum, mw) => sum + mw, 0) / samples.length;
+  h.mmgdMW = Math.min(h.solarMW, Math.round(mean));
+}
+
 const [y, m, d] = date.split('-');
 const accessedAt = new Date().toISOString().slice(0, 10);
 const body = `import type { SourceRef } from './sources';
@@ -46,6 +74,8 @@ export interface SimulatorDayHour {
   thermalMW: number;
   windMW: number;
   solarMW: number;
+  /** Parcela de solarMW que é micro e minigeração distribuída (estimativa do ONS). */
+  mmgdMW: number;
   loadMW: number;
 }
 
@@ -71,6 +101,11 @@ ${hours.map((h) => `    { ${Object.entries(h).map(([k, v]) => `${k}: ${v}`).join
     {
       label: 'ONS — Dicionário de dados do Balanço de Energia nos Subsistemas',
       url: '${dictionaryUrl}',
+      accessedAt: '${accessedAt}'
+    },
+    {
+      label: 'ONS — API de Carga Verificada, MMGD estimada (SE/CO, S, NE, N) em ${d}/${m}/${y}',
+      url: '${loadApiUrl('SECO')}',
       accessedAt: '${accessedAt}'
     }
   ]

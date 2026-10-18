@@ -47,14 +47,14 @@ Critério: um elemento só fica permanente na tela se responde a uma pergunta f�
 
 - [x] **Hover só com o nome** do ativo em [`GridMap.tsx`](src/components/Map/GridMap.tsx); a ficha técnica completa fica reservada ao clique via [`NodeInspector`](src/components/Inspector/NodeInspector.tsx).
 - [x] **Reduzir as camadas de linha** de 3 para 2: `lines-main` + destaque de seleção `lines-selected`. Camadas cosméticas `lines-glow` e `lines-flow` expurgadas.
-- [x] **Enxugar o [`InterchangeModal`](src/components/Interchange/InterchangeModal.tsx):** visão inicial com carregamento (%) e margem operativa livre destacados em primeiro plano; gráfico 24h e dossiê físico acessíveis sob demanda por clique.
+- [x] **Enxugar o [`InterchangeSection`](src/components/Interchange/InterchangeSection.tsx):** visão inicial com carregamento (%) e margem operativa livre destacados em primeiro plano; gráfico 24h e dossiê físico acessíveis sob demanda por clique.
 - [x] **Enxugar o Modo Guia** ([`SinDossiersSection`](src/components/Dossiers/SinDossiersSection.tsx), [`ValueChainSection`](src/components/EnergyChain/ValueChainSection.tsx)): parágrafos narrativos prolixos convertidos em métricas monoespaçadas, sínteses operativas de alta densidade e termos-chave em negrito (`AGENTS.md` §5.5).
 
 ## P2 — Robustez
 
 - [ ] **Expor o motivo do fallback da telemetria.** Fazer `fetchOnsTelemetry` ([`onsApi.ts`](src/services/onsApi.ts)) devolver `{ data, fallbackReason }` e mostrar o motivo no tooltip do selo `REF`.
 - [ ] **Snapshot da ONS gerado na CI.** Criar uma GitHub Action agendada que baixa a carga verificada e publica um JSON estático no Pages. Ela vira a fonte secundária antes do snapshot sintético e elimina a dependência do CORS.
-- [ ] **Desacoplar a UI do simulador da física** ([`DispatchSimulatorModal.tsx`](src/components/Simulator/DispatchSimulatorModal.tsx)).
+- [ ] **Desacoplar a UI do simulador da física** ([`SimulatorSection.tsx`](src/components/Simulator/SimulatorSection.tsx)).
   - Física em `stateRef` a cada frame; `setSimState` limitado a 10–15 Hz.
   - Histórico em ring buffer (ref), sem copiar o array a cada ponto.
   - O strip chart em Canvas lê direto do buffer.
