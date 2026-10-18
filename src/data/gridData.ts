@@ -8,6 +8,8 @@ export interface PowerPlantFeature {
   name: string;
   type: 'hidro' | 'eolica' | 'solar' | 'nuclear' | 'termica';
   capacityMW: number;
+  /** CEGs da ANEEL que compõem o ponto; capacityMW é a soma da potência outorgada deles (powerPlants.test.ts). */
+  cegs: string[];
   subsystem: 'SE/CO' | 'S' | 'NE' | 'N';
   state: string;
   riverOrRegion: string;
