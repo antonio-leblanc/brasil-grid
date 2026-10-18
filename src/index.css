@@ -50,3 +50,35 @@ body {
   border-top-color: #334155 !important;
   border-bottom-color: #334155 !important;
 }
+
+/* Native range tracks render light on Chromium regardless of accent-color; the thumb takes the fleet color */
+.sim-range {
+  appearance: none;
+  height: 16px;
+  background: transparent;
+}
+.sim-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 9999px;
+  background: #1e293b;
+}
+.sim-range::-moz-range-track {
+  height: 4px;
+  border-radius: 9999px;
+  background: #1e293b;
+}
+.sim-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: -4px;
+  border-radius: 9999px;
+  background: currentColor;
+}
+.sim-range::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 0;
+  border-radius: 9999px;
+  background: currentColor;
+}

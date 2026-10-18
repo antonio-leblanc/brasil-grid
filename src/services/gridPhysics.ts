@@ -1,3 +1,6 @@
+import type { SimulatorDay, SimulatorDayHour } from '../data/simulatorDayData';
+import { simulatorDay } from '../data/simulatorDayData';
+
 export interface PlantFleetState {
   // Current active output in MW
   actualMW: number;
@@ -28,8 +31,11 @@ export interface GridSimulationState {
   simTimeSeconds: number;
   // Simulated seconds since scenario start
   elapsedSeconds: number;
-  // Speed multiplier: 0 (paused), 1x, 2x, 5x, 10x
+  // Simulated seconds per real second; 0 pauses
   speedMultiplier: number;
+  // Until this clock time the integrator runs at EVENT_SPEED so the transient stays visible
+  eventSlowdownUntilSeconds: number;
+  isDayFinished: boolean;
   // Carries sub-step time between frames so trajectories do not depend on display refresh rate
   integratorRemainderSeconds: number;
 
@@ -63,8 +69,16 @@ export interface GridSimulationState {
   // Primary Frequency Control (Droop Governor) toggle
   isPrimaryControlEnabled: boolean;
 
+  // Secondary control (CAG): integral action on hydro setpoints that restores 60 Hz after primary response
+  isSecondaryControlEnabled: boolean;
+  secondaryControlMW: number;
+
+  // Hydro output lost to trips; the day schedule keeps asking for the pre-trip dispatch
+  hydroTrippedMW: number;
+  scheduledTrips: ScheduledTrip[];
+
   // Scenario
-  scenarioId: 'pato' | 'trip_itaipu' | 'alta_renovavel' | 'livre';
+  scenarioId: 'dia' | 'livre';
 
   // Audit event log (latest events)
   events: SimulationEvent[];
@@ -76,6 +90,11 @@ export interface SimulationEvent {
   timeLabel: string;
   type: 'info' | 'warning' | 'alert' | 'critical' | 'success';
   message: string;
+}
+
+export interface ScheduledTrip {
+  atSeconds: number;
+  mw: number;
 }
 
 export interface HistoryPoint {
@@ -101,6 +120,23 @@ export const GOVERNOR_DROOP_R = 0.05;
 export const GOVERNOR_PARTICIPATION = 0.6;
 export const PRIMARY_RESERVE_UP_MW = 6000;
 export const PRIMARY_RESERVE_DOWN_MW = 5000;
+
+// Didactic CAG integral time: Kundur §11.1 leaves K_I to the operator and ONS cycle settings are not modelled
+export const SECONDARY_CONTROL_TIME_S = 60;
+
+// Near-real-time playback while a contingency transient evolves, then back to the day's accelerated clock
+export const EVENT_SPEED = 2;
+export const EVENT_SLOWDOWN_SECONDS = 30;
+
+export const DAY_SPEEDS = [360, 900, 1800] as const;
+export const DAY_START_SECONDS = 5 * 3600;
+export const DAY_END_SECONDS = 24 * 3600;
+export const DEFAULT_TRIP_MW = 2800;
+// Same loss at midday (IBR-heavy, low inertia) and at the evening peak (hydro-heavy) to contrast RoCoF
+export const DAY_SCHEDULED_TRIPS: readonly ScheduledTrip[] = [
+  { atSeconds: 12 * 3600, mw: DEFAULT_TRIP_MW },
+  { atSeconds: 19 * 3600, mw: DEFAULT_TRIP_MW }
+];
 
 // Grid-code P(f) curtailment: inverters shed active power above this threshold
 export const IBR_FREQUENCY_WATT_START_HZ = 60.2;
@@ -206,134 +242,75 @@ export function formatSimClock(seconds: number): string {
   return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 }
 
-export function calculateSolarPotentialAtTime(timeSeconds: number, maxCapacityMW: number): number {
-  const hours = ((timeSeconds % 86400) + 86400) % 86400 / 3600;
-  // Solar daylight window: 06:00 to 18:45
-  if (hours < 6.0 || hours > 18.75) return 0;
-  const peak = 12.5;
-  const spread = 3.6;
-  const bell = Math.exp(-0.5 * Math.pow((hours - peak) / spread, 2));
-  // Fast evening cutoff between 17:30 and 18:45
-  if (hours >= 17.5) {
-    const duskProgress = (hours - 17.5) / 1.25; // 0 to 1
-    const factor = Math.max(0, 1 - Math.pow(duskProgress, 1.2));
-    return maxCapacityMW * 0.85 * bell * factor;
-  }
-  return Math.min(maxCapacityMW, maxCapacityMW * 0.95 * bell);
+export interface DaySchedule {
+  hydroMW: number;
+  thermalMW: number;
+  windMW: number;
+  solarMW: number;
+  // Sum of verified generation: ONS val_carga runs up to ~1.1 GW below it in daylight hours and the
+  // dataset dictionary does not attribute the gap, so demand is closed on the generation side
+  demandMW: number;
 }
 
-// Hourly load shape normalized to the daily peak: overnight valley at 04h, afternoon plateau, evening peak at 19h
-const LOAD_PROFILE: readonly [hour: number, factor: number][] = [
-  [0, 0.78], [4, 0.66], [7, 0.76], [10, 0.89], [14, 0.95], [17, 0.94], [19, 1.0], [21, 0.95], [24, 0.78]
-];
+const HOURLY_MIDPOINT_OFFSET_S = 1800;
 
-export function calculateLoadAtTime(timeSeconds: number, basePeakMW = 88000): number {
-  const hours = ((timeSeconds % 86400) + 86400) % 86400 / 3600;
-  const upper = LOAD_PROFILE.findIndex(([h]) => h > hours);
-  const [h0, f0] = LOAD_PROFILE[upper - 1];
-  const [h1, f1] = LOAD_PROFILE[upper];
-  // Cosine interpolation keeps the curve's derivative continuous at each anchor hour
-  const t = (1 - Math.cos(((hours - h0) / (h1 - h0)) * Math.PI)) / 2;
-  return Math.round(basePeakMW * (f0 + (f1 - f0) * t));
+/** Linear interpolation between hourly MWmed values placed at each hour's midpoint; clamped at the day edges. */
+export function dayScheduleAt(day: SimulatorDay, simTimeSeconds: number): DaySchedule {
+  const hours = day.hours;
+  const position = (simTimeSeconds - HOURLY_MIDPOINT_OFFSET_S) / 3600;
+  const lower = Math.max(0, Math.min(hours.length - 1, Math.floor(position)));
+  const upper = Math.min(hours.length - 1, lower + 1);
+  const t = Math.max(0, Math.min(1, position - lower));
+  const lerp = (key: Exclude<keyof SimulatorDayHour, 'hour' | 'loadMW'>) =>
+    hours[lower][key] + (hours[upper][key] - hours[lower][key]) * t;
+
+  const hydroMW = lerp('hydroMW');
+  const thermalMW = lerp('thermalMW');
+  const windMW = lerp('windMW');
+  const solarMW = lerp('solarMW');
+  return { hydroMW, thermalMW, windMW, solarMW, demandMW: hydroMW + thermalMW + windMW + solarMW };
 }
 
-export function createInitialSimulation(scenario: GridSimulationState['scenarioId'] = 'pato'): GridSimulationState {
+export function synchronousInertiaH(hydroMW: number, thermalMW: number, totalMW: number): number {
   const fleet = createInitialFleet();
-  let simTimeSeconds = 17.5 * 3600; // 17:30:00 BRT
-  let baseLoadMW = 80000;
-  const events: SimulationEvent[] = [];
+  return totalMW > 0 ? (hydroMW * fleet.hydro.inertiaH + thermalMW * fleet.thermal.inertiaH) / totalMW : 0;
+}
 
-  if (scenario === 'pato') {
-    simTimeSeconds = 17.5 * 3600; // 17:30:00
-    baseLoadMW = calculateLoadAtTime(simTimeSeconds, 88000);
-    const solarPot = calculateSolarPotentialAtTime(simTimeSeconds, fleet.solar.maxCapacityMW);
-    fleet.solar.weatherPotentialMW = solarPot;
-    fleet.solar.actualMW = solarPot;
-    fleet.solar.targetMW = solarPot;
+function setFleetOutput(fleet: PlantFleetState, mw: number): void {
+  fleet.actualMW = mw;
+  fleet.targetMW = mw;
+  if (fleet.weatherPotentialMW !== undefined) fleet.weatherPotentialMW = mw;
+}
 
-    fleet.wind.weatherPotentialMW = 11000;
-    fleet.wind.actualMW = 11000;
-    fleet.wind.targetMW = 11000;
-    fleet.thermal.actualMW = 10000;
-    fleet.thermal.targetMW = 10000;
-    fleet.hydro.actualMW = baseLoadMW - (fleet.solar.actualMW + fleet.wind.actualMW + fleet.thermal.actualMW);
-    fleet.hydro.targetMW = fleet.hydro.actualMW;
+export function createInitialSimulation(
+  scenario: GridSimulationState['scenarioId'] = 'dia',
+  day: SimulatorDay = simulatorDay,
+  dayStartSeconds: number = DAY_START_SECONDS
+): GridSimulationState {
+  const fleet = createInitialFleet();
+  let simTimeSeconds: number;
+  let baseLoadMW: number;
+  let speedMultiplier: number;
 
-    events.push({
-      id: 'init_pato',
-      timestampSeconds: simTimeSeconds,
-      timeLabel: formatSimClock(simTimeSeconds),
-      type: 'info',
-      message: 'Cenário Iniciado: O Crepúsculo Solar (Curva do Pato). Despache hidrelétricas para compensar a perda solar.'
-    });
-  } else if (scenario === 'trip_itaipu') {
-    simTimeSeconds = 14.0 * 3600; // 14:00:00
-    baseLoadMW = 82000;
-    fleet.solar.weatherPotentialMW = 20000;
-    fleet.solar.actualMW = 20000;
-    fleet.solar.targetMW = 20000;
-    fleet.wind.weatherPotentialMW = 10000;
-    fleet.wind.actualMW = 10000;
-    fleet.wind.targetMW = 10000;
-    fleet.thermal.actualMW = 10000;
-    fleet.thermal.targetMW = 10000;
-    fleet.hydro.actualMW = 42000;
-    fleet.hydro.targetMW = 42000;
-
-    events.push({
-      id: 'init_trip',
-      timestampSeconds: simTimeSeconds,
-      timeLabel: formatSimClock(simTimeSeconds),
-      type: 'warning',
-      message: 'Cenário Pronto: Dispare a perda súbita de usina de 2.800 MW para avaliar a resposta inercial e o RoCoF.'
-    });
-  } else if (scenario === 'alta_renovavel') {
-    simTimeSeconds = 12.0 * 3600; // 12:00:00
-    baseLoadMW = 74000;
-    fleet.solar.maxCapacityMW = 35000;
-    fleet.solar.weatherPotentialMW = 32000;
-    fleet.solar.actualMW = 32000;
-    fleet.solar.targetMW = 32000;
-
-    fleet.wind.maxCapacityMW = 30000;
-    fleet.wind.weatherPotentialMW = 26000;
-    fleet.wind.actualMW = 26000;
-    fleet.wind.targetMW = 26000;
-
-    fleet.thermal.actualMW = fleet.thermal.minTechnicalMW; // 6000 MW minimum
-    fleet.thermal.targetMW = fleet.thermal.minTechnicalMW;
-    fleet.hydro.actualMW = 10000; // Recuo forçado das hidrelétricas
-    fleet.hydro.targetMW = 10000;
-
-    events.push({
-      id: 'init_low_inertia',
-      timestampSeconds: simTimeSeconds,
-      timeLabel: formatSimClock(simTimeSeconds),
-      type: 'alert',
-      message: 'Cenário Crítico: 78% da matriz em IBR (Solar/Eólica). Inércia equivalente do SIN reduzida para ~1,0 s. Risco de alta volatilidade.'
-    });
+  if (scenario === 'dia') {
+    simTimeSeconds = dayStartSeconds;
+    speedMultiplier = DAY_SPEEDS[1];
+    const schedule = dayScheduleAt(day, simTimeSeconds);
+    fleet.solar.maxCapacityMW = Math.max(...day.hours.map((h) => h.solarMW));
+    fleet.wind.maxCapacityMW = Math.max(fleet.wind.maxCapacityMW, ...day.hours.map((h) => h.windMW));
+    setFleetOutput(fleet.hydro, schedule.hydroMW);
+    setFleetOutput(fleet.thermal, schedule.thermalMW);
+    setFleetOutput(fleet.solar, schedule.solarMW);
+    setFleetOutput(fleet.wind, schedule.windMW);
+    baseLoadMW = schedule.demandMW;
   } else {
-    // Livre / Sandbox
     simTimeSeconds = 12.0 * 3600;
+    speedMultiplier = 1;
+    setFleetOutput(fleet.hydro, 48000);
+    setFleetOutput(fleet.thermal, 10000);
+    setFleetOutput(fleet.solar, 12000);
+    setFleetOutput(fleet.wind, 10000);
     baseLoadMW = 80000;
-    fleet.hydro.actualMW = 48000;
-    fleet.hydro.targetMW = 48000;
-    fleet.thermal.actualMW = 10000;
-    fleet.thermal.targetMW = 10000;
-    fleet.solar.weatherPotentialMW = 12000;
-    fleet.solar.actualMW = 12000;
-    fleet.solar.targetMW = 12000;
-    fleet.wind.weatherPotentialMW = 10000;
-    fleet.wind.actualMW = 10000;
-    fleet.wind.targetMW = 10000;
-
-    events.push({
-      id: 'init_livre',
-      timestampSeconds: simTimeSeconds,
-      timeLabel: formatSimClock(simTimeSeconds),
-      type: 'info',
-      message: 'Modo Sandbox ativado. Todos os limites e comandos de despacho liberados para manipulação manual.'
-    });
   }
 
   const kineticEnergyMWs = computeKineticEnergyMWs(fleet.hydro, fleet.thermal);
@@ -342,7 +319,9 @@ export function createInitialSimulation(scenario: GridSimulationState['scenarioI
   return {
     simTimeSeconds,
     elapsedSeconds: 0,
-    speedMultiplier: 1,
+    speedMultiplier,
+    eventSlowdownUntilSeconds: 0,
+    isDayFinished: false,
     integratorRemainderSeconds: 0,
     frequencyHz: F_NOMINAL,
     rocofHzS: 0,
@@ -360,8 +339,12 @@ export function createInitialSimulation(scenario: GridSimulationState['scenarioI
     isOverfrequencyAlert: false,
     isIbrFrequencyWattActive: false,
     isPrimaryControlEnabled: true,
+    isSecondaryControlEnabled: scenario === 'dia',
+    secondaryControlMW: 0,
+    hydroTrippedMW: 0,
+    scheduledTrips: scenario === 'dia' ? DAY_SCHEDULED_TRIPS.filter((t) => t.atSeconds >= simTimeSeconds) : [],
     scenarioId: scenario,
-    events
+    events: []
   };
 }
 
@@ -420,28 +403,46 @@ export function stepSimulation(state: GridSimulationState, dtSeconds: number): G
   const newSolar = { ...state.solar };
   const newWind = { ...state.wind };
 
-  if (state.scenarioId === 'pato') {
-    newSolar.weatherPotentialMW = calculateSolarPotentialAtTime(newSimTime, newSolar.maxCapacityMW);
-    newSolar.targetMW = newSolar.weatherPotentialMW * (1 - (newSolar.curtailmentPercent ?? 0) / 100);
-    currentBaseLoad = calculateLoadAtTime(newSimTime, 88000);
-  } else if (state.scenarioId === 'alta_renovavel') {
-    const windNoise = Math.sin(newElapsed * 0.15) * 600;
-    newWind.weatherPotentialMW = Math.min(newWind.maxCapacityMW, Math.max(10000, 26000 + windNoise));
-    newWind.targetMW = newWind.weatherPotentialMW * (1 - (newWind.curtailmentPercent ?? 0) / 100);
+  const newHydro = { ...state.hydro };
+  const newThermal = { ...state.thermal };
+
+  if (state.scenarioId === 'dia') {
+    const schedule = dayScheduleAt(simulatorDay, newSimTime);
+    newHydro.targetMW = Math.max(0, schedule.hydroMW - state.hydroTrippedMW);
+    newThermal.targetMW = schedule.thermalMW;
+    newSolar.weatherPotentialMW = schedule.solarMW;
+    newSolar.targetMW = schedule.solarMW * (1 - (newSolar.curtailmentPercent ?? 0) / 100);
+    newWind.weatherPotentialMW = schedule.windMW;
+    newWind.targetMW = schedule.windMW * (1 - (newWind.curtailmentPercent ?? 0) / 100);
+    currentBaseLoad = schedule.demandMW;
   }
 
   const hydroGovernorOffsetMW = state.isPrimaryControlEnabled
     ? primaryGovernorOffsetMW(state.frequencyHz, state.hydro.maxCapacityMW)
     : 0;
+  const hydroTargetWith = (cagMW: number) =>
+    Math.max(newHydro.minTechnicalMW, Math.min(newHydro.maxCapacityMW, newHydro.targetMW + cagMW + hydroGovernorOffsetMW));
 
-  const newHydro = { ...state.hydro };
-  const hydroEffectiveTarget = Math.max(
-    newHydro.minTechnicalMW,
-    Math.min(newHydro.maxCapacityMW, newHydro.targetMW + hydroGovernorOffsetMW)
-  );
-  newHydro.actualMW = rampToward(newHydro.actualMW, hydroEffectiveTarget, newHydro.rampRateMWs, dtSeconds);
+  let secondaryControlMW = 0;
+  if (state.isSecondaryControlEnabled) {
+    // Single-area ACE = β·Δf with β the natural response (droop + load damping); ΔP_C = −(1/T)∫ACE dt
+    const governorMWPerHz = state.isPrimaryControlEnabled
+      ? (state.hydro.maxCapacityMW * GOVERNOR_PARTICIPATION) / (GOVERNOR_DROOP_R * F_NOMINAL)
+      : 0;
+    const biasMWPerHz = governorMWPerHz + (LOAD_DAMPING_D * state.actualLoadMW) / F_NOMINAL;
+    const aceMW = biasMWPerHz * (state.frequencyHz - F_NOMINAL);
+    const capacityBounded = (mw: number) =>
+      Math.max(newHydro.minTechnicalMW - newHydro.targetMW, Math.min(newHydro.maxCapacityMW - newHydro.targetMW, mw));
+    const candidate = capacityBounded(state.secondaryControlMW - (aceMW / SECONDARY_CONTROL_TIME_S) * dtSeconds);
+    // Conditional integration: while the fleet is ramp-limited, integrating further only winds up an overshoot
+    const pendingRampMW = hydroTargetWith(candidate) - newHydro.actualMW;
+    const isRampLimited = Math.abs(pendingRampMW) > newHydro.rampRateMWs * dtSeconds;
+    const pushesSameWay = Math.sign(candidate - state.secondaryControlMW) === Math.sign(pendingRampMW);
+    secondaryControlMW = isRampLimited && pushesSameWay ? capacityBounded(state.secondaryControlMW) : candidate;
+  }
 
-  const newThermal = { ...state.thermal };
+  newHydro.actualMW = rampToward(newHydro.actualMW, hydroTargetWith(secondaryControlMW), newHydro.rampRateMWs, dtSeconds);
+
   const thermalEffectiveTarget = newThermal.isOnline
     ? Math.max(newThermal.minTechnicalMW, Math.min(newThermal.maxCapacityMW, newThermal.targetMW))
     : 0;
@@ -535,22 +536,39 @@ export function stepSimulation(state: GridSimulationState, dtSeconds: number): G
     blackoutReason,
     isOverfrequencyAlert: newFreq >= OVERFREQUENCY_ALERT_HZ,
     isIbrFrequencyWattActive,
+    secondaryControlMW,
     events: events.slice(0, 40)
   };
 }
 
+export function effectiveSpeed(state: GridSimulationState): number {
+  if (state.speedMultiplier === 0) return 0;
+  return state.simTimeSeconds < state.eventSlowdownUntilSeconds
+    ? Math.min(state.speedMultiplier, EVENT_SPEED)
+    : state.speedMultiplier;
+}
+
 /** Advances the simulation by one rendered frame using fixed sub-steps. */
 export function advanceSimulation(state: GridSimulationState, frameSeconds: number): GridSimulationState {
-  if (state.isBlackout || state.speedMultiplier === 0 || frameSeconds <= 0) {
+  const speed = effectiveSpeed(state);
+  if (state.isBlackout || state.isDayFinished || speed === 0 || frameSeconds <= 0) {
     return state;
   }
 
-  const budget = state.integratorRemainderSeconds + Math.min(frameSeconds, MAX_FRAME_SECONDS) * state.speedMultiplier;
+  const budget = state.integratorRemainderSeconds + Math.min(frameSeconds, MAX_FRAME_SECONDS) * speed;
   // Epsilon absorbs float error so a 0.03 s budget yields three steps, not two
   const steps = Math.floor(budget / SIM_STEP_SECONDS + 1e-9);
 
   let next = state;
   for (let i = 0; i < steps && !next.isBlackout; i++) {
+    const [trip, ...remainingTrips] = next.scheduledTrips;
+    if (trip && next.simTimeSeconds >= trip.atSeconds) {
+      // The rest of this frame's budget was sized for the accelerated clock; drop it and resume in slow motion
+      return { ...applyGeneratorTrip({ ...next, scheduledTrips: remainingTrips }, trip.mw), integratorRemainderSeconds: 0 };
+    }
+    if (next.scenarioId === 'dia' && next.simTimeSeconds >= DAY_END_SECONDS) {
+      return { ...next, isDayFinished: true, integratorRemainderSeconds: 0 };
+    }
     next = stepSimulation(next, SIM_STEP_SECONDS);
   }
 
@@ -567,6 +585,9 @@ export function applyGeneratorTrip(state: GridSimulationState, tripMW: number): 
 
   return {
     ...state,
+    hydroTrippedMW: state.hydroTrippedMW + lostMW,
+    eventSlowdownUntilSeconds:
+      state.scenarioId === 'dia' ? state.simTimeSeconds + EVENT_SLOWDOWN_SECONDS : state.eventSlowdownUntilSeconds,
     hydro: {
       ...state.hydro,
       actualMW: state.hydro.actualMW - lostMW,
