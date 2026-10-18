@@ -64,7 +64,7 @@ export interface GridSimulationState {
   isPrimaryControlEnabled: boolean;
 
   // Scenario
-  scenarioId: 'pato' | 'trip_itaipu' | 'alta_renovavel' | 'livre';
+  scenarioId: 'pato' | 'alta_renovavel' | 'livre';
 
   // Audit event log (latest events)
   events: SimulationEvent[];
@@ -265,27 +265,6 @@ export function createInitialSimulation(scenario: GridSimulationState['scenarioI
       timeLabel: formatSimClock(simTimeSeconds),
       type: 'info',
       message: 'Cenário Iniciado: O Crepúsculo Solar (Curva do Pato). Despache hidrelétricas para compensar a perda solar.'
-    });
-  } else if (scenario === 'trip_itaipu') {
-    simTimeSeconds = 14.0 * 3600; // 14:00:00
-    baseLoadMW = 82000;
-    fleet.solar.weatherPotentialMW = 20000;
-    fleet.solar.actualMW = 20000;
-    fleet.solar.targetMW = 20000;
-    fleet.wind.weatherPotentialMW = 10000;
-    fleet.wind.actualMW = 10000;
-    fleet.wind.targetMW = 10000;
-    fleet.thermal.actualMW = 10000;
-    fleet.thermal.targetMW = 10000;
-    fleet.hydro.actualMW = 42000;
-    fleet.hydro.targetMW = 42000;
-
-    events.push({
-      id: 'init_trip',
-      timestampSeconds: simTimeSeconds,
-      timeLabel: formatSimClock(simTimeSeconds),
-      type: 'warning',
-      message: 'Cenário Pronto: Dispare a perda súbita de usina de 2.800 MW para avaliar a resposta inercial e o RoCoF.'
     });
   } else if (scenario === 'alta_renovavel') {
     simTimeSeconds = 12.0 * 3600; // 12:00:00

@@ -161,7 +161,7 @@ describe('load profile', () => {
   });
 
   it('starts every scenario balanced', () => {
-    for (const id of ['pato', 'trip_itaipu', 'alta_renovavel', 'livre'] as const) {
+    for (const id of ['pato', 'alta_renovavel', 'livre'] as const) {
       const s = runFor(createInitialSimulation(id), 5);
       expect(Math.abs(s.frequencyHz - F_NOMINAL), id).toBeLessThan(0.1);
     }
