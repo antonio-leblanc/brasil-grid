@@ -124,11 +124,11 @@ export const PRIMARY_RESERVE_DOWN_MW = 5000;
 // Didactic CAG integral time: Kundur §11.1 leaves K_I to the operator and ONS cycle settings are not modelled
 export const SECONDARY_CONTROL_TIME_S = 60;
 
-// Real-time playback while a contingency transient evolves, then back to the day's accelerated clock
-export const EVENT_SPEED = 1;
+// Near-real-time playback while a contingency transient evolves, then back to the day's accelerated clock
+export const EVENT_SPEED = 2;
 export const EVENT_SLOWDOWN_SECONDS = 30;
 
-export const DAY_SPEEDS = [120, 360, 900] as const;
+export const DAY_SPEEDS = [360, 900, 1800] as const;
 export const DAY_START_SECONDS = 5 * 3600;
 export const DAY_END_SECONDS = 24 * 3600;
 export const DEFAULT_TRIP_MW = 2800;

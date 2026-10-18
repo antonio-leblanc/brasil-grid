@@ -12,6 +12,7 @@ import {
   DAY_END_SECONDS,
   DAY_SCHEDULED_TRIPS,
   EVENT_SLOWDOWN_SECONDS,
+  EVENT_SPEED,
   SECONDARY_CONTROL_TIME_S,
   createInitialSimulation,
   dayScheduleAt,
@@ -195,7 +196,7 @@ describe('real day (ONS balance, 31/08/2026)', () => {
     expect(s.scheduledTrips).toHaveLength(DAY_SCHEDULED_TRIPS.length - 1);
     expect(s.eventSlowdownUntilSeconds - noon - EVENT_SLOWDOWN_SECONDS).toBeGreaterThanOrEqual(0);
     expect(s.eventSlowdownUntilSeconds - noon - EVENT_SLOWDOWN_SECONDS).toBeLessThan(SIM_STEP_SECONDS * 2);
-    expect(effectiveSpeed(s)).toBe(1);
+    expect(effectiveSpeed(s)).toBe(EVENT_SPEED);
   });
 
   it('a midday loss has a steeper RoCoF than the same loss at the evening peak', () => {

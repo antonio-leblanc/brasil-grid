@@ -178,7 +178,7 @@ export const DispatchSimulatorModal: React.FC<DispatchSimulatorModalProps> = ({
           <h2 className="text-sm font-semibold text-slate-100">Simulador 60 Hz</h2>
 
           <div className="flex items-center gap-2">
-            {isEventSlowdown && <span className="text-xs text-amber-400">tempo real</span>}
+            {isEventSlowdown && <span className="text-xs text-amber-400">câmera lenta</span>}
             <span className="font-mono tabular-nums text-xs text-slate-400">
               {formatSimClock(simState.simTimeSeconds)}
             </span>
