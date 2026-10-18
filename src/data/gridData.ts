@@ -82,8 +82,8 @@ export const referenceGridSnapshot: GridSnapshot = {
     { from: 'S', to: 'SE/CO', flowMW: 2340, direction: 'EXPORT' }
   ],
   generationMix: [
-    { source: 'Hidráulica', mw: 48200, pct: 56.4, color: '#10b981' },
-    { source: 'Eólica', mw: 13500, pct: 15.8, color: '#38bdf8' },
+    { source: 'Hidráulica', mw: 48200, pct: 56.4, color: '#38bdf8' },
+    { source: 'Eólica', mw: 13500, pct: 15.8, color: '#34d399' },
     { source: 'Solar Fotov.', mw: 9600, pct: 11.2, color: '#facc15' },
     { source: 'Térmica/Gás', mw: 8200, pct: 9.6, color: '#f97316' },
     { source: 'Biomassa', mw: 4000, pct: 4.7, color: '#a855f7' },

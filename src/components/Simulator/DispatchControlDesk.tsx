@@ -157,7 +157,7 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
         <div className="divide-y divide-slate-800/70 border-y border-slate-800/70">
-          <FleetRow label="Hidrelétricas" dotClass="bg-emerald-400" fleet={hydro} detail={target(hydro)}>
+          <FleetRow label="Hidrelétricas" dotClass="bg-sky-400" fleet={hydro} detail={target(hydro)}>
             {!isDay && (
               <>
                 <input
@@ -167,7 +167,7 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
                   step={500}
                   value={hydro.targetMW}
                   onChange={(e) => onUpdateHydroTarget(Number(e.target.value))}
-                  className={`${slider} text-emerald-400`}
+                  className={`${slider} text-sky-400`}
                   aria-label="Alvo das hidrelétricas"
                 />
                 <div className="mt-1.5 flex gap-1">
@@ -214,7 +214,7 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
 
         <div className="divide-y divide-slate-800/70 border-y border-slate-800/70 md:border-t">
           <FleetRow label="Solar" dotClass="bg-amber-400" fleet={solar} />
-          <FleetRow label="Eólica" dotClass="bg-sky-400" fleet={wind} />
+          <FleetRow label="Eólica" dotClass="bg-emerald-400" fleet={wind} />
           {isSecondaryControlEnabled && (
             <div className="py-2.5 flex items-baseline justify-between text-xs">
               <span className="text-slate-400" title="Correção da regulação secundária sobre o programa das hidrelétricas">

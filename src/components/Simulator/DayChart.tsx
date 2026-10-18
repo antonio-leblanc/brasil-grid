@@ -20,9 +20,9 @@ const STACK_H = 160;
 const INERTIA_H = 40;
 
 const LAYERS: { key: string; label: string; fill: string; mw: (s: DaySchedule) => number }[] = [
-  { key: 'hydro', label: 'Hidro', fill: '#34d399', mw: (s) => s.hydroMW },
+  { key: 'hydro', label: 'Hidro', fill: '#38bdf8', mw: (s) => s.hydroMW },
   { key: 'thermal', label: 'Térmica', fill: '#f43f5e', mw: (s) => s.thermalMW },
-  { key: 'wind', label: 'Eólica', fill: '#38bdf8', mw: (s) => s.windMW },
+  { key: 'wind', label: 'Eólica', fill: '#34d399', mw: (s) => s.windMW },
   { key: 'solar', label: 'Solar centralizada', fill: '#fbbf24', mw: (s) => s.solarMW - s.mmgdMW },
   { key: 'mmgd', label: 'Solar MMGD', fill: MMGD_FILL, mw: (s) => s.mmgdMW }
 ];

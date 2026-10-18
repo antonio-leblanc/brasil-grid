@@ -389,9 +389,9 @@ export const GridMap: React.FC<GridMapProps> = ({
             'circle-color': [
               'match',
               ['get', 'type'],
-              'hidro', '#34d399',
+              'hidro', '#38bdf8',
               'solar', '#fbbf24',
-              'eolica', '#38bdf8',
+              'eolica', '#34d399',
               'nuclear', '#f97316',
               '#f43f5e'
             ],
@@ -416,9 +416,9 @@ export const GridMap: React.FC<GridMapProps> = ({
             'circle-color': [
               'match',
               ['get', 'type'],
-              'hidro', '#34d399',
+              'hidro', '#38bdf8',
               'solar', '#fbbf24',
-              'eolica', '#38bdf8',
+              'eolica', '#34d399',
               'nuclear', '#f97316',
               '#f43f5e'
             ],
@@ -426,9 +426,9 @@ export const GridMap: React.FC<GridMapProps> = ({
             'circle-stroke-color': [
               'match',
               ['get', 'type'],
-              'hidro', '#6ee7b7',
+              'hidro', '#7dd3fc',
               'solar', '#fde047',
-              'eolica', '#7dd3fc',
+              'eolica', '#6ee7b7',
               'nuclear', '#fdba74',
               '#fda4af'
             ],

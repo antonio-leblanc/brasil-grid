@@ -244,9 +244,9 @@ export function App() {
                     <div className="text-[11px] text-slate-500 mb-1.5">Geração</div>
                     <ul className="grid grid-cols-2 gap-x-2 gap-y-1">
                       {[
-                        ['bg-emerald-400', 'Hidro (UHE)'],
+                        ['bg-sky-400', 'Hidro (UHE)'],
                         ['bg-amber-400', 'Solar (UFV)'],
-                        ['bg-sky-400', 'Eólica (EOL)'],
+                        ['bg-emerald-400', 'Eólica (EOL)'],
                         ['bg-orange-500', 'Nuclear (UTN)'],
                         ['bg-rose-500', 'Térmica / Biomassa (UTE)']
                       ].map(([color, label]) => (

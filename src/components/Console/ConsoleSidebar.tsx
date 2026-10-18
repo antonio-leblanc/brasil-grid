@@ -7,7 +7,7 @@ import {
   getStatusTheme,
   type InterchangeId
 } from '../../data/interchangeData';
-import { X, Droplet, Sun, Wind, Atom, Flame } from 'lucide-react';
+import { Droplet, Sun, Wind, Atom, Flame } from 'lucide-react';
 import { FilterButton } from './FilterButton';
 import { NodeInspector } from '../Inspector/NodeInspector';
 import {
@@ -101,14 +101,6 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
       <div className={cn('flex-1 min-h-0 flex flex-col', hasSelection && 'hidden')}>
         <div className="h-10 px-4 border-b border-slate-800 flex items-center justify-between">
           <span className="text-sm text-slate-200">Painel do SIN</span>
-          <button
-            type="button"
-            onClick={() => setIsOpen(false)}
-            className="p-1 rounded-md text-slate-500 hover:text-slate-200 hover:bg-slate-900 transition-colors cursor-pointer"
-            aria-label="Fechar painel lateral"
-          >
-            <X className="w-4 h-4" />
-          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto divide-y divide-slate-800/70 text-sm">
