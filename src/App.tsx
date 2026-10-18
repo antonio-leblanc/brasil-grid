@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+import { X } from 'lucide-react';
 import { GridMap } from './components/Map/GridMap';
 import { ConsoleHeader } from './components/Console/ConsoleHeader';
 import { ConsoleSidebar } from './components/Console/ConsoleSidebar';
 import { ConsoleBottomBar } from './components/Console/ConsoleBottomBar';
-import { NodeInspector } from './components/Inspector/NodeInspector';
 import { LoadCurveModal } from './components/Telemetry/LoadCurveModal';
 import { LearnView } from './components/Learn/LearnView';
 import { useOnsTelemetry } from './services/onsApi';
@@ -166,6 +166,24 @@ export function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [handlePopState]);
 
+  const hasSelection = !!(selectedPlant || selectedLine);
+  const isPanelVisible = isSidebarOpen || hasSelection;
+  const isAnyModalOpen = isLoadCurveOpen || isSimulatorOpen || isInterchangeOpen;
+
+  const clearSelection = useCallback(() => {
+    setSelectedPlant(null);
+    setSelectedLine(null);
+  }, []);
+
+  useEffect(() => {
+    if (!hasSelection || isAnyModalOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') clearSelection();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [hasSelection, isAnyModalOpen, clearSelection]);
+
   if (mode === 'guia') {
     return (
       <LearnView
@@ -178,10 +196,12 @@ export function App() {
 
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col bg-[#07090e] text-slate-100 font-sans select-none">
-      {/* 1. SCADA Console Top Bar */}
       <ConsoleHeader
-        isSidebarOpen={isSidebarOpen}
-        setIsSidebarOpen={setIsSidebarOpen}
+        isSidebarOpen={isPanelVisible}
+        setIsSidebarOpen={(open) => {
+          if (!open) clearSelection();
+          setIsSidebarOpen(open);
+        }}
         telemetry={telemetry}
         isLive={isLive}
         isLoading={isTelemetryLoading}
@@ -191,9 +211,7 @@ export function App() {
         onOpenLearn={() => setMode('guia')}
       />
 
-      {/* 2. Main Full-Viewport Spatial Canvas & HUD Overlays */}
       <div className="flex-1 relative overflow-hidden flex">
-        {/* Left Retractable Intelligence Drawer */}
         <ConsoleSidebar
           isOpen={isSidebarOpen}
           setIsOpen={setIsSidebarOpen}
@@ -209,6 +227,9 @@ export function App() {
             setSelectedLine(line);
             setSelectedPlant(null);
           }}
+          selectedPlant={selectedPlant}
+          selectedLine={selectedLine}
+          onClearSelection={clearSelection}
           showSubsystems={showSubsystems}
           setShowSubsystems={setShowSubsystems}
           onOpenInterchangeModal={(id) => {
@@ -217,7 +238,6 @@ export function App() {
           }}
         />
 
-        {/* The Core Full-Bleed Map Canvas */}
         <div className="flex-1 h-full w-full relative">
           <GridMap
             selectedPlant={selectedPlant}
@@ -230,81 +250,57 @@ export function App() {
             telemetry={telemetry}
           />
 
-          {/* On-Demand SCADA Map Legend (Bottom-Left) */}
-          <div className="absolute bottom-3 left-3 z-10 font-mono">
+          <div className="absolute bottom-3 left-3 z-10">
             {isLegendOpen && (
-              <div className="mb-2 w-72 rounded-lg border border-slate-800 bg-slate-950/95 p-3 text-[11px] shadow-2xl backdrop-blur-md">
-                <div className="flex items-center justify-between border-b border-slate-800/80 pb-1.5 mb-2">
-                  <span className="font-bold text-slate-200 uppercase tracking-wider text-[10px]">
-                    Convenções da Rede (SIN)
-                  </span>
+              <div className="mb-2 w-64 rounded-md border border-slate-800 bg-[#090c13] p-3 text-xs text-slate-300">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-slate-200">Legenda</span>
                   <button
                     onClick={() => setIsLegendOpen(false)}
-                    className="text-slate-500 hover:text-slate-300 px-1 py-0.5 text-xs leading-none"
+                    className="p-0.5 rounded-md text-slate-500 hover:text-slate-200 transition-colors cursor-pointer"
                     aria-label="Fechar legenda"
                   >
-                    ✕
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
-                {/* Linhas de Transmissão */}
-                <div className="space-y-1.5 mb-3">
-                  <div className="text-[10px] uppercase font-bold text-slate-400">Transmissão</div>
-                  <div className="flex items-center justify-between text-slate-300">
-                    <div className="flex items-center space-x-1.5">
-                      <span className="w-3 h-0.5 rounded bg-amber-400"></span>
-                      <span>CC ±800 / ±600 kV</span>
-                    </div>
-                    <span className="text-[10px] text-slate-500 font-mono">HVDC</span>
-                  </div>
-                  <div className="flex items-center justify-between text-slate-300">
-                    <div className="flex items-center space-x-1.5">
-                      <span className="w-3 h-0.5 rounded bg-cyan-400"></span>
-                      <span>CA 765 / 500–525 kV</span>
-                    </div>
-                    <span className="text-[10px] text-slate-500 font-mono">Rede Básica</span>
-                  </div>
-                  <div className="flex items-center justify-between text-slate-300">
-                    <div className="flex items-center space-x-1.5">
-                      <span className="w-3 h-0.5 rounded bg-purple-400"></span>
-                      <span>CA 440 / 230 kV</span>
-                    </div>
-                    <span className="text-[10px] text-slate-500 font-mono">Regional</span>
-                  </div>
-                </div>
+                <div className="text-[11px] text-slate-500 mb-1.5">Transmissão</div>
+                <ul className="space-y-1 mb-3">
+                  {[
+                    ['bg-amber-400', 'CC ±800 / ±600 kV', 'HVDC'],
+                    ['bg-cyan-400', 'CA 765 / 500–525 kV', 'Rede básica'],
+                    ['bg-purple-400', 'CA 440 / 230 kV', 'Regional']
+                  ].map(([color, label, tag]) => (
+                    <li key={label} className="flex items-center justify-between">
+                      <span className="flex items-center gap-2">
+                        <span className={`w-3 h-0.5 ${color}`} />
+                        <span className="font-mono">{label}</span>
+                      </span>
+                      <span className="text-[11px] text-slate-500">{tag}</span>
+                    </li>
+                  ))}
+                </ul>
 
-                {/* Usinas Geradoras */}
-                <div className="space-y-1.5 mb-2.5">
-                  <div className="text-[10px] uppercase font-bold text-slate-400">Geração</div>
-                  <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-slate-300">
-                    <div className="flex items-center space-x-1.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                      <span>Hidro (UHE)</span>
-                    </div>
-                    <div className="flex items-center space-x-1.5">
-                      <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-                      <span>Solar (UFV)</span>
-                    </div>
-                    <div className="flex items-center space-x-1.5">
-                      <span className="w-2 h-2 rounded-full bg-sky-400"></span>
-                      <span>Eólica (EOL)</span>
-                    </div>
-                    <div className="flex items-center space-x-1.5">
-                      <span className="w-2 h-2 rounded-full bg-orange-500"></span>
-                      <span>Nuclear (UTN)</span>
-                    </div>
-                    <div className="flex items-center space-x-1.5 col-span-2">
-                      <span className="w-2 h-2 rounded-full bg-rose-500"></span>
-                      <span>Térmica / Biomassa (UTE)</span>
-                    </div>
-                  </div>
-                </div>
+                <div className="text-[11px] text-slate-500 mb-1.5">Geração</div>
+                <ul className="grid grid-cols-2 gap-x-2 gap-y-1">
+                  {[
+                    ['bg-emerald-400', 'Hidro (UHE)'],
+                    ['bg-amber-400', 'Solar (UFV)'],
+                    ['bg-sky-400', 'Eólica (EOL)'],
+                    ['bg-orange-500', 'Nuclear (UTN)'],
+                    ['bg-rose-500', 'Térmica / Biomassa (UTE)']
+                  ].map(([color, label]) => (
+                    <li key={label} className="flex items-center gap-2 last:col-span-2">
+                      <span className={`w-2 h-2 rounded-full ${color}`} />
+                      <span>{label}</span>
+                    </li>
+                  ))}
+                </ul>
 
-                {/* Limites de Subsistemas */}
                 {showSubsystems && (
-                  <div className="pt-2 border-t border-slate-800/80 flex items-center space-x-2 text-slate-400 text-[10px]">
-                    <span className="w-2 h-2 rounded-sm bg-amber-500/30 border border-amber-500/70 border-dashed"></span>
-                    <span>4 Subsistemas ONS (SE/CO, S, NE, N)</span>
+                  <div className="mt-3 pt-2 border-t border-slate-800 flex items-center gap-2 text-[11px] text-slate-400">
+                    <span className="w-2.5 h-2.5 border border-amber-500/70 border-dashed" />
+                    <span>4 subsistemas ONS (SE/CO, S, NE, N)</span>
                   </div>
                 )}
               </div>
@@ -312,41 +308,23 @@ export function App() {
 
             <button
               onClick={() => setIsLegendOpen((prev) => !prev)}
-              aria-label="Abrir legenda técnica do mapa"
-              title="Legenda do mapa"
-              className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-md border text-xs font-mono transition-all backdrop-blur-md ${
-                isLegendOpen
-                  ? 'bg-cyan-950/80 border-cyan-500/60 text-cyan-300 shadow-lg shadow-cyan-950/50'
-                  : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
-              }`}
+              aria-label="Abrir legenda do mapa"
+              aria-expanded={isLegendOpen}
+              className="h-7 px-2.5 rounded-md border border-slate-800 bg-[#090c13] text-xs text-slate-400 hover:text-slate-100 transition-colors cursor-pointer"
             >
-              <span className="flex items-center justify-center w-4 h-4 rounded-full border border-current text-[10px] font-bold">
-                ?
-              </span>
-              <span className="hidden sm:inline text-[10px] tracking-wide uppercase font-semibold">Legenda</span>
+              Legenda
             </button>
           </div>
         </div>
 
-        {/* Right Engineering Spec Sheet Inspector Drawer */}
-        <NodeInspector
-          plant={selectedPlant}
-          line={selectedLine}
-          onClose={() => {
-            setSelectedPlant(null);
-            setSelectedLine(null);
-          }}
-        />
       </div>
 
-      {/* 3. Bottom Grid Telemetry & Intercâmbio Bar */}
       <ConsoleBottomBar
         telemetry={telemetry}
         onOpenCurve={() => setIsLoadCurveOpen(true)}
         onOpenInterchanges={() => setIsInterchangeOpen(true)}
       />
 
-      {/* 4. Interactive 24h Load Curve & Duck Curve Modal */}
       <LoadCurveModal
         isOpen={isLoadCurveOpen}
         onClose={() => setIsLoadCurveOpen(false)}
@@ -356,7 +334,6 @@ export function App() {
         onRefresh={refreshTelemetry}
       />
 
-      {/* 5. Interactive 60 Hz Dispatch & Stability Simulator Modal */}
       {isSimulatorOpen && (
         <Suspense fallback={null}>
           <DispatchSimulatorModal
@@ -366,7 +343,6 @@ export function App() {
         </Suspense>
       )}
 
-      {/* 6. Regional Interchanges & Bottlenecks SCADA Modal */}
       {isInterchangeOpen && (
         <Suspense fallback={null}>
           <InterchangeModal

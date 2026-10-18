@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { energyChainStages } from '../../data/energyChainData';
 import { SourcesList } from '../Sources/SourcesList';
-import { Zap, ArrowRight, Building2, TrendingUp, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { cn } from '../../utils/cn';
 
 export const ValueChainSection: React.FC = () => {
   const [selectedId, setSelectedId] = useState<string>('comercializacao');
@@ -9,173 +9,109 @@ export const ValueChainSection: React.FC = () => {
   const activeStage = energyChainStages.find((s) => s.id === selectedId) || energyChainStages[3];
 
   return (
-    <section className="space-y-8">
-      {/* Section Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-2">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono">
-          <Zap className="w-3.5 h-3.5" />
-          <span>CADEIA DE VALOR DO SETOR ELÉTRICO BRASILEIRO (SEB)</span>
-        </div>
-        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-wide font-mono uppercase">
-          Arquitetura Operativa & Regulatória
-        </h2>
-        <p className="text-xs font-mono text-slate-400">
+    <section className="space-y-6">
+      <header>
+        <h2 className="text-lg font-semibold text-slate-100">Cadeia de valor do setor elétrico</h2>
+        <p className="mt-1 text-xs text-slate-400">
           Quatro elos funcionais: limites físicos de tensão, governança (ANEEL/ONS) e liquidação contábil CCEE.
         </p>
-      </div>
+      </header>
 
-      {/* 4 Interactive Process Steps */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
         {energyChainStages.map((stage) => {
           const isSelected = stage.id === selectedId;
-          const badgeText =
-            stage.id === 'geracao'
-              ? 'ATÉ 500 kV'
-              : stage.id === 'transmissao'
-              ? '230 a ±800 kV'
-              : stage.id === 'distribuicao'
-              ? '13,8 kV a 127 V'
-              : 'CONTRATOS & MCP';
-
           return (
-            <div
+            <button
               key={stage.id}
+              type="button"
               onClick={() => setSelectedId(stage.id)}
-              className={`cursor-pointer rounded-xl p-5 border transition-all relative overflow-hidden ${
+              aria-pressed={isSelected}
+              className={cn(
+                'rounded-md border px-3 py-2.5 text-left transition-colors cursor-pointer',
                 isSelected
-                  ? 'bg-slate-900 border-cyan-500/80 shadow-lg shadow-cyan-500/10 ring-1 ring-cyan-500/50'
-                  : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80'
-              }`}
+                  ? 'border-cyan-500/60 bg-slate-900'
+                  : 'border-slate-800 hover:border-slate-700 hover:bg-slate-900/50'
+              )}
             >
-              {/* Top step number */}
-              <div className="flex items-center justify-between mb-3">
-                <span className={`font-mono text-2xl font-black ${isSelected ? 'text-cyan-400' : 'text-slate-600'}`}>
-                  {stage.number}
-                </span>
-                <span className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded ${
-                  isSelected ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 'bg-slate-800 text-slate-400'
-                }`}>
-                  {badgeText}
-                </span>
-              </div>
-
-              <h3 className="text-lg font-bold text-white mb-1 font-mono">{stage.name}</h3>
-              <p className="text-xs text-slate-400 line-clamp-2 font-mono">{stage.subtitle}</p>
-
-              {/* Selection indicator pill */}
-              <div className="mt-4 flex items-center text-xs font-mono text-cyan-400 font-medium">
-                <span>{isSelected ? 'Explorando elo' : 'Clique para auditar'}</span>
-                <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </div>
-            </div>
+              <span className={cn('font-mono text-xs tabular-nums', isSelected ? 'text-cyan-300' : 'text-slate-500')}>
+                {stage.number}
+              </span>
+              <span className="block mt-0.5 text-sm font-semibold text-slate-100">{stage.name}</span>
+              <span className="block mt-0.5 text-[11px] text-slate-400 line-clamp-2">{stage.subtitle}</span>
+            </button>
           );
         })}
       </div>
 
-      {/* Detailed Selected Stage Breakdown */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 sm:p-8 backdrop-blur-md shadow-2xl">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Left Column: Core Narrative */}
-          <div className="flex-1 space-y-6">
-            <div>
-              <div className="flex flex-wrap items-center gap-2 mb-2">
-                <span className="font-mono text-cyan-400 text-xs px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-800/40 font-semibold">
-                  ELO {activeStage.number} / 04
-                </span>
-                <span className="text-slate-400 text-xs font-mono bg-slate-950/80 px-2 py-0.5 rounded border border-slate-800">
-                  {activeStage.voltage}
-                </span>
-              </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 font-mono uppercase">{activeStage.name}</h3>
-              <div className="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80 font-mono text-xs sm:text-sm text-slate-300 leading-normal">
-                {activeStage.description}
-              </div>
-            </div>
-
-            {/* Economics & Regulation Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div className="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4">
-                <div className="flex items-center space-x-2 text-amber-400 text-xs font-mono mb-1.5">
-                  <TrendingUp className="w-4 h-4" />
-                  <span className="font-bold uppercase">Modelo de Remuneração</span>
-                </div>
-                <p className="text-xs text-slate-300 leading-normal font-mono">
-                  {activeStage.revenueModel}
-                </p>
-              </div>
-
-              <div className="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4">
-                <div className="flex items-center space-x-2 text-cyan-400 text-xs font-mono mb-1.5">
-                  <ShieldAlert className="w-4 h-4" />
-                  <span className="font-bold uppercase">Regulação & Governança</span>
-                </div>
-                <p className="text-xs text-slate-300 leading-normal font-mono">
-                  {activeStage.regulator}
-                </p>
-              </div>
-            </div>
-
-            {/* Strategic Highlights */}
-            <div className="space-y-2 pt-2">
-              <h4 className="text-xs font-mono uppercase tracking-wider text-slate-400">Pontos Estratégicos & Dinâmica Operacional</h4>
-              <div className="space-y-2.5">
-                {activeStage.highlights.map((h, i) => {
-                  const colonIndex = h.indexOf(':');
-                  return (
-                    <div key={i} className="flex items-start space-x-2.5 text-xs text-slate-300 font-mono">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
-                      {colonIndex !== -1 ? (
-                        <span className="leading-normal">
-                          <strong className="text-white font-semibold">{h.slice(0, colonIndex)}:</strong>
-                          {h.slice(colonIndex + 1)}
-                        </span>
-                      ) : (
-                        <span className="leading-normal">{h}</span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+      <div className="border-t border-slate-800 pt-6 flex flex-col lg:flex-row gap-8">
+        <div className="flex-1 space-y-5">
+          <div>
+            <h3 className="text-base font-semibold text-slate-100">{activeStage.name}</h3>
+            <p className="mt-1 font-mono text-xs text-slate-400">{activeStage.voltage}</p>
+            <p className="mt-3 text-sm text-slate-300 leading-relaxed">{activeStage.description}</p>
           </div>
 
-          {/* Right Column: Key Metrics & Companies */}
-          <div className="w-full lg:w-80 space-y-6">
-            {/* Key Metrics */}
-            <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-5 space-y-4">
-              <h4 className="text-xs font-mono text-slate-400 uppercase tracking-wider">Métricas do Elo</h4>
-              <div className="grid grid-cols-2 gap-3">
-                {activeStage.keyMetrics.map((m, i) => (
-                  <div key={i} className="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800/50">
-                    <span className="text-[10px] font-mono text-slate-400 block">{m.label}</span>
-                    <strong className="text-sm sm:text-base font-mono text-white font-bold">{m.value}</strong>
-                  </div>
-                ))}
-              </div>
+          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+            <div>
+              <dt className="text-[11px] text-slate-500">Modelo de remuneração</dt>
+              <dd className="mt-1 text-xs text-slate-300 leading-relaxed">{activeStage.revenueModel}</dd>
             </div>
-
-            {/* Players in Brazil */}
-            <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-5 space-y-3">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-mono text-slate-400 uppercase tracking-wider flex items-center">
-                  <Building2 className="w-3.5 h-3.5 mr-1.5 text-cyan-400" />
-                  Players no Brasil
-                </h4>
-              </div>
-
-              <div className="space-y-2">
-                {activeStage.mainCompanies.map((c, i) => (
-                  <div key={i} className="p-2 rounded-lg bg-slate-900/60 border border-slate-800/60 flex flex-col font-mono">
-                    <span className="text-xs font-bold text-white">{c.name}</span>
-                    <span className="text-[10px] text-slate-400">{c.tag}</span>
-                  </div>
-                ))}
-              </div>
+            <div>
+              <dt className="text-[11px] text-slate-500">Regulação e governança</dt>
+              <dd className="mt-1 text-xs text-slate-300 leading-relaxed">{activeStage.regulator}</dd>
             </div>
+          </dl>
 
-            <SourcesList sources={activeStage.sources} />
+          <div>
+            <h4 className="text-[11px] text-slate-500">Dinâmica operacional</h4>
+            <ul className="mt-2 space-y-2">
+              {activeStage.highlights.map((h, i) => {
+                const colonIndex = h.indexOf(':');
+                return (
+                  <li key={i} className="flex gap-2 text-xs text-slate-300 leading-relaxed">
+                    <span className="text-slate-600 shrink-0">–</span>
+                    {colonIndex !== -1 ? (
+                      <span>
+                        <strong className="text-slate-100 font-semibold">{h.slice(0, colonIndex)}:</strong>
+                        {h.slice(colonIndex + 1)}
+                      </span>
+                    ) : (
+                      <span>{h}</span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </div>
+
+        <aside className="w-full lg:w-72 space-y-6">
+          <div>
+            <h4 className="text-[11px] text-slate-500">Métricas do elo</h4>
+            <dl className="mt-1 divide-y divide-slate-800/70 border-y border-slate-800/70">
+              {activeStage.keyMetrics.map((m, i) => (
+                <div key={i} className="py-2 flex items-baseline justify-between gap-4">
+                  <dt className="text-xs text-slate-500">{m.label}</dt>
+                  <dd className="font-mono tabular-nums text-xs text-slate-100 text-right">{m.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          <div>
+            <h4 className="text-[11px] text-slate-500">Agentes no Brasil</h4>
+            <ul className="mt-1 divide-y divide-slate-800/70 border-y border-slate-800/70">
+              {activeStage.mainCompanies.map((c, i) => (
+                <li key={i} className="py-2">
+                  <span className="block text-xs text-slate-200">{c.name}</span>
+                  <span className="block text-[11px] text-slate-500">{c.tag}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <SourcesList sources={activeStage.sources} />
+        </aside>
       </div>
     </section>
   );
