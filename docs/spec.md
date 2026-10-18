@@ -45,7 +45,7 @@ O objetivo do **Brasil Grid** é preencher essa lacuna:
   * **±800 kV UHVDC:** Os bipolos de corrente contínua de Belo Monte (Xingu–Estreito e Xingu–Terminal Rio, mais de 2.000 km cada; Xingu–Terminal Rio ~2.540 km).
   * **±600 kV HVDC:** Bipolos do Madeira e de Itaipu.
   * **500 kV / 525 kV / 765 kV CA:** A malha tronco que conecta os 4 subsistemas (Norte, Nordeste, Sudeste/Centro-Oeste e Sul).
-* **Grandes Polos Geradores:** Itaipu Binacional (14 GW), Belo Monte (11,2 GW), Tucuruí (8,4 GW), CNAAA Angra 1 + 2 (2,0 GW), polos eólicos do semiárido e grandes parques solares de MG/BA.
+* **Grandes Polos Geradores:** Itaipu Binacional (14 GW), Belo Monte (11,2 GW), Tucuruí (8,5 GW), CNAAA Angra 1 + 2 (2,0 GW), polos eólicos do semiárido e grandes parques solares de MG/BA.
 * **Coordenação ONS:** Representação dos intercâmbios médios de potência entre subsistemas e parâmetros nominais de frequência da rede (60.00 Hz).
 
 ### Pilar 2: Cadeia de Valor do Setor Elétrico (SEB)
@@ -69,7 +69,7 @@ Decomposição dos quatro elos fundamentais com seus modelos de negócio e agent
   * **Quilowatts (kW):** Chuveiro elétrico no inverno (~4,5 a 5,5 kW, Procel) e consumo residencial médio (~177 kWh/mês por unidade, EPE 2024).
   * **Megawatts (MW):** Supermercados (~1 MW), shopping centers (~5 MW) e usinas solares de geração distribuída.
   * **Gigawatts (GW):** Usinas estratégicas (Itaipu 14 GW, Belo Monte 11,2 GW) e recorde de demanda instantânea do SIN (106.532 MW, 26/02/2025).
-  * **Terawatts-hora (TWh):** Consumo anual de eletricidade do país (~567 TWh/ano, EPE 2025).
+  * **Terawatts-hora (TWh):** Consumo anual de eletricidade do país (566,7 TWh em 2025, EPE).
 
 ---
 
