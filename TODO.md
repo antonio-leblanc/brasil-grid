@@ -66,6 +66,14 @@ Critério: um elemento só fica permanente na tela se responde a uma pergunta f�
 - [ ] **Remover o alias morto** `liveGridTelemetry` de [`gridData.ts`](src/data/gridData.ts).
 - [ ] **Avaliar PMTiles próprio** como alternativa aos tiles ESRI (termos de uso e limites).
 
+## Preço e mercado (feature, exige plano)
+
+- [x] **Pilar "Preço" — curva do pato:** perfil horário do CMO do Sudeste por ano, em SVG a partir de `src/data/mercado/cmoPerfilHorario.json` (`pipeline/exporta.py`).
+- [x] **Pilar "Preço" — EAR × CMO e modulação:** dispersão mensal EAR do SIN × CMO do SE e barras do custo de modulação, de `src/data/mercado/mercadoMensal.json`.
+- [ ] **Snapshot do pipeline na CI:** rodar `pipeline/exporta.py` agendado em vez de commitar o JSON na mão (junta com o item P2 do snapshot ONS).
+- [ ] **Solar e volatilidade intradiária:** quanto da curva do pato vem de geração distribuída e solar centralizada, e corte de geração (*curtailment*) no meio do dia.
+- [ ] **Depois:** previsão (ENA prevista no PMO do ONS, saída do novomodelo quando rodar em sombra em 2027) e expansão contratada em leilão. Só com fonte profunda, sem feed de notícia.
+
 ## Dados — expansão (depois do P0)
 
 - [ ] Linhas ainda não representadas: circuitos 2 e 3 da Norte–Sul, elos com o Uruguai (Rivera, Melo). Só entram com fonte profunda e `verified`.

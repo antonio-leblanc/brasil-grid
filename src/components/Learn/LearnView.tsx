@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { ArrowLeft, Link2, BookOpen, Ruler } from 'lucide-react';
+import { ArrowLeft, Link2, BookOpen, Ruler, TrendingUp } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
 // Code-splitting keeps these out of the initial map bundle.
@@ -9,6 +9,9 @@ const ValueChainSection = lazy(() =>
 const SinDossiersSection = lazy(() =>
   import('../Dossiers/SinDossiersSection').then((m) => ({ default: m.SinDossiersSection }))
 );
+const PriceSection = lazy(() =>
+  import('../Market/PriceSection').then((m) => ({ default: m.PriceSection }))
+);
 const MagnitudeRuler = lazy(() =>
   import('../Scales/MagnitudeRuler').then((m) => ({ default: m.MagnitudeRuler }))
 );
@@ -16,6 +19,7 @@ const MagnitudeRuler = lazy(() =>
 const LEARN_SECTIONS = [
   { id: 'cadeia', label: 'Cadeia de valor do SEB', icon: Link2 },
   { id: 'dossies', label: 'Dossiês do SIN', icon: BookOpen },
+  { id: 'preco', label: 'Preço', icon: TrendingUp },
   { id: 'escalas', label: 'Régua de grandezas', icon: Ruler }
 ] as const;
 
@@ -78,6 +82,7 @@ export const LearnView: React.FC<LearnViewProps> = ({ activeTab, setActiveTab, o
             <Suspense fallback={<SectionLoadingFallback />}>
               {currentSection.id === 'cadeia' && <ValueChainSection />}
               {currentSection.id === 'dossies' && <SinDossiersSection />}
+              {currentSection.id === 'preco' && <PriceSection />}
               {currentSection.id === 'escalas' && <MagnitudeRuler />}
             </Suspense>
           </div>
