@@ -49,4 +49,4 @@ uv sync
 uv run <script>.py
 ```
 
-`ons.py` baixa os datasets do ONS com cache em `data/ons/`; `dados.py` limpa e devolve as séries prontas pros gráficos.
+`ons.py` baixa os datasets do ONS com cache em `data/ons/`; `dados.py` limpa e devolve as séries prontas pros gráficos. `exporta.py` escreve o JSON que o site desenha (`src/data/mercado/`); depois de rodar, commitar o JSON.
