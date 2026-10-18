@@ -4,7 +4,6 @@ import { GridMap } from './components/Map/GridMap';
 import { ConsoleHeader } from './components/Console/ConsoleHeader';
 import { ConsoleSidebar } from './components/Console/ConsoleSidebar';
 import { ConsoleBottomBar } from './components/Console/ConsoleBottomBar';
-import { NodeInspector } from './components/Inspector/NodeInspector';
 import { LoadCurveModal } from './components/Telemetry/LoadCurveModal';
 import { LearnView } from './components/Learn/LearnView';
 import { useOnsTelemetry } from './services/onsApi';
@@ -167,6 +166,24 @@ export function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [handlePopState]);
 
+  const hasSelection = !!(selectedPlant || selectedLine);
+  const isPanelVisible = isSidebarOpen || hasSelection;
+  const isAnyModalOpen = isLoadCurveOpen || isSimulatorOpen || isInterchangeOpen;
+
+  const clearSelection = useCallback(() => {
+    setSelectedPlant(null);
+    setSelectedLine(null);
+  }, []);
+
+  useEffect(() => {
+    if (!hasSelection || isAnyModalOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') clearSelection();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [hasSelection, isAnyModalOpen, clearSelection]);
+
   if (mode === 'guia') {
     return (
       <LearnView
@@ -180,8 +197,11 @@ export function App() {
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col bg-[#07090e] text-slate-100 font-sans select-none">
       <ConsoleHeader
-        isSidebarOpen={isSidebarOpen}
-        setIsSidebarOpen={setIsSidebarOpen}
+        isSidebarOpen={isPanelVisible}
+        setIsSidebarOpen={(open) => {
+          if (!open) clearSelection();
+          setIsSidebarOpen(open);
+        }}
         telemetry={telemetry}
         isLive={isLive}
         isLoading={isTelemetryLoading}
@@ -207,6 +227,9 @@ export function App() {
             setSelectedLine(line);
             setSelectedPlant(null);
           }}
+          selectedPlant={selectedPlant}
+          selectedLine={selectedLine}
+          onClearSelection={clearSelection}
           showSubsystems={showSubsystems}
           setShowSubsystems={setShowSubsystems}
           onOpenInterchangeModal={(id) => {
@@ -294,14 +317,6 @@ export function App() {
           </div>
         </div>
 
-        <NodeInspector
-          plant={selectedPlant}
-          line={selectedLine}
-          onClose={() => {
-            setSelectedPlant(null);
-            setSelectedLine(null);
-          }}
-        />
       </div>
 
       <ConsoleBottomBar

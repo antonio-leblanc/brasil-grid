@@ -12,22 +12,22 @@ export const SourcesList: React.FC<SourcesListProps> = ({ sources, className }) 
   if (!sources || sources.length === 0) return null;
 
   return (
-    <div className={cn('pt-2 border-t border-slate-800/80 font-mono', className)}>
-      <span className="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Fontes</span>
-      <ul className="space-y-0.5">
+    <div className={cn('pt-3 border-t border-slate-800/70', className)}>
+      <span className="block text-[11px] text-slate-500 mb-1.5">Fontes</span>
+      <ul className="space-y-1">
         {sources.map((source) => (
           <li key={source.url}>
             <a
               href={source.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-start gap-1 text-[10px] leading-snug text-slate-400 hover:text-cyan-300 transition"
+              className="inline-flex items-start gap-1.5 text-[11px] leading-snug text-slate-400 hover:text-slate-100 transition-colors"
             >
               <ExternalLink className="w-3 h-3 mt-px shrink-0" aria-hidden="true" />
               <span>
                 {source.label}
                 {source.accessedAt && (
-                  <span className="text-slate-500 ml-1">({source.accessedAt})</span>
+                  <span className="text-slate-600 ml-1 font-mono tabular-nums">{source.accessedAt}</span>
                 )}
               </span>
             </a>

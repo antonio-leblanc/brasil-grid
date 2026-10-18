@@ -592,7 +592,7 @@ export const GridMap: React.FC<GridMapProps> = ({
           [maxLon, maxLat]
         ],
         {
-          padding: { top: 80, bottom: 80, left: 100, right: 380 },
+          padding: 80,
           maxZoom: 7.5,
           duration: 1200
         }

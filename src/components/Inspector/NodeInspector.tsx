@@ -1,15 +1,54 @@
 import React, { useState } from 'react';
 import type { PowerPlantFeature, TransmissionLineFeature } from '../../data/gridData';
 import { SourcesList } from '../Sources/SourcesList';
-import { X, Share2, Check } from 'lucide-react';
+import { ArrowLeft, Link2, X } from 'lucide-react';
 
 interface NodeInspectorProps {
   plant: PowerPlantFeature | null;
   line: TransmissionLineFeature | null;
+  onBack: () => void;
   onClose: () => void;
 }
 
-export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant, line, onClose }) => {
+const PLANT_TYPE_LABEL: Record<PowerPlantFeature['type'], { code: string; color: string }> = {
+  hidro: { code: 'UHE', color: 'bg-emerald-400' },
+  solar: { code: 'UFV', color: 'bg-amber-400' },
+  eolica: { code: 'EOL', color: 'bg-sky-400' },
+  nuclear: { code: 'UTN', color: 'bg-orange-500' },
+  termica: { code: 'UTE', color: 'bg-rose-500' }
+};
+
+const Field: React.FC<{ label: string; children: React.ReactNode; stacked?: boolean }> = ({
+  label,
+  children,
+  stacked = false
+}) =>
+  stacked ? (
+    <div className="py-2">
+      <dt className="text-[11px] text-slate-500">{label}</dt>
+      <dd className="mt-0.5 text-xs text-slate-200 leading-relaxed">{children}</dd>
+    </div>
+  ) : (
+    <div className="py-2 flex items-baseline justify-between gap-4">
+      <dt className="text-xs text-slate-500 shrink-0">{label}</dt>
+      <dd className="text-xs text-slate-200 text-right">{children}</dd>
+    </div>
+  );
+
+const Num: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <span className="font-mono tabular-nums">{children}</span>
+);
+
+const UnverifiedNote = () => (
+  <p
+    className="mt-2 text-[11px] text-amber-400"
+    title="Dados cadastrais aguardando auditoria de link profundo com fonte primária"
+  >
+    Não auditada: aguardando fonte primária
+  </p>
+);
+
+export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant, line, onBack, onClose }) => {
   const [isCopied, setIsCopied] = useState(false);
 
   if (!plant && !line) return null;
@@ -18,206 +57,116 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant, line, onClo
     if (typeof window !== 'undefined' && navigator.clipboard) {
       navigator.clipboard.writeText(window.location.href).then(() => {
         setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2200);
+        setTimeout(() => setIsCopied(false), 2000);
       });
     }
   };
 
+  const iconButton =
+    'p-1 rounded-md text-slate-500 hover:text-slate-200 hover:bg-slate-900 transition-colors cursor-pointer';
+
   return (
-    <aside className="w-88 sm:w-96 bg-[#0a0d14]/95 backdrop-blur-xl border-l border-slate-800/90 h-full flex flex-col shadow-2xl z-30 animate-in slide-in-from-right duration-200">
-      {/* Top Header Bar */}
-      <div className="p-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/40">
-        <div className="flex items-center space-x-2">
-          <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
-          <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider font-semibold">
-            {plant ? `TELEMETRIA // NÓ GERADOR` : `CIRCUITO // LINHA DE TRANSMISSÃO`}
-          </span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={handleShare}
-            className={`px-2 py-1 rounded transition font-mono text-xs flex items-center space-x-1.5 border ${
-              isCopied
-                ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300'
-                : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700 hover:text-white'
-            }`}
-            title="Copiar link direto para este ativo"
-          >
-            {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 text-cyan-400" />}
-            <span className="text-[10px] tracking-wide">{isCopied ? 'COPIADO!' : 'COMPARTILHAR'}</span>
+    <div className="h-full flex flex-col">
+      <div className="h-10 px-2 border-b border-slate-800 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={onBack}
+          className="h-7 px-2 rounded-md flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-100 hover:bg-slate-900 transition-colors cursor-pointer"
+          aria-label="Voltar para a lista"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Voltar
+        </button>
+        <div className="flex items-center gap-1">
+          {isCopied && <span className="text-[11px] text-slate-400 mr-1">Copiado</span>}
+          <button type="button" onClick={handleShare} className={iconButton} aria-label="Copiar link direto para este ativo">
+            <Link2 className="w-4 h-4" />
           </button>
-          <button
-            onClick={onClose}
-            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition font-mono text-xs flex items-center"
-            title="Fechar inspetor"
-          >
+          <button type="button" onClick={onClose} className={iconButton} aria-label="Fechar painel">
             <X className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* Inspector Body */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-6 text-slate-300 font-sans">
+      <div className="flex-1 overflow-y-auto px-4 py-4">
         {plant && (
           <>
-            <div>
-              <span className="text-[10px] font-mono text-slate-500 uppercase">IDENTIFICADOR DO ATIVO</span>
-              <h2 className="text-xl font-bold text-white leading-tight mt-0.5">{plant.name}</h2>
-              <div className="flex items-center space-x-2 mt-2">
-                <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-mono uppercase font-bold">
-                  {plant.type}
-                </span>
-                <span className="text-xs font-mono text-slate-400">
-                  {plant.state} — Subsistema {plant.subsystem}
-                </span>
-                {plant.verification === 'unverified' && (
-                  <span
-                    className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-mono uppercase font-semibold"
-                    title="Dados cadastrais aguardando auditoria de link profundo com fonte primária"
-                  >
-                    NÃO AUDITADA
-                  </span>
-                )}
-              </div>
-            </div>
+            <h2 className="text-base font-semibold text-slate-100 leading-snug">{plant.name}</h2>
+            <p className="mt-1 flex items-center gap-2 text-xs text-slate-400">
+              <span className={`w-2 h-2 rounded-full ${PLANT_TYPE_LABEL[plant.type].color}`} />
+              {PLANT_TYPE_LABEL[plant.type].code} · {plant.state} · Subsistema {plant.subsystem}
+            </p>
+            {plant.verification === 'unverified' && <UnverifiedNote />}
 
-            {/* Core Specs Grid */}
-            <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-              <div className="bg-slate-900/80 border border-slate-800/80 p-3 rounded-lg">
-                <span className="text-slate-500 block text-[10px]">POTÊNCIA OUTORGADA</span>
-                <strong className="text-white text-base font-bold">{plant.capacityMW.toLocaleString('pt-BR')} MW</strong>
-                <span className="text-cyan-400 block text-[10px] font-bold">({(plant.capacityMW / 1000).toFixed(2)} GW)</span>
-              </div>
-              <div className="bg-slate-900/80 border border-slate-800/80 p-3 rounded-lg">
-                <span className="text-slate-500 block text-[10px]">CONCESSIONÁRIA / OPERADOR</span>
-                <strong className="text-slate-200 text-xs truncate block mt-0.5">{plant.operator}</strong>
-                <span className="text-slate-500 block text-[10px] truncate">{plant.riverOrRegion}</span>
-              </div>
-            </div>
+            <dl className="mt-4 divide-y divide-slate-800/70 border-y border-slate-800/70">
+              <Field label="Potência outorgada">
+                <Num>{plant.capacityMW.toLocaleString('pt-BR')} MW</Num>
+              </Field>
+              <Field label="Operador">{plant.operator}</Field>
+              <Field label="Rio / região">{plant.riverOrRegion}</Field>
+              {plant.technicalDetails?.commissionYear && (
+                <Field label="Comissionamento">
+                  <Num>{plant.technicalDetails.commissionYear}</Num>
+                </Field>
+              )}
+              {plant.technicalDetails?.gridConnectionVoltage && (
+                <Field label="Tensão de conexão">
+                  <Num>{plant.technicalDetails.gridConnectionVoltage}</Num>
+                </Field>
+              )}
+              {plant.technicalDetails?.turbinesOrUnits && (
+                <Field label="Unidades geradoras" stacked>
+                  {plant.technicalDetails.turbinesOrUnits}
+                </Field>
+              )}
+              {plant.technicalDetails?.flowOrEfficiency && (
+                <Field label="Vazão / queda" stacked>
+                  {plant.technicalDetails.flowOrEfficiency}
+                </Field>
+              )}
+            </dl>
 
-            {/* Operational Context */}
-            <div className="space-y-2">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500">ENQUADRAMENTO OPERACIONAL</span>
-              <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/50 p-3 rounded-lg border border-slate-800/60 font-sans">
-                {plant.description}
-              </p>
-            </div>
-
-            {/* Deep Technical Specs */}
-            {plant.technicalDetails && (
-              <div className="space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500">FICHA TÉCNICA DE ENGENHARIA</span>
-                <div className="bg-slate-950/80 border border-slate-800/80 rounded-lg p-3 space-y-2.5 text-xs font-mono">
-                  {plant.technicalDetails.commissionYear && (
-                    <div className="flex justify-between border-b border-slate-800/50 pb-1.5">
-                      <span className="text-slate-400">Ano de Comissionamento:</span>
-                      <strong className="text-white">{plant.technicalDetails.commissionYear}</strong>
-                    </div>
-                  )}
-                  {plant.technicalDetails.turbinesOrUnits && (
-                    <div className="border-b border-slate-800/50 pb-1.5">
-                      <span className="text-slate-400 block text-[10px]">Conjunto Gerador:</span>
-                      <span className="text-slate-200 text-[11px]">{plant.technicalDetails.turbinesOrUnits}</span>
-                    </div>
-                  )}
-                  {plant.technicalDetails.gridConnectionVoltage && (
-                    <div className="flex justify-between border-b border-slate-800/50 pb-1.5">
-                      <span className="text-slate-400">Tensão de Interligação:</span>
-                      <strong className="text-amber-400">{plant.technicalDetails.gridConnectionVoltage}</strong>
-                    </div>
-                  )}
-                  {plant.technicalDetails.flowOrEfficiency && (
-                    <div>
-                      <span className="text-slate-400 block text-[10px]">Vazão / Queda Hidráulica:</span>
-                      <span className="text-slate-300 text-[11px]">{plant.technicalDetails.flowOrEfficiency}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-            <SourcesList sources={plant.sources} />
+            <p className="mt-4 text-xs text-slate-300 leading-relaxed">{plant.description}</p>
+            <SourcesList sources={plant.sources} className="mt-5" />
           </>
         )}
 
         {line && (
           <>
-            <div>
-              <span className="text-[10px] font-mono text-slate-500 uppercase">IDENTIFICADOR DO CIRCUITO</span>
-              <h2 className="text-xl font-bold text-white leading-tight mt-0.5">{line.name}</h2>
-              <div className="flex items-center space-x-2 mt-2">
-                <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-mono uppercase font-bold">
-                  {line.voltageKV} kV {line.type === 'CC' ? 'UHVDC (Corrente Contínua)' : 'CA (Alternada)'}
-                </span>
-                {line.verification === 'unverified' && (
-                  <span
-                    className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-mono uppercase font-semibold"
-                    title="Dados cadastrais aguardando auditoria de link profundo com fonte primária"
-                  >
-                    NÃO AUDITADA
-                  </span>
-                )}
-              </div>
-            </div>
+            <h2 className="text-base font-semibold text-slate-100 leading-snug">{line.name}</h2>
+            <p className="mt-1 text-xs text-slate-400">
+              <Num>{line.voltageKV} kV</Num> · {line.type === 'CC' ? 'Corrente contínua (HVDC)' : 'Corrente alternada'}
+            </p>
+            {line.verification === 'unverified' && <UnverifiedNote />}
 
-            {/* Core Specs Grid */}
-            <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-              <div className="bg-slate-900/80 border border-slate-800/80 p-3 rounded-lg">
-                <span className="text-slate-500 block text-[10px]">EXTENSÃO FÍSICA</span>
-                <strong className="text-cyan-400 text-base font-bold">{line.lengthKm.toLocaleString('pt-BR')} km</strong>
-                <span className="text-slate-500 block text-[10px]">Autoestrada Elétrica</span>
-              </div>
-              <div className="bg-slate-900/80 border border-slate-800/80 p-3 rounded-lg">
-                <span className="text-slate-500 block text-[10px]">CONCESSIONÁRIA (RAP)</span>
-                <strong className="text-slate-200 text-xs truncate block mt-0.5">{line.concessionaire}</strong>
-                <span className="text-emerald-400 block text-[10px]">Concessão ANEEL</span>
-              </div>
-            </div>
+            <dl className="mt-4 divide-y divide-slate-800/70 border-y border-slate-800/70">
+              <Field label="Extensão">
+                <Num>{line.lengthKm.toLocaleString('pt-BR')} km</Num>
+              </Field>
+              <Field label="Origem">{line.from}</Field>
+              <Field label="Destino">{line.to}</Field>
+              <Field label="Concessionária">{line.concessionaire}</Field>
+              {line.technicalDetails?.towerCount && (
+                <Field label="Torres">
+                  <Num>{line.technicalDetails.towerCount.toLocaleString('pt-BR')}</Num>
+                </Field>
+              )}
+              {line.technicalDetails?.converterTechnology && (
+                <Field label="Tecnologia" stacked>
+                  {line.technicalDetails.converterTechnology}
+                </Field>
+              )}
+              {line.technicalDetails?.substations && (
+                <Field label="Subestações" stacked>
+                  {line.technicalDetails.substations.join(' → ')}
+                </Field>
+              )}
+            </dl>
 
-            {/* Routing */}
-            <div className="bg-slate-950/70 border border-slate-800/80 rounded-lg p-3 space-y-2 text-xs font-mono">
-              <span className="text-[10px] text-slate-500 uppercase block">TERMINAIS DE CONVERSÃO & SUBESTAÇÕES</span>
-              <div className="space-y-1">
-                <div className="flex items-start space-x-2">
-                  <span className="text-emerald-400 font-bold">➔ Origem:</span>
-                  <span className="text-slate-200">{line.from}</span>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <span className="text-cyan-400 font-bold">➔ Destino:</span>
-                  <span className="text-slate-200">{line.to}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Technical Highlights */}
-            {line.technicalDetails && (
-              <div className="space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500">PARÂMETROS DE TRANSMISSÃO</span>
-                <div className="bg-slate-950/80 border border-slate-800/80 rounded-lg p-3 space-y-2 text-xs font-mono">
-                  {line.technicalDetails.converterTechnology && (
-                    <div className="border-b border-slate-800/50 pb-1.5">
-                      <span className="text-slate-400 block text-[10px]">Tecnologia de Transmissão:</span>
-                      <span className="text-amber-400 text-xs">{line.technicalDetails.converterTechnology}</span>
-                    </div>
-                  )}
-                  {line.technicalDetails.towerCount && (
-                    <div className="flex justify-between border-b border-slate-800/50 pb-1.5">
-                      <span className="text-slate-400">Total de Estruturas (Torres):</span>
-                      <strong className="text-white">{line.technicalDetails.towerCount.toLocaleString('pt-BR')}</strong>
-                    </div>
-                  )}
-                  {line.technicalDetails.substations && (
-                    <div>
-                      <span className="text-slate-400 block text-[10px]">Pátios de Subestação:</span>
-                      <span className="text-slate-300 text-[11px]">{line.technicalDetails.substations.join(' ➔ ')}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-            <SourcesList sources={line.sources} />
+            <SourcesList sources={line.sources} className="mt-5" />
           </>
         )}
       </div>
-    </aside>
+    </div>
   );
 };
