@@ -8,6 +8,7 @@ import { powerVsEnergyExplainer, scaleLevels } from './scaleData';
 import { simulatorDay } from './simulatorDayData';
 import { sinDossiers } from './sinDossiersData';
 import type { SourceRef } from './sources';
+import { subsystemsGeoSources } from './subsystemsGeoData';
 import { majorTransmissionLines } from './transmissionLinesData';
 
 interface LocatedSource {
@@ -24,6 +25,7 @@ const DATASETS: Record<string, unknown> = {
   scales: { powerVsEnergyExplainer, scaleLevels },
   dossiers: sinDossiers,
   simulatorDay,
+  subsystemsGeo: subsystemsGeoSources,
   transmissionLines: majorTransmissionLines
 };
 
@@ -70,7 +72,7 @@ function isRootUrl(url: string): boolean {
 describe('proveniência dos dados (SourceRef)', () => {
   it('encontra fontes em todos os datasets', () => {
     const datasetsWithSources = new Set(allSources.map(({ owner }) => owner.split(':')[0]));
-    for (const dataset of ['energyChain', 'interchanges', 'market', 'powerPlants', 'scales', 'dossiers', 'simulatorDay', 'transmissionLines']) {
+    for (const dataset of ['energyChain', 'gridSnapshot', 'interchanges', 'market', 'powerPlants', 'scales', 'dossiers', 'simulatorDay', 'subsystemsGeo', 'transmissionLines']) {
       expect(datasetsWithSources).toContain(dataset);
     }
   });

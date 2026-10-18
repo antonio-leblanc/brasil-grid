@@ -41,10 +41,10 @@ export const sinDossiers: SinDossier[] = [
           'A taxa de variação de frequência (RoCoF) após um desbalanço é inversamente proporcional à inércia H. O RAP registrou inércia sistêmica adequada (~265 GW·s para ~73 GW de carga): o gatilho da ocorrência foi colapso de tensão, insensível ao acréscimo de inércia mecânica.'
       },
       {
-        label: 'Ajustes Uniformizados do ERAC',
+        label: 'Ajustes Uniformizados do ERAC (SE/CO, S e NE)',
         formula: 'f ≤ 58,5 / 58,2 / 57,9 / 57,7 / 57,5 Hz  →  cortes de 5 / 6 / 7 / 8 / 9% (até 35% da carga)',
         explanation:
-          'Relés de subfrequência (81) realizam alívio de carga escalonado para conter o afundamento da frequência antes do desligamento de geradores. O evento acelerou a padronização definitiva dos 5 degraus de corte em todo o SIN.'
+          'Relés de subfrequência (81U) realizam alívio de carga escalonado para conter o afundamento da frequência antes do desligamento de geradores. Os 5 degraus de 35% valem para SE/CO, Sul e Nordeste; o Norte adota degraus mais amplos (até 55% em 5 estágios) pelo perfil de ilhamento.'
       }
     ],
     keyMetrics: [
@@ -117,7 +117,7 @@ export const sinDossiers: SinDossier[] = [
       },
       {
         title: 'Harmonização dos Esquemas de ERAC',
-        desc: 'Correção de lógicas SOTF e unificação dos 5 degraus de subfrequência (58,5 a 57,5 Hz, até 35% de corte) em todos os subsistemas, banindo relés assimétricos por taxa de frequência (df/dt).'
+        desc: 'Correção de lógicas SOTF e unificação dos 5 degraus de subfrequência (58,5 a 57,5 Hz, até 35% de corte) nos subsistemas SE/CO, Sul e Nordeste (mantendo ajuste específico de até 55% no Norte), substituindo relés assimétricos por taxa de frequência (df/dt).'
       }
     ],
     sources: [

@@ -77,10 +77,23 @@ export const referenceGridSnapshot: GridSnapshot = {
   peakRecordMW: 106532,
   renewableSharePct: 84.8,
   systemStatus: 'NOMINAL // SNAPSHOT DE REFERÊNCIA SIN',
-  referenceNote: 'Dados estáticos de referência técnica representativos da operação do SIN',
+  referenceNote: 'Dados estáticos de referência técnica representativos da operação do SIN (ciclo PAR/PEL 2024–2028)',
+  sources: [
+    {
+      label: 'ONS — Dados Abertos: Intercâmbio Nacional e Carga Verificada',
+      url: 'https://dados.ons.org.br/dataset/intercambio-nacional',
+      accessedAt: '2026-10-18'
+    },
+    {
+      label: 'EPE — Anuário Estatístico de Energia Elétrica 2026 (ano-base 2025)',
+      url: 'https://dashboard.epe.gov.br/apps/anuario-livro/livro/pt/destaques.html',
+      accessedAt: '2026-10-18'
+    }
+  ],
   interchanges: [
     { from: 'N', to: 'SE/CO', flowMW: 8420, direction: 'EXPORT' },
-    { from: 'NE', to: 'SE/CO', flowMW: 6180, direction: 'EXPORT' },
+    { from: 'NE', to: 'SE/CO', flowMW: 7850, direction: 'EXPORT' },
+    { from: 'N', to: 'NE', flowMW: 2650, direction: 'EXPORT' },
     { from: 'S', to: 'SE/CO', flowMW: 2340, direction: 'EXPORT' }
   ],
   generationMix: [

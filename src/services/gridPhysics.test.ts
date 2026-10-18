@@ -1,14 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import {
+  ERAC_PICKUP_SECONDS,
+  ERAC_RESTORE_DELAY_SECONDS,
   ERAC_STAGES,
   F_NOMINAL,
-  GOVERNOR_DROOP_R,
-  GOVERNOR_PARTICIPATION,
+  GOVERNOR_TAU_S,
   LOAD_DAMPING_D,
   SIM_STEP_SECONDS,
   UNDERFREQUENCY_COLLAPSE_HZ,
   advanceSimulation,
   applyGeneratorTrip,
+  computeKineticEnergyMWs,
   DAY_END_SECONDS,
   DAY_SCHEDULED_TRIPS,
   EVENT_SLOWDOWN_SECONDS,
@@ -19,7 +21,9 @@ import {
   effectiveSpeed,
   eracShedPercent,
   frequencyWattDerate,
-  stepSimulation
+  primaryGovernorOffsetMW,
+  stepSimulation,
+  totalGovernorMWPerHz
 } from './gridPhysics';
 import type { GridSimulationState } from './gridPhysics';
 import { simulatorDay } from '../data/simulatorDayData';
@@ -48,6 +52,22 @@ describe('swing equation', () => {
     expect(next.rocofHzS).toBeCloseTo(expected, 6);
   });
 
+  it('keeps synchronous kinetic energy E_k invariant during governor active power excursions', () => {
+    const base = sandbox({ isSecondaryControlEnabled: false });
+    const overloaded = { ...base, baseLoadMW: base.baseLoadMW + 2500 };
+    const afterRamp = runFor(overloaded, 30);
+    expect(afterRamp.hydro.actualMW).toBeGreaterThan(base.hydro.actualMW + 1500);
+    expect(afterRamp.kineticEnergyMWs).toBe(computeKineticEnergyMWs(base.hydro, base.thermal));
+  });
+
+  it('evolves governor response with a 1st-order actuator lag τ_g before reaching steady-state droop', () => {
+    const base = sandbox({ frequencyHz: 59.7, isSecondaryControlEnabled: false });
+    const oneStep = stepSimulation(base, SIM_STEP_SECONDS);
+    const steadyHydro = primaryGovernorOffsetMW(59.7, base.hydro.maxCapacityMW);
+    expect(oneStep.hydroGovernorMW).toBeCloseTo(steadyHydro * (SIM_STEP_SECONDS / GOVERNOR_TAU_S), 4);
+    expect(oneStep.hydroGovernorMW).toBeLessThan(steadyHydro * 0.02);
+  });
+
   it('settles at Δf = −ΔP / (D·P/f0) with only load damping', () => {
     const base = sandbox({ isPrimaryControlEnabled: false });
     const s = runFor(applyGeneratorTrip(base, 2800), 180);
@@ -56,11 +76,11 @@ describe('swing equation', () => {
     expect(s.frequencyHz - F_NOMINAL).toBeCloseTo(expectedDeviation, 2);
   });
 
-  it('settles closer to 60 Hz with primary governor droop', () => {
+  it('settles closer to 60 Hz with hydro + thermal primary governor droop', () => {
     const base = sandbox();
     const tripped = applyGeneratorTrip(base, 2800);
     const s = runFor(tripped, 180);
-    const governorMWPerHz = (tripped.hydro.maxCapacityMW * GOVERNOR_PARTICIPATION) / (GOVERNOR_DROOP_R * F_NOMINAL);
+    const governorMWPerHz = totalGovernorMWPerHz(tripped.hydro.maxCapacityMW, tripped.thermal.maxCapacityMW);
     const dampingMWPerHz = (LOAD_DAMPING_D * base.actualLoadMW) / F_NOMINAL;
     expect(s.frequencyHz - F_NOMINAL).toBeCloseTo(-2800 / (governorMWPerHz + dampingMWPerHz), 2);
   });
@@ -106,6 +126,24 @@ describe('ERAC', () => {
     expect(eracShedPercent(ERAC_STAGES.length)).toBe(35);
   });
 
+  it('waits for the 100 ms (6-cycle) relay pickup timer before shedding load and restores after sustained recovery', () => {
+    const underfreq = sandbox({ frequencyHz: 58.4, isPrimaryControlEnabled: false });
+    const afterOneStep = stepSimulation(underfreq, SIM_STEP_SECONDS);
+    expect(afterOneStep.eracStage).toBe(0);
+
+    let s = underfreq;
+    const pickupSteps = Math.round(ERAC_PICKUP_SECONDS / SIM_STEP_SECONDS);
+    for (let i = 0; i < pickupSteps; i++) {
+      s = stepSimulation({ ...s, frequencyHz: 58.4 }, SIM_STEP_SECONDS);
+    }
+    expect(s.eracStage).toBe(1);
+
+    // Once frequency recovers and stays at 60 Hz for ERAC_RESTORE_DELAY_SECONDS, stage 1 is reconnected
+    const recovered = runFor({ ...s, frequencyHz: F_NOMINAL, baseLoadMW: 80000 }, ERAC_RESTORE_DELAY_SECONDS + 1);
+    expect(recovered.eracStage).toBe(0);
+    expect(recovered.shedLoadMW).toBe(0);
+  });
+
   it('fires each stage only after frequency crosses its threshold', () => {
     let s = applyGeneratorTrip(sandbox({ isPrimaryControlEnabled: false }), 20000);
     let stage = 0;
@@ -128,25 +166,27 @@ describe('ERAC', () => {
 });
 
 describe('generator trip', () => {
-  it('removes capacity so the fleet does not silently ramp back', () => {
+  it('removes capacity and committed inertia so the fleet does not silently ramp back', () => {
     const base = sandbox({ isPrimaryControlEnabled: false });
     const tripped = applyGeneratorTrip(base, 2800);
     const s = runFor(tripped, 60);
     expect(tripped.hydro.maxCapacityMW).toBe(base.hydro.maxCapacityMW - 2800);
     expect(s.hydro.actualMW).toBeCloseTo(base.hydro.actualMW - 2800, 6);
+    expect(s.kineticEnergyMWs).toBeLessThan(base.kineticEnergyMWs);
   });
 });
 
 describe('IBR frequency-watt response', () => {
-  it('derates linearly above 60.2 Hz with 5% droop', () => {
+  it('derates linearly above 60.2 Hz at 3% per 0.1 Hz (ONS Submódulo 2.10, R ≈ 5.56%)', () => {
     expect(frequencyWattDerate(60.2)).toBe(0);
-    expect(frequencyWattDerate(61.2)).toBeCloseTo(1 / 3, 6);
+    expect(frequencyWattDerate(60.3)).toBeCloseTo(0.03, 6);
+    expect(frequencyWattDerate(61.2)).toBeCloseTo(0.3, 6);
     expect(frequencyWattDerate(70)).toBe(1);
   });
 
   it('engages on overfrequency and releases once frequency recovers', () => {
     const base = sandbox();
-    let s = { ...base, baseLoadMW: base.baseLoadMW - 3000 };
+    let s = { ...base, baseLoadMW: base.baseLoadMW - 3500 };
     let wasActive = false;
     for (let t = 0; t < 180 * 60; t++) {
       s = advanceSimulation(s, 1 / 60);

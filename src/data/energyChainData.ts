@@ -50,10 +50,9 @@ export const energyChainStages: ValueChainStage[] = [
       { label: 'Brazil Journal — Auren compra a AES Brasil', url: 'https://braziljournal.com/breaking-auren-compra-a-aes-brasil-e-multiplica-sua-capacidade-de-geracao-por-24x/' },
       { label: 'Eneva — Quem Somos', url: 'https://www.eneva.com.br/a-eneva/quem-somos/' },
       { label: 'CPFL — Geração e Renováveis', url: 'https://www.grupocpfl.com.br/unidades-de-negocios/cpfl-geracao-e-renovaveis' },
-      { label: 'Itaipu — transformadores elevadores 18 kV → 500 kV (Portal Potência)', url: 'https://revistapotencia.com.br/portal-potencia/energia/itaipu-tera-novo-sistema-de-combate-a-incendio-nos-transformadores-principais/' },
-      { label: 'O Setor Elétrico — Plantas eólicas: modelagem para curto-circuito', url: 'https://osetoreletrico.com.br/plantas-eolicas' },
+      { label: 'Itaipu Binacional — Unidades Geradoras (18 kV → 500 kV)', url: 'https://www.itaipu.gov.br/energia/unidades-geradoras' },
       { label: 'EPE — Análise da complementaridade entre fontes (Workshop Projetos Híbridos, 2019)', url: 'https://www.epe.gov.br/sites-pt/sala-de-imprensa/noticias/Documents/MRTS%20_%20Projetos%20Hibridos%20_%20Workshop%20EPE%2015_05_2019.pdf' },
-      { label: 'IstoÉ Sustentável — Safra dos ventos no Nordeste', url: 'https://sustentavel.istoe.com.br/safra-dos-ventos-impulsiona-geracao-eolica-no-nordeste-entre-agosto-e-outubro' }
+      { label: 'ONS — Boletim Mensal de Geração Eólica e Solar (Safra de Ventos no Nordeste)', url: 'https://www.ons.org.br/paginas/conhecimento/acervo-digital/documentos-e-publicacoes' }
     ]
   },
   {

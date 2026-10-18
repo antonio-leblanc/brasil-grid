@@ -1,7 +1,7 @@
 import type { SourceRef } from './sources';
 
 // Modelagem de Dados Operacionais e Físicos dos Intercâmbios Regionais do SIN (ONS)
-// Calibrado com os limites de fluxo controlado e medições consolidadas do ONS 2026
+// Envelopes operativos representativos do ciclo PAR/PEL 2024–2028 (os limites reais em tempo real variam dinamicamente por topologia, despacho síncrono e estação do ano)
 
 export type InterchangeId = 'NE_SECO' | 'N_SECO' | 'N_NE' | 'S_SECO';
 export type SubsystemCode = 'SE_CO' | 'S' | 'NE' | 'N';
@@ -33,8 +33,9 @@ export interface RegionalInterchange {
   primaryDirection: string; // Ex: 'NE → SE/CO'
   reverseDirection: string; // Ex: 'SE/CO → NE'
   nominalFlowMW: number;
-  maxExportLimitMW: number; // Limite operativo máximo no sentido principal
-  maxImportLimitMW: number; // Limite operativo máximo no sentido reverso
+  maxExportLimitMW: number; // Envelope operativo representativo no sentido principal (PAR/PEL 2024–2028)
+  maxImportLimitMW: number; // Envelope operativo representativo no sentido reverso (PAR/PEL 2024–2028)
+  referenceVintage?: string; // Safra temporal/condição operativa do envelope de referência
   voltageKV: number[]; // Níveis de tensão das linhas de fronteira
   mainLines: string[]; // Principais troncos que compõem a interface
   interfaceCoordinates: [number, number]; // [lon, lat] Ponto central geográfico da fronteira
@@ -67,6 +68,7 @@ export const regionalInterchanges: RegionalInterchange[] = [
     nominalFlowMW: 7850,
     maxExportLimitMW: 13500,
     maxImportLimitMW: 4000,
+    referenceVintage: 'Envelope representativo PAR/PEL 2024–2028 (safra de ventos/solar; limite dinâmico função da inércia e compensação síncrona)',
     voltageKV: [500],
     mainLines: [
       'LT 500 kV Bom Jesus da Lapa II – Rio das Éguas',
@@ -86,7 +88,7 @@ export const regionalInterchanges: RegionalInterchange[] = [
       cause: 'Saturação de capacidade de transmissão térmica dos troncos 500 kV na Bahia e Minas Gerais, combinada com limites de estabilidade angular transitória e margem de estabilidade de tensão (curva P-V) em contingência N-1.',
       consequences: 'Imposição severa de curtailment (constrained-off) de usinas eólicas e solares fotovoltaicas durante as horas de pico de geração (11h às 15h para solar; 18h às 22h para eólica), gerando vertimento de energia limpa com custo zero de combustível.',
       mitigation: 'Construção de novos corredores de 500 kV leiloados (Lote 1 e 2 dos leilões de transmissão ONS/ANEEL), instalação de Compensadores Síncronos em subestações estratégicas do NE para sustentação de curto-circuito e BESS (Sistemas de Baterias) em grande escala.',
-      technicalStandard: 'Procedimentos de Rede ONS — Submódulo 23.3 (Critérios de Estabilidade e Limites de Intercâmbio).'
+      technicalStandard: 'Procedimentos de Rede ONS — Submódulo 23.3 (Critérios de Estabilidade e Limites de Intercâmbio; envelopes PAR/PEL 2024–2028).'
     },
     sources: [
       {
@@ -95,7 +97,7 @@ export const regionalInterchanges: RegionalInterchange[] = [
         accessedAt: '2026-09-24'
       },
       {
-        label: 'ONS — Plano da Operação Elétrica do SIN (PAR/PEL)',
+        label: 'ONS — Plano da Operação Elétrica do SIN (PAR/PEL 2024–2028)',
         url: 'https://www.ons.org.br/AcervoDigitalDocumentosEPublicacoes/Plano%20da%20Operacao%20Eletrica_2024-2028.pdf',
         accessedAt: '2026-09-24'
       }

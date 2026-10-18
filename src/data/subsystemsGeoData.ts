@@ -1,6 +1,20 @@
 // GeoJSON dos 4 Subsistemas Elétricos do SIN (ONS)
 // Otimizado e simplificado com Douglas-Peucker (4km) para alta performance WebGL
 import type { FeatureCollection } from 'geojson';
+import type { SourceRef } from './sources';
+
+export const subsystemsGeoSources: SourceRef[] = [
+  {
+    label: 'ONS — Mapas do Sistema Interligado Nacional (Divisão Geográfica dos Subsistemas)',
+    url: 'https://www.ons.org.br/paginas/sobre-o-sin/mapas',
+    accessedAt: '2026-10-18'
+  },
+  {
+    label: 'IBGE — Malha Municipal e Unidades da Federação (Base Cartográfica Contínua)',
+    url: 'https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais/15774-malhas.html',
+    accessedAt: '2026-10-18'
+  }
+];
 
 export const subsystemsGeoJSON: FeatureCollection = {
   "type": "FeatureCollection",

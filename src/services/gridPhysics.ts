@@ -6,6 +6,8 @@ export interface PlantFleetState {
   actualMW: number;
   // Operator target setpoint in MW
   targetMW: number;
+  // Online synchronized capacity in MW (MVA base at unit power factor) contributing rotor inertia
+  committedMW: number;
   // Maximum installed dispatchable capacity in MW
   maxCapacityMW: number;
   // Minimum technical generation in MW (inflexibility)
@@ -61,13 +63,17 @@ export interface GridSimulationState {
 
   // Protection & stability
   eracStage: number;
+  eracStageTimers: number[];
+  eracRestoreTimerSeconds: number;
   isBlackout: boolean;
   blackoutReason?: string;
   isOverfrequencyAlert: boolean;
   isIbrFrequencyWattActive: boolean;
 
-  // Primary Frequency Control (Droop Governor) toggle
+  // Primary Frequency Control (Droop Governor) toggle and 1st-order actuator states
   isPrimaryControlEnabled: boolean;
+  hydroGovernorMW: number;
+  thermalGovernorMW: number;
 
   // Secondary control (CAG): integral action on hydro setpoints that restores 60 Hz after primary response
   isSecondaryControlEnabled: boolean;
@@ -118,8 +124,18 @@ export const MAX_FRAME_SECONDS = 0.1;
 export const GOVERNOR_DROOP_R = 0.05;
 // Share of the hydro fleet under free governor regulation; the rest runs on fixed setpoints
 export const GOVERNOR_PARTICIPATION = 0.6;
+// Share of the thermal fleet with active primary droop headroom (most nuclear/coal/LNG units run base-loaded)
+export const THERMAL_GOVERNOR_PARTICIPATION = 0.15;
+// First-order governor servomotor / distributor lag time constant in seconds
+export const GOVERNOR_TAU_S = 1.5;
 export const PRIMARY_RESERVE_UP_MW = 6000;
 export const PRIMARY_RESERVE_DOWN_MW = 5000;
+export const THERMAL_PRIMARY_RESERVE_MW = 800;
+
+// Synchronous units scheduled by the operator run near ~85% nominal loading (spinning headroom + optimal turbine efficiency),
+// stepped in 500 MW machine blocks (typical large hydro/thermal unit block in the SIN).
+export const NOMINAL_COMMITMENT_LOADING = 0.85;
+export const COMMITMENT_BLOCK_MW = 500;
 
 // Didactic CAG integral time: Kundur §11.1 leaves K_I to the operator and ONS cycle settings are not modelled
 export const SECONDARY_CONTROL_TIME_S = 60;
@@ -132,23 +148,25 @@ export const DAY_SPEEDS = [360, 900, 1800] as const;
 export const DAY_START_SECONDS = 5 * 3600;
 export const DAY_END_SECONDS = 24 * 3600;
 export const DEFAULT_TRIP_MW = 2800;
-// Same loss at midday (IBR-heavy, low inertia) and at the evening peak (hydro-heavy) to contrast RoCoF
+// Same loss at midday (IBR-heavy, fewer committed synchronous units) and at the evening peak (hydro-heavy) to contrast RoCoF
 export const DAY_SCHEDULED_TRIPS: readonly ScheduledTrip[] = [
   { atSeconds: 12 * 3600, mw: DEFAULT_TRIP_MW },
   { atSeconds: 19 * 3600, mw: DEFAULT_TRIP_MW }
 ];
 
-// Grid-code P(f) curtailment: inverters shed active power above this threshold
+// ONS Submódulo 2.10 (requisitos técnicos mínimos de eólicas e fotovoltaicas):
+// acima de 60,2 Hz, redução obrigatória de 3% da potência ativa disponível por cada 0,1 Hz (30%/Hz ⇔ estatismo R = 1/18 ≈ 5,56%).
 export const IBR_FREQUENCY_WATT_START_HZ = 60.2;
-export const IBR_FREQUENCY_WATT_DROOP = 0.05;
+export const IBR_FREQUENCY_WATT_RATE_PER_HZ = 0.3;
+export const IBR_FREQUENCY_WATT_DROOP = 1 / (F_NOMINAL * IBR_FREQUENCY_WATT_RATE_PER_HZ);
 
 export interface EracStage {
   thresholdHz: number;
   shedPercent: number;
 }
 
-// ONS uniform ERAC settings (SE/CO, S, NE), "Análise do desempenho do ERAC — Perturbação de 15/08/2023", ONS.
-// Stage timers (~100–200 ms relay pickup) are not modelled.
+// ONS uniform ERAC settings for SE/CO, S and NE ("Análise do desempenho do ERAC — Perturbação de 15/08/2023", ONS;
+// subsystem N uses separate wider steps up to 55% for islanding).
 export const ERAC_STAGES: readonly EracStage[] = [
   { thresholdHz: 58.5, shedPercent: 5 },
   { thresholdHz: 58.2, shedPercent: 6 },
@@ -156,6 +174,12 @@ export const ERAC_STAGES: readonly EracStage[] = [
   { thresholdHz: 57.7, shedPercent: 8 },
   { thresholdHz: 57.5, shedPercent: 9 }
 ];
+
+// Digital underfrequency relay (81U) pickup time: 6 cycles at 60 Hz (100 ms per feeder stage, ONS ERAC standard)
+export const ERAC_PICKUP_SECONDS = 0.1;
+// Sustained normal frequency threshold and timer before shed load is restored stage by stage
+export const ERAC_RESTORE_THRESHOLD_HZ = 59.9;
+export const ERAC_RESTORE_DELAY_SECONDS = 45;
 
 // Didactic collapse limits: below the last ERAC stage, thermal and hydro unit protections trip in cascade
 export const UNDERFREQUENCY_COLLAPSE_HZ = 56.5;
@@ -166,9 +190,22 @@ export function eracShedPercent(stage: number): number {
   return ERAC_STAGES.slice(0, stage).reduce((sum, s) => sum + s.shedPercent, 0);
 }
 
+/**
+ * Online synchronized capacity (MVA at unit power factor) committed for a scheduled dispatch.
+ * Depends on the operator's unit commitment target rather than instantaneous shaft power, so
+ * rotor kinetic energy E_k stays invariant during fast governor/CAG active power excursions.
+ */
+export function committedCapacityMW(scheduledMW: number, minTechnicalMW: number, maxCapacityMW: number): number {
+  if (scheduledMW <= 0 || maxCapacityMW <= 0) return 0;
+  const rawMW = scheduledMW / NOMINAL_COMMITMENT_LOADING;
+  const steppedMW = Math.ceil(rawMW / COMMITMENT_BLOCK_MW) * COMMITMENT_BLOCK_MW;
+  return Math.max(Math.min(minTechnicalMW, maxCapacityMW), Math.min(maxCapacityMW, steppedMW));
+}
+
 export function computeKineticEnergyMWs(hydro: PlantFleetState, thermal: PlantFleetState): number {
-  // Aggregate fleets are assumed committed at nominal loading, so online MVA tracks dispatched MW
-  return hydro.actualMW * hydro.inertiaH + thermal.actualMW * thermal.inertiaH;
+  const hydroCommitted = hydro.isOnline ? hydro.committedMW : 0;
+  const thermalCommitted = thermal.isOnline ? thermal.committedMW : 0;
+  return hydroCommitted * hydro.inertiaH + thermalCommitted * thermal.inertiaH;
 }
 
 function totalGeneration(fleet: Pick<GridSimulationState, 'hydro' | 'thermal' | 'solar' | 'wind'>): number {
@@ -186,6 +223,7 @@ export function createInitialFleet(): {
     hydro: {
       actualMW: 52000,
       targetMW: 52000,
+      committedMW: committedCapacityMW(52000, 8000, 75000),
       maxCapacityMW: 75000,
       minTechnicalMW: 8000,
       rampRateMWs: 70, // ~4200 MW/min across national hydro cascade
@@ -197,6 +235,7 @@ export function createInitialFleet(): {
     thermal: {
       actualMW: 12000,
       targetMW: 12000,
+      committedMW: committedCapacityMW(12000, 6000, 22000),
       maxCapacityMW: 22000,
       minTechnicalMW: 6000,
       rampRateMWs: 12, // ~720 MW/min across thermal fleet (slower response)
@@ -208,6 +247,7 @@ export function createInitialFleet(): {
     solar: {
       actualMW: 14000,
       targetMW: 14000,
+      committedMW: 0,
       maxCapacityMW: 28000,
       minTechnicalMW: 0,
       rampRateMWs: 200, // Inverters ramp instantly unless constrained
@@ -221,6 +261,7 @@ export function createInitialFleet(): {
     wind: {
       actualMW: 12000,
       targetMW: 12000,
+      committedMW: 0,
       maxCapacityMW: 26000,
       minTechnicalMW: 0,
       rampRateMWs: 150,
@@ -275,12 +316,17 @@ export function dayScheduleAt(day: SimulatorDay, simTimeSeconds: number): DaySch
 
 export function synchronousInertiaH(hydroMW: number, thermalMW: number, totalMW: number): number {
   const fleet = createInitialFleet();
-  return totalMW > 0 ? (hydroMW * fleet.hydro.inertiaH + thermalMW * fleet.thermal.inertiaH) / totalMW : 0;
+  const hydroCommitted = committedCapacityMW(hydroMW, fleet.hydro.minTechnicalMW, fleet.hydro.maxCapacityMW);
+  const thermalCommitted = committedCapacityMW(thermalMW, fleet.thermal.minTechnicalMW, fleet.thermal.maxCapacityMW);
+  return totalMW > 0 ? (hydroCommitted * fleet.hydro.inertiaH + thermalCommitted * fleet.thermal.inertiaH) / totalMW : 0;
 }
 
 function setFleetOutput(fleet: PlantFleetState, mw: number): void {
   fleet.actualMW = mw;
   fleet.targetMW = mw;
+  if (fleet.inertiaH > 0) {
+    fleet.committedMW = committedCapacityMW(mw, fleet.minTechnicalMW, fleet.maxCapacityMW);
+  }
   if (fleet.weatherPotentialMW !== undefined) fleet.weatherPotentialMW = mw;
 }
 
@@ -337,10 +383,14 @@ export function createInitialSimulation(
     actualLoadMW: baseLoadMW,
     shedLoadMW: 0,
     eracStage: 0,
+    eracStageTimers: ERAC_STAGES.map(() => 0),
+    eracRestoreTimerSeconds: 0,
     isBlackout: false,
     isOverfrequencyAlert: false,
     isIbrFrequencyWattActive: false,
     isPrimaryControlEnabled: true,
+    hydroGovernorMW: 0,
+    thermalGovernorMW: 0,
     isSecondaryControlEnabled: scenario === 'dia',
     secondaryControlMW: 0,
     hydroTrippedMW: 0,
@@ -391,6 +441,20 @@ export function primaryGovernorOffsetMW(frequencyHz: number, hydroMaxCapacityMW:
   return Math.max(-PRIMARY_RESERVE_DOWN_MW, Math.min(PRIMARY_RESERVE_UP_MW, deltaMW));
 }
 
+export function thermalPrimaryGovernorOffsetMW(frequencyHz: number, thermalMaxCapacityMW: number): number {
+  const deviationPu = (frequencyHz - F_NOMINAL) / F_NOMINAL;
+  const deltaMW = (-deviationPu / GOVERNOR_DROOP_R) * thermalMaxCapacityMW * THERMAL_GOVERNOR_PARTICIPATION;
+  return Math.max(-THERMAL_PRIMARY_RESERVE_MW, Math.min(THERMAL_PRIMARY_RESERVE_MW, deltaMW));
+}
+
+export function totalGovernorMWPerHz(hydroMaxCapacityMW: number, thermalMaxCapacityMW: number, thermalOnline = true): number {
+  const hydroSlope = (hydroMaxCapacityMW * GOVERNOR_PARTICIPATION) / (GOVERNOR_DROOP_R * F_NOMINAL);
+  const thermalSlope = thermalOnline
+    ? (thermalMaxCapacityMW * THERMAL_GOVERNOR_PARTICIPATION) / (GOVERNOR_DROOP_R * F_NOMINAL)
+    : 0;
+  return hydroSlope + thermalSlope;
+}
+
 /** Integrates one fixed step of the aggregated single-bus swing equation (forward Euler). */
 export function stepSimulation(state: GridSimulationState, dtSeconds: number): GridSimulationState {
   if (state.isBlackout || dtSeconds <= 0) {
@@ -419,17 +483,32 @@ export function stepSimulation(state: GridSimulationState, dtSeconds: number): G
     currentBaseLoad = schedule.demandMW;
   }
 
-  const hydroGovernorOffsetMW = state.isPrimaryControlEnabled
-    ? primaryGovernorOffsetMW(state.frequencyHz, state.hydro.maxCapacityMW)
+  newHydro.committedMW = committedCapacityMW(newHydro.targetMW, newHydro.minTechnicalMW, newHydro.maxCapacityMW);
+  newThermal.committedMW = committedCapacityMW(newThermal.targetMW, newThermal.minTechnicalMW, newThermal.maxCapacityMW);
+
+  // First-order governor servomotor / distributor lag (τ_g = GOVERNOR_TAU_S)
+  const alphaGov = Math.min(1, dtSeconds / GOVERNOR_TAU_S);
+  const hydroGovSteadyMW = state.isPrimaryControlEnabled
+    ? primaryGovernorOffsetMW(state.frequencyHz, newHydro.maxCapacityMW)
     : 0;
+  const thermalGovSteadyMW = state.isPrimaryControlEnabled && newThermal.isOnline
+    ? thermalPrimaryGovernorOffsetMW(state.frequencyHz, newThermal.maxCapacityMW)
+    : 0;
+  const hydroGovernorMW = state.isPrimaryControlEnabled
+    ? state.hydroGovernorMW + (hydroGovSteadyMW - state.hydroGovernorMW) * alphaGov
+    : 0;
+  const thermalGovernorMW = state.isPrimaryControlEnabled && newThermal.isOnline
+    ? state.thermalGovernorMW + (thermalGovSteadyMW - state.thermalGovernorMW) * alphaGov
+    : 0;
+
   const hydroTargetWith = (cagMW: number) =>
-    Math.max(newHydro.minTechnicalMW, Math.min(newHydro.maxCapacityMW, newHydro.targetMW + cagMW + hydroGovernorOffsetMW));
+    Math.max(newHydro.minTechnicalMW, Math.min(newHydro.maxCapacityMW, newHydro.targetMW + cagMW + hydroGovernorMW));
 
   let secondaryControlMW = 0;
   if (state.isSecondaryControlEnabled) {
     // Single-area ACE = β·Δf with β the natural response (droop + load damping); ΔP_C = −(1/T)∫ACE dt
     const governorMWPerHz = state.isPrimaryControlEnabled
-      ? (state.hydro.maxCapacityMW * GOVERNOR_PARTICIPATION) / (GOVERNOR_DROOP_R * F_NOMINAL)
+      ? totalGovernorMWPerHz(newHydro.maxCapacityMW, newThermal.maxCapacityMW, newThermal.isOnline)
       : 0;
     const biasMWPerHz = governorMWPerHz + (LOAD_DAMPING_D * state.actualLoadMW) / F_NOMINAL;
     const aceMW = biasMWPerHz * (state.frequencyHz - F_NOMINAL);
@@ -446,7 +525,7 @@ export function stepSimulation(state: GridSimulationState, dtSeconds: number): G
   newHydro.actualMW = rampToward(newHydro.actualMW, hydroTargetWith(secondaryControlMW), newHydro.rampRateMWs, dtSeconds);
 
   const thermalEffectiveTarget = newThermal.isOnline
-    ? Math.max(newThermal.minTechnicalMW, Math.min(newThermal.maxCapacityMW, newThermal.targetMW))
+    ? Math.max(newThermal.minTechnicalMW, Math.min(newThermal.maxCapacityMW, newThermal.targetMW + thermalGovernorMW))
     : 0;
   newThermal.actualMW = rampToward(newThermal.actualMW, thermalEffectiveTarget, newThermal.rampRateMWs, dtSeconds);
 
@@ -478,11 +557,37 @@ export function stepSimulation(state: GridSimulationState, dtSeconds: number): G
   const equivalentInertiaH = totalGenMW > 0 ? kineticEnergyMWs / totalGenMW : 0;
 
   let eracStage = state.eracStage;
-  while (eracStage < ERAC_STAGES.length && state.frequencyHz <= ERAC_STAGES[eracStage].thresholdHz) {
+  const eracStageTimers = ERAC_STAGES.map((stage, idx) => {
+    const prevTimer = state.eracStageTimers[idx] ?? 0;
+    if (idx < eracStage) return ERAC_PICKUP_SECONDS;
+    return state.frequencyHz <= stage.thresholdHz ? prevTimer + dtSeconds : 0;
+  });
+  let eracRestoreTimerSeconds = state.eracRestoreTimerSeconds;
+
+  while (
+    eracStage < ERAC_STAGES.length &&
+    state.frequencyHz <= ERAC_STAGES[eracStage].thresholdHz &&
+    eracStageTimers[eracStage] >= ERAC_PICKUP_SECONDS - 1e-9
+  ) {
     const stage = ERAC_STAGES[eracStage];
     eracStage += 1;
+    eracRestoreTimerSeconds = 0;
     pushEvent(events, `erac_${eracStage}`, newSimTime, 'critical',
-      `ERAC Estágio ${eracStage} (f ≤ ${stage.thresholdHz.toFixed(1)} Hz): corte de ${stage.shedPercent}% da carga (${eracShedPercent(eracStage)}% acumulado).`);
+      `ERAC Estágio ${eracStage} (f ≤ ${stage.thresholdHz.toFixed(1)} Hz por ${Math.round(ERAC_PICKUP_SECONDS * 1000)} ms): corte de ${stage.shedPercent}% da carga (${eracShedPercent(eracStage)}% acumulado).`);
+  }
+
+  if (eracStage > 0 && state.frequencyHz >= ERAC_RESTORE_THRESHOLD_HZ) {
+    eracRestoreTimerSeconds += dtSeconds;
+    if (eracRestoreTimerSeconds >= ERAC_RESTORE_DELAY_SECONDS - 1e-9) {
+      const restoredStage = ERAC_STAGES[eracStage - 1];
+      eracStage -= 1;
+      eracStageTimers[eracStage] = 0;
+      eracRestoreTimerSeconds = 0;
+      pushEvent(events, `erac_restore_${eracStage}`, newSimTime, 'success',
+        `Recomposição pós-ERAC: frequência sustentada ≥ ${ERAC_RESTORE_THRESHOLD_HZ.toFixed(1)} Hz; religado ${restoredStage.shedPercent}% da carga (estágio ${eracStage + 1}).`);
+    }
+  } else if (state.frequencyHz < ERAC_RESTORE_THRESHOLD_HZ) {
+    eracRestoreTimerSeconds = 0;
   }
 
   const shedLoadMW = Math.round(currentBaseLoad * (eracShedPercent(eracStage) / 100));
@@ -534,10 +639,14 @@ export function stepSimulation(state: GridSimulationState, dtSeconds: number): G
     actualLoadMW,
     shedLoadMW,
     eracStage,
+    eracStageTimers,
+    eracRestoreTimerSeconds,
     isBlackout,
     blackoutReason,
     isOverfrequencyAlert: newFreq >= OVERFREQUENCY_ALERT_HZ,
     isIbrFrequencyWattActive,
+    hydroGovernorMW,
+    thermalGovernorMW,
     secondaryControlMW,
     events: events.slice(0, 40)
   };
@@ -577,10 +686,13 @@ export function advanceSimulation(state: GridSimulationState, frameSeconds: numb
   return { ...next, integratorRemainderSeconds: Math.max(0, budget - steps * SIM_STEP_SECONDS) };
 }
 
-/** Trips synchronous hydro units: output, setpoint and available capacity are lost together. */
+/** Trips synchronous hydro units: output, setpoint, committed capacity and available capacity are lost together. */
 export function applyGeneratorTrip(state: GridSimulationState, tripMW: number): GridSimulationState {
   const lostMW = Math.min(tripMW, state.hydro.actualMW);
   const maxCapacityMW = Math.max(0, state.hydro.maxCapacityMW - lostMW);
+  const targetMW = Math.min(state.hydro.targetMW - lostMW, maxCapacityMW);
+  const minTechnicalMW = Math.min(state.hydro.minTechnicalMW, maxCapacityMW);
+  const committedMW = Math.max(minTechnicalMW, Math.min(maxCapacityMW, state.hydro.committedMW - lostMW));
   const events = [...state.events];
   pushEvent(events, 'trip', state.simTimeSeconds, 'critical',
     `CONTINGÊNCIA: desligamento intempestivo de ${lostMW.toLocaleString('pt-BR')} MW em unidades hidrelétricas. A inércia e a reserva dessas máquinas saem junto.`);
@@ -593,9 +705,10 @@ export function applyGeneratorTrip(state: GridSimulationState, tripMW: number): 
     hydro: {
       ...state.hydro,
       actualMW: state.hydro.actualMW - lostMW,
-      targetMW: Math.min(state.hydro.targetMW - lostMW, maxCapacityMW),
+      targetMW,
+      committedMW,
       maxCapacityMW,
-      minTechnicalMW: Math.min(state.hydro.minTechnicalMW, maxCapacityMW)
+      minTechnicalMW
     },
     events: events.slice(0, 40)
   };
