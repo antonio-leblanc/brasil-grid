@@ -20,11 +20,14 @@ export const SECTION_GROUPS: { label: string; sections: SectionDef[] }[] = [
     ]
   },
   {
+    label: 'Mercado',
+    sections: [{ id: 'preco', label: 'Preço', icon: TrendingUp }]
+  },
+  {
     label: 'Referência',
     sections: [
       { id: 'cadeia', label: 'Cadeia de valor do SEB', icon: Link2 },
       { id: 'dossies', label: 'Dossiês do SIN', icon: BookOpen },
-      { id: 'preco', label: 'Preço', icon: TrendingUp },
       { id: 'escalas', label: 'Régua de grandezas', icon: Ruler }
     ]
   }
