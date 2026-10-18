@@ -69,7 +69,8 @@ Critério: um elemento só fica permanente na tela se responde a uma pergunta f�
 ## Preço e mercado (feature, exige plano)
 
 - [x] **Pilar "Preço" — curva do pato:** perfil horário do CMO do Sudeste por ano, em SVG a partir de `src/data/mercado/cmoPerfilHorario.json` (`pipeline/exporta.py`).
-- [ ] **Pilar "Preço" — resto:** EAR × CMO e custo de modulação no mesmo esquema. Junta com o item do snapshot ONS na CI (P2).
+- [x] **Pilar "Preço" — EAR × CMO e modulação:** dispersão mensal EAR do SIN × CMO do SE e barras do custo de modulação, de `src/data/mercado/mercadoMensal.json`.
+- [ ] **Snapshot do pipeline na CI:** rodar `pipeline/exporta.py` agendado em vez de commitar o JSON na mão (junta com o item P2 do snapshot ONS).
 - [ ] **Solar e volatilidade intradiária:** quanto da curva do pato vem de geração distribuída e solar centralizada, e corte de geração (*curtailment*) no meio do dia.
 - [ ] **Depois:** previsão (ENA prevista no PMO do ONS, saída do novomodelo quando rodar em sombra em 2027) e expansão contratada em leilão. Só com fonte profunda, sem feed de notícia.
 

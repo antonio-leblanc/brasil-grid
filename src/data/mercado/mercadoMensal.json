@@ -1,0 +1,505 @@
+{
+ "subsistemaCmo": "SE",
+ "unidade": "R$/MWh",
+ "ultimoDado": "2026-10-14",
+ "geradoEm": "2026-10-18",
+ "meses": [
+  {
+   "mes": "2020-01",
+   "earBrasil": 25.1,
+   "cmo": 319.3,
+   "modulacao": 1.3
+  },
+  {
+   "mes": "2020-02",
+   "earBrasil": 35.1,
+   "cmo": 142.6,
+   "modulacao": 2.9
+  },
+  {
+   "mes": "2020-03",
+   "earBrasil": 50.0,
+   "cmo": 68.0,
+   "modulacao": 5.9
+  },
+  {
+   "mes": "2020-04",
+   "earBrasil": 57.9,
+   "cmo": 0.1,
+   "modulacao": 0.0
+  },
+  {
+   "mes": "2020-05",
+   "earBrasil": 60.2,
+   "cmo": 52.4,
+   "modulacao": 4.0
+  },
+  {
+   "mes": "2020-06",
+   "earBrasil": 60.4,
+   "cmo": 104.5,
+   "modulacao": 2.4
+  },
+  {
+   "mes": "2020-07",
+   "earBrasil": 58.8,
+   "cmo": 87.0,
+   "modulacao": 0.5
+  },
+  {
+   "mes": "2020-08",
+   "earBrasil": 53.5,
+   "cmo": 81.7,
+   "modulacao": 0.6
+  },
+  {
+   "mes": "2020-09",
+   "earBrasil": 45.8,
+   "cmo": 99.1,
+   "modulacao": 1.4
+  },
+  {
+   "mes": "2020-10",
+   "earBrasil": 34.3,
+   "cmo": 305.4,
+   "modulacao": 1.5
+  },
+  {
+   "mes": "2020-11",
+   "earBrasil": 27.1,
+   "cmo": 560.2,
+   "modulacao": 12.5
+  },
+  {
+   "mes": "2020-12",
+   "earBrasil": 23.6,
+   "cmo": 302.8,
+   "modulacao": 10.8
+  },
+  {
+   "mes": "2021-01",
+   "earBrasil": 27.6,
+   "cmo": 254.6,
+   "modulacao": 1.0
+  },
+  {
+   "mes": "2021-02",
+   "earBrasil": 34.2,
+   "cmo": 162.3,
+   "modulacao": 1.9
+  },
+  {
+   "mes": "2021-03",
+   "earBrasil": 43.0,
+   "cmo": 117.7,
+   "modulacao": 2.1
+  },
+  {
+   "mes": "2021-04",
+   "earBrasil": 45.2,
+   "cmo": 139.3,
+   "modulacao": 3.2
+  },
+  {
+   "mes": "2021-05",
+   "earBrasil": 43.2,
+   "cmo": 242.8,
+   "modulacao": 6.8
+  },
+  {
+   "mes": "2021-06",
+   "earBrasil": 40.9,
+   "cmo": 549.8,
+   "modulacao": 3.6
+  },
+  {
+   "mes": "2021-07",
+   "earBrasil": 38.0,
+   "cmo": 1121.4,
+   "modulacao": 6.5
+  },
+  {
+   "mes": "2021-08",
+   "earBrasil": 32.6,
+   "cmo": 2540.2,
+   "modulacao": 23.5
+  },
+  {
+   "mes": "2021-09",
+   "earBrasil": 26.5,
+   "cmo": 858.9,
+   "modulacao": 1.8
+  },
+  {
+   "mes": "2021-10",
+   "earBrasil": 24.3,
+   "cmo": 242.7,
+   "modulacao": 4.3
+  },
+  {
+   "mes": "2021-11",
+   "earBrasil": 25.6,
+   "cmo": 83.9,
+   "modulacao": 0.3
+  },
+  {
+   "mes": "2021-12",
+   "earBrasil": 28.6,
+   "cmo": 68.9,
+   "modulacao": 0.8
+  },
+  {
+   "mes": "2022-01",
+   "earBrasil": 43.7,
+   "cmo": 52.9,
+   "modulacao": 1.7
+  },
+  {
+   "mes": "2022-02",
+   "earBrasil": 56.9,
+   "cmo": 9.9,
+   "modulacao": 0.2
+  },
+  {
+   "mes": "2022-03",
+   "earBrasil": 65.8,
+   "cmo": 17.3,
+   "modulacao": 0.3
+  },
+  {
+   "mes": "2022-04",
+   "earBrasil": 72.2,
+   "cmo": 22.8,
+   "modulacao": 1.1
+  },
+  {
+   "mes": "2022-05",
+   "earBrasil": 74.8,
+   "cmo": 26.0,
+   "modulacao": 0.3
+  },
+  {
+   "mes": "2022-06",
+   "earBrasil": 74.5,
+   "cmo": 46.3,
+   "modulacao": 0.8
+  },
+  {
+   "mes": "2022-07",
+   "earBrasil": 71.0,
+   "cmo": 64.8,
+   "modulacao": 0.1
+  },
+  {
+   "mes": "2022-08",
+   "earBrasil": 64.7,
+   "cmo": 74.7,
+   "modulacao": 1.0
+  },
+  {
+   "mes": "2022-09",
+   "earBrasil": 59.5,
+   "cmo": 39.5,
+   "modulacao": 0.4
+  },
+  {
+   "mes": "2022-10",
+   "earBrasil": 56.4,
+   "cmo": 4.6,
+   "modulacao": 0.0
+  },
+  {
+   "mes": "2022-11",
+   "earBrasil": 53.4,
+   "cmo": 0.0,
+   "modulacao": 0.0
+  },
+  {
+   "mes": "2022-12",
+   "earBrasil": 53.5,
+   "cmo": 0.0,
+   "modulacao": 0.0
+  },
+  {
+   "mes": "2023-01",
+   "earBrasil": 67.2,
+   "cmo": 0.0,
+   "modulacao": 0.0
+  },
+  {
+   "mes": "2023-02",
+   "earBrasil": 77.0,
+   "cmo": 0.0,
+   "modulacao": 0.0
+  },
+  {
+   "mes": "2023-03",
+   "earBrasil": 83.4,
+   "cmo": 0.0,
+   "modulacao": 0.0
+  },
+  {
+   "mes": "2023-04",
+   "earBrasil": 86.9,
+   "cmo": 0.0,
+   "modulacao": 0.0
+  },
+  {
+   "mes": "2023-05",
+   "earBrasil": 87.4,
+   "cmo": 0.0,
+   "modulacao": 0.0
+  },
+  {
+   "mes": "2023-06",
+   "earBrasil": 87.0,
+   "cmo": 0.0,
+   "modulacao": 0.0
+  },
+  {
+   "mes": "2023-07",
+   "earBrasil": 85.7,
+   "cmo": 0.0,
+   "modulacao": 0.0
+  },
+  {
+   "mes": "2023-08",
+   "earBrasil": 81.6,
+   "cmo": 0.0,
+   "modulacao": 0.0
+  },
+  {
+   "mes": "2023-09",
+   "earBrasil": 76.0,
+   "cmo": 18.3,
+   "modulacao": 2.9
+  },
+  {
+   "mes": "2023-10",
+   "earBrasil": 70.3,
+   "cmo": 18.3,
+   "modulacao": 2.4
+  },
+  {
+   "mes": "2023-11",
+   "earBrasil": 65.7,
+   "cmo": 28.0,
+   "modulacao": 5.1
+  },
+  {
+   "mes": "2023-12",
+   "earBrasil": 61.8,
+   "cmo": 12.3,
+   "modulacao": 1.6
+  },
+  {
+   "mes": "2024-01",
+   "earBrasil": 60.0,
+   "cmo": 3.0,
+   "modulacao": 0.4
+  },
+  {
+   "mes": "2024-02",
+   "earBrasil": 63.0,
+   "cmo": 0.8,
+   "modulacao": 0.2
+  },
+  {
+   "mes": "2024-03",
+   "earBrasil": 68.0,
+   "cmo": 0.9,
+   "modulacao": -0.1
+  },
+  {
+   "mes": "2024-04",
+   "earBrasil": 73.4,
+   "cmo": 8.3,
+   "modulacao": 0.2
+  },
+  {
+   "mes": "2024-05",
+   "earBrasil": 75.3,
+   "cmo": 1.3,
+   "modulacao": -0.0
+  },
+  {
+   "mes": "2024-06",
+   "earBrasil": 72.8,
+   "cmo": 26.2,
+   "modulacao": 0.9
+  },
+  {
+   "mes": "2024-07",
+   "earBrasil": 68.0,
+   "cmo": 77.6,
+   "modulacao": 1.6
+  },
+  {
+   "mes": "2024-08",
+   "earBrasil": 61.8,
+   "cmo": 110.5,
+   "modulacao": 2.0
+  },
+  {
+   "mes": "2024-09",
+   "earBrasil": 53.1,
+   "cmo": 366.4,
+   "modulacao": 4.7
+  },
+  {
+   "mes": "2024-10",
+   "earBrasil": 45.9,
+   "cmo": 516.0,
+   "modulacao": 12.9
+  },
+  {
+   "mes": "2024-11",
+   "earBrasil": 44.6,
+   "cmo": 152.2,
+   "modulacao": 9.6
+  },
+  {
+   "mes": "2024-12",
+   "earBrasil": 47.5,
+   "cmo": 13.7,
+   "modulacao": 1.6
+  },
+  {
+   "mes": "2025-01",
+   "earBrasil": 59.0,
+   "cmo": 32.2,
+   "modulacao": 1.9
+  },
+  {
+   "mes": "2025-02",
+   "earBrasil": 69.6,
+   "cmo": 102.1,
+   "modulacao": 3.2
+  },
+  {
+   "mes": "2025-03",
+   "earBrasil": 69.8,
+   "cmo": 314.8,
+   "modulacao": 3.5
+  },
+  {
+   "mes": "2025-04",
+   "earBrasil": 69.9,
+   "cmo": 194.6,
+   "modulacao": 6.1
+  },
+  {
+   "mes": "2025-05",
+   "earBrasil": 69.8,
+   "cmo": 167.5,
+   "modulacao": 7.2
+  },
+  {
+   "mes": "2025-06",
+   "earBrasil": 68.5,
+   "cmo": 218.1,
+   "modulacao": 3.8
+  },
+  {
+   "mes": "2025-07",
+   "earBrasil": 68.6,
+   "cmo": 196.8,
+   "modulacao": 5.1
+  },
+  {
+   "mes": "2025-08",
+   "earBrasil": 63.9,
+   "cmo": 283.3,
+   "modulacao": 4.6
+  },
+  {
+   "mes": "2025-09",
+   "earBrasil": 58.6,
+   "cmo": 258.5,
+   "modulacao": 5.3
+  },
+  {
+   "mes": "2025-10",
+   "earBrasil": 52.5,
+   "cmo": 250.7,
+   "modulacao": 5.3
+  },
+  {
+   "mes": "2025-11",
+   "earBrasil": 48.4,
+   "cmo": 289.5,
+   "modulacao": 4.6
+  },
+  {
+   "mes": "2025-12",
+   "earBrasil": 45.2,
+   "cmo": 274.9,
+   "modulacao": 5.9
+  },
+  {
+   "mes": "2026-01",
+   "earBrasil": 46.9,
+   "cmo": 237.9,
+   "modulacao": 5.0
+  },
+  {
+   "mes": "2026-02",
+   "earBrasil": 54.8,
+   "cmo": 336.2,
+   "modulacao": 6.2
+  },
+  {
+   "mes": "2026-03",
+   "earBrasil": 64.6,
+   "cmo": 308.9,
+   "modulacao": 8.6
+  },
+  {
+   "mes": "2026-04",
+   "earBrasil": 70.5,
+   "cmo": 247.7,
+   "modulacao": 7.5
+  },
+  {
+   "mes": "2026-05",
+   "earBrasil": 71.3,
+   "cmo": 170.5,
+   "modulacao": 5.3
+  },
+  {
+   "mes": "2026-06",
+   "earBrasil": 71.2,
+   "cmo": 181.0,
+   "modulacao": 3.1
+  },
+  {
+   "mes": "2026-07",
+   "earBrasil": 70.9,
+   "cmo": 111.5,
+   "modulacao": 5.5
+  },
+  {
+   "mes": "2026-08",
+   "earBrasil": 67.1,
+   "cmo": 129.1,
+   "modulacao": 7.9
+  },
+  {
+   "mes": "2026-09",
+   "earBrasil": 62.6,
+   "cmo": 87.9,
+   "modulacao": 5.6
+  },
+  {
+   "mes": "2026-10",
+   "earBrasil": 60.4,
+   "cmo": 30.0,
+   "modulacao": 1.5
+  }
+ ],
+ "blocoAnoCorrente": {
+  "ano": 2026,
+  "flat": 192.2,
+  "fimDeTarde18h22h": 338.3
+ }
+}

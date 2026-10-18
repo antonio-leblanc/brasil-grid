@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { CmoYearProfile } from '../../data/marketData';
+import { formatBRL } from './format';
 
 // Anos até 2023 têm perfil plano e ficam como contexto; a rampa ciano (validada contra #07090e)
 // só marca os anos em que a curva do pato existe, do mais fraco ao mais forte.
@@ -20,8 +21,6 @@ const Y_STEP = 100;
 
 const formatSlot = (slot: number) =>
   `${String(Math.floor(slot / 2)).padStart(2, '0')}:${slot % 2 === 0 ? '00' : '30'}`;
-
-const formatBRL = (value: number) => Math.round(value).toLocaleString('pt-BR');
 
 const LABEL_GAP = 12;
 
