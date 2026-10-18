@@ -7,23 +7,14 @@ import {
   getStatusTheme,
   type InterchangeId
 } from '../../data/interchangeData';
-import {
-  X,
-  Filter,
-  Droplet,
-  Sun,
-  Wind,
-  Atom,
-  Flame,
-  Layers,
-  ArrowRightLeft
-} from 'lucide-react';
+import { X, Droplet, Sun, Wind, Atom, Flame } from 'lucide-react';
 import { FilterButton } from './FilterButton';
 import {
   type LineVoltageFilter,
   matchesLineFilter,
   matchesPlantFilter
 } from '../../data/gridFilters';
+import { cn } from '../../utils/cn';
 
 interface ConsoleSidebarProps {
   isOpen: boolean;
@@ -38,6 +29,31 @@ interface ConsoleSidebarProps {
   setShowSubsystems: (show: boolean) => void;
   onOpenInterchangeModal?: (id?: InterchangeId) => void;
 }
+
+const PLANT_TYPES = [
+  { id: 'all', label: 'Todas', icon: undefined },
+  { id: 'hidro', label: 'Hidro', icon: Droplet },
+  { id: 'solar', label: 'Solar', icon: Sun },
+  { id: 'eolica', label: 'Eólica', icon: Wind },
+  { id: 'nuclear', label: 'Nuclear', icon: Atom },
+  { id: 'termica', label: 'Térmica', icon: Flame }
+];
+
+const VOLTAGE_FILTERS: { id: LineVoltageFilter; label: string; aria: string }[] = [
+  { id: 'all', label: 'Todas', aria: 'Filtrar todas as linhas' },
+  { id: 'CC', label: 'HVDC', aria: 'Filtrar bipolos HVDC em Corrente Contínua (±800 kV e ±600 kV)' },
+  { id: '500', label: '≥ 500 kV', aria: 'Filtrar linhas de 500 kV ou superior' }
+];
+
+const formatGW = (mw: number) =>
+  (mw / 1000).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+const SectionTitle: React.FC<{ children: React.ReactNode; aside?: React.ReactNode }> = ({ children, aside }) => (
+  <div className="flex items-baseline justify-between mb-2">
+    <h3 className="text-[11px] font-medium text-slate-500">{children}</h3>
+    {aside}
+  </div>
+);
 
 export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
   isOpen,
@@ -56,95 +72,51 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
 
   if (!isOpen) return null;
 
-  const filteredPlants = majorPowerPlants.filter((p) =>
-    matchesPlantFilter(p, plantTypeFilter)
-  );
-
-  const filteredLines = majorTransmissionLines.filter((line) =>
-    matchesLineFilter(line, voltageFilter)
-  );
+  const filteredPlants = majorPowerPlants.filter((p) => matchesPlantFilter(p, plantTypeFilter));
+  const filteredLines = majorTransmissionLines.filter((line) => matchesLineFilter(line, voltageFilter));
 
   return (
-    <aside className="h-full flex flex-col shadow-2xl z-30 transition-all duration-200 w-full sm:w-[380px] lg:w-[410px] bg-[#090c13]/95 backdrop-blur-2xl border-r border-slate-800/90 animate-in slide-in-from-left">
-      {/* Top Header */}
-      <div className="p-3 border-b border-slate-800 flex items-center justify-between bg-slate-950/70">
-        <div className="flex items-center space-x-2 text-xs font-mono text-cyan-300 font-bold">
-          <span>PAINEL DO SIN</span>
-        </div>
-
+    <aside className="h-full flex flex-col z-30 w-full sm:w-[360px] bg-[#090c13] border-r border-slate-800">
+      <div className="h-10 px-4 border-b border-slate-800 flex items-center justify-between">
+        <span className="text-sm text-slate-200">Painel do SIN</span>
         <button
           type="button"
           onClick={() => setIsOpen(false)}
-          className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer"
-          title="Fechar painel lateral"
+          className="p-1 rounded-md text-slate-500 hover:text-slate-200 hover:bg-slate-900 transition-colors cursor-pointer"
           aria-label="Fechar painel lateral"
         >
           <X className="w-4 h-4" />
         </button>
       </div>
 
-      {/* Drawer Scrollable Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs font-mono">
-        {/* 1. Layer & Filter Controls */}
-        <div className="space-y-3 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
-          <div className="flex items-center space-x-1.5 text-cyan-400 uppercase font-bold text-[10px]">
-            <Filter className="w-3.5 h-3.5" />
-            <span>Filtros do Mapa</span>
-          </div>
-
-          {/* Voltage Filter */}
-          <div className="space-y-1.5">
-            <span className="text-slate-500 text-[9px] uppercase block">Transmissão (Tecnologia & Tensão):</span>
-            <div className="flex space-x-1">
-              <FilterButton
-                active={voltageFilter === 'all'}
-                colorScheme="cyan"
-                onClick={() => setVoltageFilter('all')}
-                className="flex-1 text-[11px] py-1"
-                aria-label="Filtrar todas as linhas"
-              >
-                Todas
-              </FilterButton>
-              <FilterButton
-                active={voltageFilter === 'CC'}
-                colorScheme="amber"
-                onClick={() => setVoltageFilter('CC')}
-                className="flex-1 text-[11px] py-1"
-                aria-label="Filtrar bipolos HVDC em Corrente Contínua (±800 kV e ±600 kV)"
-              >
-                CC (HVDC)
-              </FilterButton>
-              <FilterButton
-                active={voltageFilter === '500'}
-                colorScheme="cyan"
-                onClick={() => setVoltageFilter('500')}
-                className="flex-1 text-[11px] py-1"
-                aria-label="Filtrar linhas de 500 kV ou superior"
-              >
-                ≥ 500 kV
-              </FilterButton>
+      <div className="flex-1 overflow-y-auto divide-y divide-slate-800/70 text-sm">
+        <section className="px-4 py-4 space-y-4">
+          <div>
+            <SectionTitle>Transmissão</SectionTitle>
+            <div className="flex gap-1">
+              {VOLTAGE_FILTERS.map((f) => (
+                <FilterButton
+                  key={f.id}
+                  active={voltageFilter === f.id}
+                  onClick={() => setVoltageFilter(f.id)}
+                  className="flex-1"
+                  aria-label={f.aria}
+                >
+                  {f.label}
+                </FilterButton>
+              ))}
             </div>
           </div>
 
-          {/* Plant Source Filter */}
-          <div className="space-y-1.5 pt-2 border-t border-slate-800/50">
-            <span className="text-slate-500 text-[9px] uppercase block">Fonte de Geração:</span>
+          <div>
+            <SectionTitle>Fonte de geração</SectionTitle>
             <div className="grid grid-cols-3 gap-1">
-              {[
-                { id: 'all', label: 'Todas', icon: undefined },
-                { id: 'hidro', label: 'Hidro', icon: Droplet },
-                { id: 'solar', label: 'Solar', icon: Sun },
-                { id: 'eolica', label: 'Eólica', icon: Wind },
-                { id: 'nuclear', label: 'Nuclear', icon: Atom },
-                { id: 'termica', label: 'Térmica', icon: Flame }
-              ].map((item) => (
+              {PLANT_TYPES.map((item) => (
                 <FilterButton
                   key={item.id}
                   active={plantTypeFilter === item.id}
-                  colorScheme="emerald"
                   icon={item.icon}
                   onClick={() => setPlantTypeFilter(item.id)}
-                  className="text-[9px] uppercase py-1"
                   aria-label={`Filtrar fonte ${item.label}`}
                 >
                   {item.label}
@@ -153,153 +125,143 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
             </div>
           </div>
 
-          {/* Visual Layers Toggle */}
-          <div className="space-y-1.5 pt-2 border-t border-slate-800/50">
-            <span className="text-slate-500 text-[9px] uppercase block">Camadas Visuais:</span>
-            <FilterButton
-              active={showSubsystems}
-              colorScheme="amber"
-              icon={Layers}
-              onClick={() => setShowSubsystems(!showSubsystems)}
-              className="w-full text-[9px] uppercase py-1"
+          <label className="flex items-center justify-between cursor-pointer text-xs text-slate-300">
+            <span>Limites dos 4 subsistemas</span>
+            <input
+              type="checkbox"
+              checked={showSubsystems}
+              onChange={() => setShowSubsystems(!showSubsystems)}
+              className="accent-cyan-500 cursor-pointer"
               aria-label="Alternar subsistemas"
-            >
-              4 Subsistemas (Regiões)
-            </FilterButton>
-          </div>
-        </div>
+            />
+          </label>
+        </section>
 
-        {/* 2. Regional Interchanges Quick Section */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-[11px] text-slate-400">
-            <div className="flex items-center space-x-1.5 text-cyan-400 font-bold uppercase text-[10px]">
-              <ArrowRightLeft className="w-3.5 h-3.5" />
-              <span>GARGALOS & INTERCÂMBIOS (4)</span>
-            </div>
-            {onOpenInterchangeModal && (
-              <button
-                type="button"
-                onClick={() => onOpenInterchangeModal()}
-                className="text-cyan-400 hover:text-cyan-300 text-[10px] font-semibold cursor-pointer"
-              >
-                Detalhes →
-              </button>
-            )}
-          </div>
-          <div className="grid grid-cols-2 gap-1.5">
+        <section className="px-4 py-4">
+          <SectionTitle
+            aside={
+              onOpenInterchangeModal && (
+                <button
+                  type="button"
+                  onClick={() => onOpenInterchangeModal()}
+                  className="text-[11px] text-slate-500 hover:text-slate-200 transition-colors cursor-pointer"
+                >
+                  Detalhes
+                </button>
+              )
+            }
+          >
+            Intercâmbios <span className="text-slate-600">· fluxo de referência / limite</span>
+          </SectionTitle>
+          <ul className="space-y-2.5">
             {regionalInterchanges.map((ic) => {
               const status = getInterchangeStatus(ic.nominalFlowMW, ic.maxExportLimitMW);
-              const theme = getStatusTheme(status);
+              const loadingPct = Math.min(100, (Math.abs(ic.nominalFlowMW) / ic.maxExportLimitMW) * 100);
               return (
-                <div
-                  key={ic.id}
-                  onClick={() => onOpenInterchangeModal?.(ic.id)}
-                  className="p-2 rounded-lg bg-slate-950/60 hover:bg-slate-900 border border-slate-800/80 hover:border-cyan-500/40 cursor-pointer flex flex-col justify-between transition"
-                >
-                  <div className="flex items-center justify-between">
-                    <strong className="text-white text-xs">{ic.shortCode}</strong>
-                    <span
-                      className="text-[8px] px-1 py-0.2 rounded font-bold uppercase"
-                      style={{
-                        color: theme.color,
-                        backgroundColor: `${theme.color}15`,
-                        border: `1px solid ${theme.color}40`
-                      }}
-                    >
-                      {status}
-                    </span>
-                  </div>
-                  <div className="text-[10px] text-slate-400 mt-1 flex items-baseline justify-between">
-                    <span>Fluxo:</span>
-                    <strong className="text-white">{(ic.nominalFlowMW / 1000).toFixed(1)} GW</strong>
-                  </div>
-                </div>
+                <li key={ic.id}>
+                  <button
+                    type="button"
+                    onClick={() => onOpenInterchangeModal?.(ic.id)}
+                    className="w-full text-left group cursor-pointer"
+                    title={ic.name}
+                  >
+                    <div className="flex items-baseline justify-between text-xs">
+                      <span className="text-slate-300 group-hover:text-white transition-colors">
+                        <span className="font-mono">{ic.shortCode}</span>
+                        <span className="text-slate-500 ml-2">{ic.primaryDirection}</span>
+                      </span>
+                      <span className="font-mono tabular-nums text-slate-400">
+                        <span className="text-slate-200">{formatGW(ic.nominalFlowMW)}</span> / {formatGW(ic.maxExportLimitMW)} GW
+                      </span>
+                    </div>
+                    <div className="mt-1.5 h-0.5 bg-slate-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full"
+                        style={{
+                          width: `${loadingPct}%`,
+                          backgroundColor: status === 'nominal' ? '#64748b' : getStatusTheme(status).color
+                        }}
+                      />
+                    </div>
+                  </button>
+                </li>
               );
             })}
-          </div>
-        </div>
+          </ul>
+        </section>
 
-        {/* 3. Tabbed Asset Explorer (Usinas vs Linhas) */}
-        <div className="space-y-2 pt-1 border-t border-slate-800/70">
-          {/* Tab selector */}
-          <div className="flex rounded-lg bg-slate-950/80 p-0.5 border border-slate-800 text-xs">
-            <button
-              type="button"
-              onClick={() => setAssetTab('plants')}
-              className={`flex-1 py-1 rounded-md transition font-semibold cursor-pointer flex items-center justify-center space-x-1.5 ${
-                assetTab === 'plants'
-                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <span>Usinas ({filteredPlants.length})</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setAssetTab('lines')}
-              className={`flex-1 py-1 rounded-md transition font-semibold cursor-pointer flex items-center justify-center space-x-1.5 ${
-                assetTab === 'lines'
-                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <span>Linhas ({filteredLines.length})</span>
-            </button>
+        <section className="py-3">
+          <div className="px-4 flex gap-4 text-xs border-b border-slate-800/70">
+            {([
+              ['plants', `Usinas (${filteredPlants.length})`],
+              ['lines', `Linhas (${filteredLines.length})`]
+            ] as const).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setAssetTab(id)}
+                className={cn(
+                  'pb-2 -mb-px border-b transition-colors cursor-pointer',
+                  assetTab === id
+                    ? 'border-slate-200 text-slate-100'
+                    : 'border-transparent text-slate-500 hover:text-slate-300'
+                )}
+              >
+                {label}
+              </button>
+            ))}
           </div>
 
-          {/* Asset List Content */}
-          <div className="space-y-1 max-h-72 overflow-y-auto pr-1">
+          <ul className="max-h-80 overflow-y-auto">
             {assetTab === 'plants' ? (
               filteredPlants.length === 0 ? (
-                <div className="p-3 text-center text-slate-500 text-xs">
-                  Nenhuma usina encontrada com os filtros atuais.
-                </div>
+                <li className="px-4 py-3 text-xs text-slate-500">Nenhuma usina com os filtros atuais.</li>
               ) : (
                 filteredPlants.map((plant) => (
-                  <div
-                    key={plant.id}
-                    onClick={() => onSelectPlant(plant)}
-                    className="p-2 rounded-lg bg-slate-950/60 hover:bg-slate-900 border border-slate-800/80 hover:border-cyan-500/40 cursor-pointer flex items-center justify-between transition"
-                  >
-                    <div className="truncate mr-2">
-                      <strong className="text-white text-xs block truncate">{plant.name}</strong>
-                      <span className="text-[10px] text-slate-500">
-                        {plant.state} • {plant.riverOrRegion}
+                  <li key={plant.id}>
+                    <button
+                      type="button"
+                      onClick={() => onSelectPlant(plant)}
+                      className="w-full px-4 py-2 flex items-center justify-between text-left hover:bg-slate-900 transition-colors cursor-pointer"
+                    >
+                      <span className="truncate mr-3">
+                        <span className="block text-xs text-slate-200 truncate">{plant.name}</span>
+                        <span className="block text-[11px] text-slate-500 truncate">
+                          {plant.state} · {plant.riverOrRegion}
+                        </span>
                       </span>
-                    </div>
-                    <span className="text-cyan-400 font-bold text-xs shrink-0 font-mono">
-                      {(plant.capacityMW / 1000).toFixed(1)} GW
-                    </span>
-                  </div>
+                      <span className="text-xs font-mono tabular-nums text-slate-300 shrink-0">
+                        {formatGW(plant.capacityMW)} GW
+                      </span>
+                    </button>
+                  </li>
                 ))
               )
+            ) : filteredLines.length === 0 ? (
+              <li className="px-4 py-3 text-xs text-slate-500">Nenhuma linha com a tensão selecionada.</li>
             ) : (
-              filteredLines.length === 0 ? (
-                <div className="p-3 text-center text-slate-500 text-xs">
-                  Nenhuma linha encontrada com a tensão selecionada.
-                </div>
-              ) : (
-                filteredLines.map((line) => (
-                  <div
-                    key={line.id}
+              filteredLines.map((line) => (
+                <li key={line.id}>
+                  <button
+                    type="button"
                     onClick={() => onSelectLine(line)}
-                    className="p-2 rounded-lg bg-slate-950/60 hover:bg-slate-900 border border-slate-800/80 hover:border-amber-500/40 cursor-pointer flex items-center justify-between transition"
+                    className="w-full px-4 py-2 flex items-center justify-between text-left hover:bg-slate-900 transition-colors cursor-pointer"
                   >
-                    <div className="truncate mr-2">
-                      <strong className="text-white text-xs block truncate">{line.name}</strong>
-                      <span className="text-[10px] text-slate-500">
-                        {line.lengthKm.toLocaleString('pt-BR')} km • {line.concessionaire}
+                    <span className="truncate mr-3">
+                      <span className="block text-xs text-slate-200 truncate">{line.name}</span>
+                      <span className="block text-[11px] text-slate-500 truncate">
+                        {line.lengthKm.toLocaleString('pt-BR')} km · {line.concessionaire}
                       </span>
-                    </div>
-                    <span className="text-amber-400 font-bold text-xs shrink-0 font-mono">
+                    </span>
+                    <span className="text-xs font-mono tabular-nums text-slate-300 shrink-0">
                       {line.voltageKV} kV
                     </span>
-                  </div>
-                ))
-              )
+                  </button>
+                </li>
+              ))
             )}
-          </div>
-        </div>
+          </ul>
+        </section>
       </div>
     </aside>
   );
