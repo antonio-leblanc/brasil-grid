@@ -38,6 +38,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     name: 'UHE Belo Monte',
     type: 'hidro',
     capacityMW: 11233.1,
+    cegs: ['UHE.PH.PA.030354-2.1'],
     subsystem: 'N',
     state: 'PA',
     riverOrRegion: 'Rio Xingu (Altamira/Vitória do Xingu)',
@@ -49,12 +50,12 @@ export const majorPowerPlants: PowerPlantFeature[] = [
       {
         label: 'ANEEL SIGA — CEG UHE.PH.PA.030354-2.1 (Belo Monte, inclui a casa de força de Pimental)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-        accessedAt: '2026-09-25'
+        accessedAt: '2026-10-18'
       },
       {
         label: 'Norte Energia — Ficha Técnica Belo Monte',
         url: 'https://www.norteenergiasa.com.br/pt-br/uhe-belo-monte/usina',
-        accessedAt: '2026-09-25'
+        accessedAt: '2026-10-18'
       }
     ],
     technicalDetails: {
@@ -251,31 +252,37 @@ export const majorPowerPlants: PowerPlantFeature[] = [
   },
   {
     id: 'eolica-alto-sertao',
-    name: 'Complexo Eólico Alto Sertão',
+    name: 'Complexo Eólico Alto Sertão (I, II e III)',
     type: 'eolica',
-    capacityMW: 1200,
+    capacityMW: 1055.2,
+    cegs: ['EOL.CV.BA.030314-3.1', 'EOL.CV.BA.030315-1.1', 'EOL.CV.BA.030316-0.1', 'EOL.CV.BA.030317-8.1', 'EOL.CV.BA.030318-6.1', 'EOL.CV.BA.030319-4.1', 'EOL.CV.BA.030320-8.1', 'EOL.CV.BA.030321-6.1', 'EOL.CV.BA.030322-4.1', 'EOL.CV.BA.030323-2.1', 'EOL.CV.BA.030324-0.1', 'EOL.CV.BA.030328-3.1', 'EOL.CV.BA.030341-0.1', 'EOL.CV.BA.030342-9.1', 'EOL.CV.BA.030476-0.1', 'EOL.CV.BA.030490-5.1', 'EOL.CV.BA.030495-6.1', 'EOL.CV.BA.030506-5.1', 'EOL.CV.BA.030544-8.1', 'EOL.CV.BA.030546-4.1', 'EOL.CV.BA.030768-8.1', 'EOL.CV.BA.030776-9.1', 'EOL.CV.BA.030778-5.1', 'EOL.CV.BA.030779-3.1', 'EOL.CV.BA.030792-0.1', 'EOL.CV.BA.030793-9.1', 'EOL.CV.BA.030802-1.1', 'EOL.CV.BA.030803-0.1', 'EOL.CV.BA.030837-4.1', 'EOL.CV.BA.031402-1.1', 'EOL.CV.BA.031403-0.1', 'EOL.CV.BA.031404-8.1', 'EOL.CV.BA.031405-6.1', 'EOL.CV.BA.031406-4.1', 'EOL.CV.BA.031407-2.1', 'EOL.CV.BA.031418-8.1', 'EOL.CV.BA.031424-2.1', 'EOL.CV.BA.032090-0.1', 'EOL.CV.BA.032091-9.1', 'EOL.CV.BA.032093-5.1', 'EOL.CV.BA.032098-6.1', 'EOL.CV.BA.032101-0.1', 'EOL.CV.BA.032102-8.1', 'EOL.CV.BA.032104-4.1', 'EOL.CV.BA.032106-0.1', 'EOL.CV.BA.032108-7.1', 'EOL.CV.BA.032111-7.1', 'EOL.CV.BA.032113-3.1', 'EOL.CV.BA.032245-8.1', 'EOL.CV.BA.032362-4.1', 'EOL.CV.BA.032363-2.1', 'EOL.CV.BA.032364-0.1'],
     subsystem: 'NE',
     state: 'BA',
-    riverOrRegion: 'Caetité / Igaporã / Guanambi',
-    operator: 'Renova Energia / AES Brasil',
+    riverOrRegion: 'Caetité / Igaporã / Guanambi / Pindaí',
+    operator: 'Auren Energia / Axia Energia / Renova Energia',
     coordinates: [-42.4800, -14.0700],
-    description: 'Polo eólico de alta densidade aproveitando o vento unidirecional da Chapada Diamantina, com fatores de capacidade acima de 50%.',
+    description: 'Polo eólico pioneiro de alta densidade na serra baiana, integrando 52 parques de Alto Sertão I (294,4 MW — Brasil Ventos/Axia), Alto Sertão II (386,1 MW — Auren) e Alto Sertão III (374,7 MW — Renova).',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG EOL.CV.BA.030319-4.1 e outorgas do Polo Alto Sertão',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 52 CEGs em operação de Alto Sertão I (14 parques), II (15 parques) e III (23 parques)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Auren Energia — Portfólio de Geração Eólica (Complexo Alto Sertão II)',
+        url: 'https://www.aurenenergia.com.br/geracao-de-energia/',
+        accessedAt: '2026-10-18'
+      },
+      {
+        label: 'BNDES — Green Bond Report (Alto Sertão I, II e III)',
+        url: 'https://web.bndes.gov.br/bib/jspui/bitstream/1408/14763/1/BNDES_Relatorio_Green_Bond_ingles_P_BD.pdf',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2012,
-      turbinesOrUnits: '400+ aerogeradores GE / Alstom',
+      turbinesOrUnits: '52 parques eólicos com aerogeradores GE / Alstom',
       gridConnectionVoltage: '230 kV ➔ 500 kV'
     }
   },
@@ -283,29 +290,30 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'solar-janauba',
     name: 'Complexo Solar Janaúba',
     type: 'solar',
-    capacityMW: 1200,
+    capacityMW: 1000,
+    cegs: ['UFV.RS.MG.040857-3.1', 'UFV.RS.MG.040858-1.1', 'UFV.RS.MG.040859-0.1', 'UFV.RS.MG.040860-3.1', 'UFV.RS.MG.040861-1.1', 'UFV.RS.MG.040862-0.1', 'UFV.RS.MG.040863-8.1', 'UFV.RS.MG.040864-6.1', 'UFV.RS.MG.040865-4.1', 'UFV.RS.MG.040866-2.1', 'UFV.RS.MG.040867-0.1', 'UFV.RS.MG.040868-9.1', 'UFV.RS.MG.040869-7.1', 'UFV.RS.MG.040870-0.1', 'UFV.RS.MG.040871-9.1', 'UFV.RS.MG.040872-7.1', 'UFV.RS.MG.040873-5.1', 'UFV.RS.MG.040874-3.1', 'UFV.RS.MG.040875-1.1', 'UFV.RS.MG.040876-0.1'],
     subsystem: 'SE/CO',
     state: 'MG',
     riverOrRegion: 'Janaúba (Norte de Minas)',
     operator: 'Elera Renováveis',
     coordinates: [-43.3089, -15.8028],
-    description: 'Um dos maiores complexos solares fotovoltaicos do hemisfério sul, cobrindo mais de 3.000 hectares com 2,2 milhões de módulos.',
+    description: 'Um dos maiores complexos solares fotovoltaicos do hemisfério sul, formado por 20 UFVs de 50 MW AC outorgados (1.000 MW AC / 1,2 GWp DC na Fase 1, expandido para 1,6 GWp com o cluster Irapuru).',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UFV.RS.MG.040857-3.1 a 040876-0.1 (Complexo Solar Janaúba 1-20)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 20 CEGs UFV.RS.MG.040857-3.1 a 040876-0.1 (Janaúba 1 a 20 — 20 x 50 MW AC)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Elera Renováveis — Complexo Solar Janaúba',
+        url: 'https://elera.com/elera-conclui-a-expansao-de-janauba-maior-complexo-solar-do-hemisferio-sul-e-das-americas/',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2023,
-      turbinesOrUnits: '2,2 milhões de módulos bifaciais com rastreadores (trackers)',
+      turbinesOrUnits: '20 UFVs de 50 MW AC (2,2 milhões de módulos bifaciais com trackers)',
       gridConnectionVoltage: '500 kV SE Janaúba 3'
     }
   },
@@ -313,26 +321,27 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'termica-porto-sergipe',
     name: 'UTE Porto de Sergipe I',
     type: 'termica',
-    capacityMW: 1516,
+    capacityMW: 1593.2,
+    cegs: ['UTE.GN.SE.032228-8.1'],
     subsystem: 'NE',
     state: 'SE',
     riverOrRegion: 'Barra dos Coqueiros',
     operator: 'Eneva',
     coordinates: [-36.9800, -10.8200],
-    description: 'Maior termelétrica a gás natural da América Latina. Opera em ciclo combinado (3 turbinas a gás + 1 a vapor) integrada a terminal de regaseificação de GNL oceânico.',
+    description: 'Maior termelétrica a gás natural da América Latina (1.593,2 MW outorgados / 1.515,6 MW fiscalizados). Opera em ciclo combinado (3 turbinas a gás + 1 a vapor) integrada a terminal de regaseificação de GNL oceânico.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UTE.GN.SE.032228-8.1 (Porto de Sergipe I)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — CEG UTE.GN.SE.032228-8.1 (Porto de Sergipe I — 1.593,2 MW outorgados)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Eneva RI — Nossos Ativos (Complexo Porto de Sergipe)',
+        url: 'https://ri.eneva.com.br/ativos/',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2020,
       turbinesOrUnits: '3 x GE 7HA.02 + 1 x GE Steam Turbine',
@@ -620,146 +629,151 @@ export const majorPowerPlants: PowerPlantFeature[] = [
   },
   {
     id: 'lagoa-dos-ventos',
-    name: 'Complexo Eólico Lagoa dos Ventos',
+    name: 'Complexo Eólico Lagoa dos Ventos (Fases I e II)',
     type: 'eolica',
-    capacityMW: 716,
+    capacityMW: 716.6,
+    cegs: ['EOL.CV.PI.033005-1.1', 'EOL.CV.PI.033006-0.1', 'EOL.CV.PI.033007-8.1', 'EOL.CV.PI.033008-6.1', 'EOL.CV.PI.033009-4.1', 'EOL.CV.PI.033010-8.1', 'EOL.CV.PI.033011-6.1', 'EOL.CV.PI.033012-4.1', 'EOL.CV.PI.033013-2.1', 'EOL.CV.PI.033014-0.1', 'EOL.CV.PI.033015-9.1', 'EOL.CV.PI.033016-7.1', 'EOL.CV.PI.033017-5.1', 'EOL.CV.PI.033018-3.1', 'EOL.CV.PI.033019-1.1', 'EOL.CV.PI.033020-5.1', 'EOL.CV.PI.033021-3.1', 'EOL.CV.PI.033022-1.1', 'EOL.CV.PI.033023-0.1', 'EOL.CV.PI.033024-8.1', 'EOL.CV.PI.033025-6.1'],
     subsystem: 'NE',
     state: 'PI',
-    riverOrRegion: 'São João do Piauí',
-    operator: 'AES Brasil',
+    riverOrRegion: 'Lagoa do Barro do Piauí / Queimada Nova / Dom Inocêncio',
+    operator: 'Enel Green Power',
     coordinates: [-41.9000, -8.3500],
-    description: 'Um dos maiores complexos eólicos da América Latina, símbolo do boom eólico do semiárido nordestino na última década.',
+    description: 'Um dos maiores complexos eólicos da América Latina, formado nas Fases I e II por 21 parques Ventos de Santa Ângela (716,6 MW outorgados, expandidos na Fase III com mais 396 MW).',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG EOL.CV.PI.033016-7.1 e outorgas Lagoa dos Ventos',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 21 CEGs EOL.CV.PI.033005-1.1 a 033025-6.1 (Ventos de Santa Ângela 01 a 21 — 716,55 MW)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Enel Green Power — Parque Eólico Lagoa dos Ventos',
+        url: 'https://www.enelgreenpower.com/pt/nossos-projetos/highlights/parque-eolico-lagoa-dos-ventos',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2021,
-      gridConnectionVoltage: '230 kV'
+      gridConnectionVoltage: '230 kV / 500 kV'
     }
   },
   {
     id: 'rio-do-vento',
     name: 'Complexo Eólico Rio do Vento',
     type: 'eolica',
-    capacityMW: 583,
+    capacityMW: 1038.2,
+    cegs: ['EOL.CV.RN.038310-4.1', 'EOL.CV.RN.038318-0.1', 'EOL.CV.RN.038319-8.1', 'EOL.CV.RN.038320-1.1', 'EOL.CV.RN.038321-0.1', 'EOL.CV.RN.038322-8.1', 'EOL.CV.RN.038323-6.1', 'EOL.CV.RN.040625-2.1', 'EOL.CV.RN.032593-7.1', 'EOL.CV.RN.033681-5.1', 'EOL.CV.RN.034937-2.1', 'EOL.CV.RN.033690-4.1', 'EOL.CV.RN.033691-2.1', 'EOL.CV.RN.045010-3.1', 'EOL.CV.RN.045011-1.1', 'EOL.CV.RN.045012-0.1'],
     subsystem: 'NE',
     state: 'RN',
-    riverOrRegion: 'Lajes / Pedra Preta',
-    operator: 'AES Brasil',
+    riverOrRegion: 'Caiçara do Rio do Vento / Riachuelo / Bento Fernandes / Ruy Barbosa / Lajes / São Tomé',
+    operator: 'Casa dos Ventos',
     coordinates: [-36.2500, -5.6833],
-    description: 'Complexo eólico de última geração no Rio Grande do Norte, aproveitando os ventos constantes do litoral semiárido potiguar.',
+    description: 'Um dos maiores clusters eólicos do planeta (1.038,2 MW em 16 parques Ventos de Santa Martina, Ventos de São Januário 23 e Ventos de Santa Leia), aproveitando os ventos alísios do interior potiguar.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG EOL.CV.RN.030300-3.1 e outorgas do Complexo Rio do Vento',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 16 CEGs de Rio do Vento Fase I (504,0 MW) e Expansão (534,2 MW)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Casa dos Ventos — Complexo Eólico Rio do Vento e Expansão',
+        url: 'https://casadosventos.com.br/en/the-casa-dos-ventos/rio-do-vento-expansion',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
-      commissionYear: 2023,
-      gridConnectionVoltage: '230 kV'
+      commissionYear: 2021,
+      gridConnectionVoltage: '500 kV'
     }
   },
   {
     id: 'osorio',
     name: 'Complexo Eólico de Osório',
     type: 'eolica',
-    capacityMW: 150,
+    capacityMW: 317.9,
+    cegs: ['EOL.CV.RS.028810-1.1', 'EOL.CV.RS.028811-0.1', 'EOL.CV.RS.028864-0.1', 'EOL.CV.RS.030286-4.1', 'EOL.CV.RS.030330-5.1', 'EOL.CV.RS.030381-0.1', 'EOL.CV.RS.030449-2.1', 'EOL.CV.RS.030734-3.1', 'EOL.CV.RS.030894-3.1'],
     subsystem: 'S',
     state: 'RS',
-    riverOrRegion: 'Osório / Litoral Norte',
-    operator: 'Eletrosul / Ventos do Sul',
+    riverOrRegion: 'Osório (Litoral Norte)',
+    operator: 'Statkraft (Ventos do Sul / Ventos do Litoral / Ventos da Lagoa / Ventos dos Índios)',
     coordinates: [-50.2667, -29.8833],
-    description: 'Pioneiro da energia eólica em escala comercial no Brasil — colocado em operação em 2006, abriu caminho para o boom eólico nacional.',
+    description: 'Marco pioneiro da energia eólica comercial no Brasil: inaugurado em 2006 com 150 MW (Osório, Sangradouro e Índios) e posteriormente expandido para 9 parques e 317,9 MW outorgados.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG EOL.CV.RS.028810-1.1 (Parque Eólico de Osório / Sangradouro / Índios)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 9 CEGs em operação em Osório (Osório 1-3, Sangradouro 1-3 e Índios 1-3 — 317,9 MW)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Statkraft Brasil — Complexo Eólico de Osório',
+        url: 'https://www.statkraft.com.br/onde-operamos/brasil/complexo-eolico-osorio/',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2006,
-      gridConnectionVoltage: '69 kV'
+      gridConnectionVoltage: '230 kV / 69 kV'
     }
   },
   {
     id: 'pirapora',
     name: 'Complexo Solar Pirapora',
     type: 'solar',
-    capacityMW: 321,
+    capacityMW: 329,
+    cegs: ['UFV.RS.MG.032339-0.1', 'UFV.RS.MG.032340-3.1', 'UFV.RS.MG.032341-1.1', 'UFV.RS.MG.033185-6.1', 'UFV.RS.MG.033186-4.1', 'UFV.RS.MG.033187-2.1', 'UFV.RS.MG.033188-0.1', 'UFV.RS.MG.033189-9.1', 'UFV.RS.MG.033190-2.1', 'UFV.RS.MG.033192-9.1', 'UFV.RS.MG.033193-7.1'],
     subsystem: 'SE/CO',
     state: 'MG',
     riverOrRegion: 'Pirapora',
-    operator: 'EDF Renewables / Canadian Solar',
+    operator: 'EDF Power Solutions (ex-Omega / Canadian Solar)',
     coordinates: [-44.9333, -17.3639],
-    description: 'Um dos primeiros grandes complexos fotovoltaicos utility-scale do país, referência para a expansão solar em Minas Gerais.',
+    description: 'Um dos primeiros grandes complexos fotovoltaicos utility-scale do país, composto por 11 UFVs (Pirapora 2 a 7, 9 e 10 + Vazante 1 a 3), totalizando 329 MW outorgados (321 MW AC / ~400 MWp DC).',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UFV.RS.MG.033185-6.1 a 033194-5.1 (Complexo Solar Pirapora 1-10)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 11 CEGs (UFV Pirapora 2 a 7, 9 e 10 + UFV Vazante 1 a 3 — 329,0 MW outorgados)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'EDF Power Solutions Brasil — Projetos Solares (Complexo Solar Pirapora)',
+        url: 'https://brazil.edf-powersolutions.com/nossos-projetos/solares/',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2017,
-      gridConnectionVoltage: '230 kV'
+      gridConnectionVoltage: '138 kV / 230 kV'
     }
   },
   {
     id: 'ituverava',
     name: 'Complexo Fotovoltaico Ituverava',
     type: 'solar',
-    capacityMW: 254,
+    capacityMW: 196,
+    cegs: ['UFV.RS.BA.032316-0.1', 'UFV.RS.BA.032317-9.1', 'UFV.RS.BA.032318-7.1', 'UFV.RS.BA.032319-5.1', 'UFV.RS.BA.032320-9.1', 'UFV.RS.BA.032321-7.1', 'UFV.RS.BA.032322-5.1'],
     subsystem: 'NE',
     state: 'BA',
-    riverOrRegion: 'Bom Jesus da Lapa / Ituverava',
+    riverOrRegion: 'Tabocas do Brejo Velho',
     operator: 'Enel Green Power',
     coordinates: [-43.4000, -13.1500],
-    description: 'Um dos maiores parques solares do Nordeste, aproveitando a altíssima irradiação do semiárido baiano.',
+    description: 'Pioneiro parque solar de larga escala no oeste baiano, formado por 7 UFVs (Ituverava 1 a 7) que somam 196 MW AC outorgados (254 MWp DC instalados).',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UFV.RS.BA.032316-0.1 a 032323-2.1 (Complexo Solar Ituverava 1-8)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 7 CEGs UFV.RS.BA.032316-0.1 a 032322-5.1 (Ituverava 1 a 7 — 196,0 MW AC)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Enel Brasil — Enel inicia operação do Parque Solar Ituverava (254 MWp / 196 MW AC)',
+        url: 'https://www.enel.com.br/en/media/news/d201709-enel-operates-the-largest-solar-plants-in-south-america.html',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
-      commissionYear: 2019,
+      commissionYear: 2017,
       gridConnectionVoltage: '230 kV'
     }
   },
@@ -767,26 +781,27 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'norte-fluminense',
     name: 'UTE Norte Fluminense',
     type: 'termica',
-    capacityMW: 869,
+    capacityMW: 826.8,
+    cegs: ['UTE.GN.RJ.001544-0.1'],
     subsystem: 'SE/CO',
     state: 'RJ',
     riverOrRegion: 'Macaé',
-    operator: 'Eneva',
+    operator: 'EDF Power Solutions (UTE Norte Fluminense S.A.)',
     coordinates: [-41.7833, -22.2833],
-    description: 'Termelétrica a gás natural que reforça a segurança de suprimento do Sudeste em períodos de baixa hidraulicidade, despachada pelo ONS conforme o custo marginal de operação.',
+    description: 'Termelétrica a gás natural em ciclo combinado (826,8 MW outorgados / 869 MW fiscalizados) em Macaé, essencial para o suprimento da região metropolitana do Rio de Janeiro.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UTE.GN.RJ.001544-0.1 (Norte Fluminense)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — CEG UTE.GN.RJ.001544-0.1 (Norte Fluminense — 826,78 MW outorgados)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'EDF Power Solutions — UTE Norte Fluminense',
+        url: 'https://brazil.edf-powersolutions.com/2025/11/07/edf-power-solutions-inaugura-planta-piloto-de-hidrogenio-na-usina-termeletrica-norte-fluminense/',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2004,
       gridConnectionVoltage: '345 kV'
@@ -980,28 +995,29 @@ export const majorPowerPlants: PowerPlantFeature[] = [
   },
   {
     id: 'solar-futura',
-    name: 'Complexo Solar Futura',
+    name: 'Complexo Solar Futura I',
     type: 'solar',
-    capacityMW: 852,
+    capacityMW: 692.4,
+    cegs: ['UFV.RS.BA.037479-2.1', 'UFV.RS.BA.037480-6.1', 'UFV.RS.BA.037481-4.1', 'UFV.RS.BA.037482-2.1', 'UFV.RS.BA.037483-0.1', 'UFV.RS.BA.037484-9.1', 'UFV.RS.BA.037485-7.1', 'UFV.RS.BA.037486-5.1', 'UFV.RS.BA.037487-3.1', 'UFV.RS.BA.037488-1.1', 'UFV.RS.BA.037489-0.1', 'UFV.RS.BA.037490-3.1', 'UFV.RS.BA.037491-1.1', 'UFV.RS.BA.037492-0.1', 'UFV.RS.BA.037493-8.1', 'UFV.RS.BA.037494-6.1', 'UFV.RS.BA.037495-4.1', 'UFV.RS.BA.037496-2.1', 'UFV.RS.BA.037497-0.1', 'UFV.RS.BA.037498-9.1', 'UFV.RS.BA.037499-7.1', 'UFV.RS.BA.037500-4.1'],
     subsystem: 'NE',
     state: 'BA',
     riverOrRegion: 'Juazeiro',
     operator: 'Eneva',
     coordinates: [-40.5000, -9.6000],
-    description: 'Um dos maiores complexos fotovoltaicos das Américas, com cerca de 1,4 milhão de módulos bifaciais e rastreadores de eixo único em pleno sertão baiano.',
+    description: 'Um dos maiores complexos fotovoltaicos das Américas, formado por 22 UFVs (Futura 1 a 22) que somam 692,4 MW AC outorgados (852 MWp DC) com cerca de 1,4 milhão de módulos bifaciais em Juazeiro.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UFV.RS.BA.037479-2.1 a 037500-4.1 (Complexo Solar Futura 1-22)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 22 CEGs UFV.RS.BA.037479-2.1 a 037500-4.1 (Futura 1 a 22 — 692,45 MW AC outorgados)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Eneva — Eneva dá início à operação do Complexo Solar Futura I na Bahia',
+        url: 'https://www.eneva.com.br/imprensa/noticias/eneva-da-inicio-a-operacao-de-um-dos-maiores-complexos-solares-das-americas-futura-i-na-bahia/',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2023,
       gridConnectionVoltage: '500 kV'
@@ -1011,26 +1027,27 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'solar-sao-goncalo',
     name: 'Complexo Solar São Gonçalo',
     type: 'solar',
-    capacityMW: 864,
+    capacityMW: 790.4,
+    cegs: ['UFV.RS.PI.033841-9.1', 'UFV.RS.PI.033842-7.1', 'UFV.RS.PI.033843-5.1', 'UFV.RS.PI.033844-3.1', 'UFV.RS.PI.033845-1.1', 'UFV.RS.PI.033846-0.1', 'UFV.RS.PI.033847-8.1', 'UFV.RS.PI.033849-4.1', 'UFV.RS.PI.037577-2.1', 'UFV.RS.PI.037578-0.1', 'UFV.RS.PI.037579-9.1', 'UFV.RS.PI.037581-0.1', 'UFV.RS.PI.037582-9.1', 'UFV.RS.PI.037584-5.1', 'UFV.RS.PI.037585-3.1', 'UFV.RS.PI.037586-1.1', 'UFV.RS.PI.037588-8.1', 'UFV.RS.PI.037589-6.1'],
     subsystem: 'NE',
     state: 'PI',
     riverOrRegion: 'São Gonçalo do Gurguéia',
     operator: 'Enel Green Power',
     coordinates: [-42.8500, -9.8000],
-    description: 'Gigantesca instalação solar no semiárido piauiense, pioneira em larga escala de módulos bifaciais para maximizar captura da irradiação albedo do solo.',
+    description: 'Gigantesca instalação solar no semiárido piauiense composta por 18 UFVs em operação (790,4 MW AC outorgados / 864 MWp DC), pioneira em larga escala no uso de módulos bifaciais no Brasil.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UFV.RS.PI.033841-9.1 a 033862-1.1 (Complexo Solar São Gonçalo 1-22)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 18 CEGs UFV São Gonçalo em operação (790,37 MW AC outorgados)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Enel Green Power — Parque Solar São Gonçalo',
+        url: 'https://www.enelgreenpower.com/our-projects/highlights/sao-goncalo-solar-project',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2020,
       gridConnectionVoltage: '500 kV'
@@ -1040,26 +1057,27 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'eolica-chafariz',
     name: 'Complexo Eólico Chafariz',
     type: 'eolica',
-    capacityMW: 471,
+    capacityMW: 471.2,
+    cegs: ['EOL.CV.PB.034639-0.1', 'EOL.CV.PB.034640-3.1', 'EOL.CV.PB.034642-0.1', 'EOL.CV.PB.034644-6.1', 'EOL.CV.PB.034646-2.1', 'EOL.CV.PB.035181-4.1', 'EOL.CV.PB.035184-9.1', 'EOL.CV.PB.035240-3.1', 'EOL.CV.PB.035241-1.1', 'EOL.CV.PB.035242-0.1', 'EOL.CV.PB.037952-2.1', 'EOL.CV.PB.037953-0.1', 'EOL.CV.PB.037958-1.1', 'EOL.CV.PB.038029-6.1', 'EOL.CV.PB.038030-0.1'],
     subsystem: 'NE',
     state: 'PB',
-    riverOrRegion: 'Santa Luzia',
-    operator: 'Neoenergia',
+    riverOrRegion: 'Santa Luzia / Areia de Baraúnas / São José do Sabugi / São Mamede',
+    operator: 'Neoenergia Renováveis',
     coordinates: [-36.8800, -6.8700],
-    description: 'Polo eólico de alta produtividade no sertão paraibano composto por 15 parques e 136 aerogeradores, conectado à Subestação Santa Luzia II (500 kV).',
+    description: 'Polo eólico de alta produtividade no sertão paraibano composto por 15 parques (Chafariz 1 a 7, Canoas 2 a 4, Ventos de Arapuá 1 a 3 e Lagoa 3 e 4 — 471,2 MW) e 136 aerogeradores, conectado à SE Santa Luzia II (500 kV).',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG EOL.CV.PB.034639-0.1 a 034653-6.1 (Complexo Chafariz 1-15)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 15 CEGs do Complexo Eólico Chafariz (471,24 MW outorgados)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Neoenergia — Complexo Renovável Neoenergia (Chafariz e Luzia)',
+        url: 'https://www.neoenergia.com/w/complexo-renovavel-neoenergia-brasil-tem-o-primeiro-complexo-de-geracao-associada-de-energia',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2022,
       gridConnectionVoltage: '500 kV / 230 kV'
@@ -1067,28 +1085,29 @@ export const majorPowerPlants: PowerPlantFeature[] = [
   },
   {
     id: 'eolica-morro-do-chapeu',
-    name: 'Complexo Eólico Morro do Chapéu Sul',
+    name: 'Complexo Eólico Morro do Chapéu Sul (I e II)',
     type: 'eolica',
-    capacityMW: 393,
+    capacityMW: 524.8,
+    cegs: ['EOL.CV.BA.032759-0.1', 'EOL.CV.BA.032884-7.1', 'EOL.CV.BA.033648-3.1', 'EOL.CV.BA.033649-1.1', 'EOL.CV.BA.033650-5.1', 'EOL.CV.BA.033652-1.1', 'EOL.CV.BA.034507-5.1', 'EOL.CV.BA.034508-3.1', 'EOL.CV.BA.034509-1.1', 'EOL.CV.BA.034511-3.1', 'EOL.CV.BA.034512-1.1', 'EOL.CV.BA.034513-0.1', 'EOL.CV.BA.034514-8.1', 'EOL.CV.BA.034661-6.1', 'EOL.CV.BA.034692-6.1'],
     subsystem: 'NE',
     state: 'BA',
-    riverOrRegion: 'Morro do Chapéu / Cafarnaum',
+    riverOrRegion: 'Morro do Chapéu',
     operator: 'Enel Green Power',
     coordinates: [-41.1500, -11.5500],
-    description: 'Situado nas cristas de altitude da Chapada Diamantina baiana, usufrui de regime contínuo de ventos de alto fator de capacidade.',
+    description: 'Situado nas cristas de altitude da Chapada Diamantina baiana, reúne 15 parques de Morro do Chapéu Sul I (172,0 MW) e Morro do Chapéu Sul II (352,8 MW), totalizando 524,8 MW.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG EOL.CV.BA.030725-4.1 e outorgas de Morro do Chapéu Sul',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 15 CEGs de Morro do Chapéu Sul I (6 parques) e II (9 parques Ventos de Santa Esperança — 524,8 MW)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Enel Brasil — Parque Eólico Morro do Chapéu Sul II inicia operação',
+        url: 'https://www.enel.com.br/pt-saopaulo/midia/news/d202111-parque-eolico-morro-chapeu-sul-inicia-operacao.html',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2018,
       gridConnectionVoltage: '230 kV'
@@ -1129,29 +1148,30 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'termica-parnaiba',
     name: 'Complexo Termelétrico Parnaíba (Gas-to-Wire)',
     type: 'termica',
-    capacityMW: 1428,
+    capacityMW: 1886.1,
+    cegs: ['UTE.GN.MA.030196-5.1', 'UTE.GN.MA.030202-3.1', 'UTE.GN.MA.030203-1.1', 'UTE.GN.MA.030800-5.1', 'UTE.GN.MA.031193-6.1', 'UTE.GN.MA.040562-0.1'],
     subsystem: 'NE',
     state: 'MA',
-    riverOrRegion: 'Santo Antônio dos Lopes / Bacia do Parnaíba',
+    riverOrRegion: 'Santo Antônio dos Lopes (Bacia do Parnaíba)',
     operator: 'Eneva',
     coordinates: [-44.6000, -4.8500],
-    description: 'Pioneiro parque integrado gas-to-wire da América Latina: gás onshore extraído na Bacia do Parnaíba vira eletricidade in loco conectada ao SIN.',
+    description: 'Pioneiro complexo integrado Reservoir-to-Wire (R2W) da América Latina: 6 usinas a gás natural em operação (Maranhão III, IV e V, Nova Venécia 2, Parnaíba IV e Parnaíba V — 1.886,1 MW outorgados) abastecidas pelos campos terrestres da Bacia do Parnaíba.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UTE.GN.MA.031193-6.1 e outorgas do Complexo Parnaíba',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 6 CEGs em operação do Complexo Parnaíba (Parnaíba I-V — 1.886,06 MW outorgados)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Eneva — Modelo Reservoir-to-Wire (Complexo Parnaíba)',
+        url: 'https://www.eneva.com.br/pioneirismo/r2w-reservoir-to-wire/',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2013,
-      turbinesOrUnits: 'Ciclos abertos e combinados (Fases I a V)',
+      turbinesOrUnits: 'Ciclos simples e combinados a gás natural (6 usinas em operação)',
       gridConnectionVoltage: '500 kV'
     }
   },
@@ -1684,28 +1704,29 @@ export const majorPowerPlants: PowerPlantFeature[] = [
   },
   {
     id: 'eolica-serra-do-mel',
-    name: 'Complexo Eólico Serra do Mel',
+    name: 'Complexo Eólico Serra do Mel (Cluster Serra Branca)',
     type: 'eolica',
-    capacityMW: 1047,
+    capacityMW: 1047.7,
+    cegs: ['EOL.CV.RN.030895-1.2', 'EOL.CV.RN.030902-8.2', 'EOL.CV.RN.030914-1.2', 'EOL.CV.RN.030915-0.2', 'EOL.CV.RN.031750-0.1', 'EOL.CV.RN.031757-8.1', 'EOL.CV.RN.031759-4.1', 'EOL.CV.RN.031765-9.1', 'EOL.CV.RN.033752-8.1', 'EOL.CV.RN.033753-6.1', 'EOL.CV.RN.036973-0.1', 'EOL.CV.RN.036974-8.1', 'EOL.CV.RN.036975-6.1', 'EOL.CV.RN.036976-4.1', 'EOL.CV.RN.036977-2.1', 'EOL.CV.RN.036979-9.1', 'EOL.CV.RN.036980-2.1', 'EOL.CV.RN.036981-0.1', 'EOL.CV.RN.036984-5.1', 'EOL.CV.RN.036985-3.1', 'EOL.CV.RN.038140-3.1', 'EOL.CV.RN.038141-1.1', 'EOL.CV.RN.038142-0.1', 'EOL.CV.RN.038143-8.1', 'EOL.CV.RN.038144-6.1', 'EOL.CV.RN.038325-2.1', 'EOL.CV.RN.038326-0.1', 'EOL.CV.RN.038327-9.1', 'EOL.CV.RN.040594-9.1', 'EOL.CV.RN.040595-7.1', 'EOL.CV.RN.040596-5.1', 'EOL.CV.RN.040597-3.1', 'EOL.CV.RN.040598-1.1'],
     subsystem: 'NE',
     state: 'RN',
-    riverOrRegion: 'Serra do Mel / Areia Branca',
+    riverOrRegion: 'Serra do Mel',
     operator: 'Voltalia',
     coordinates: [-37.0300, -5.1700],
-    description: 'Um dos maiores clusters eólicos integrados do planeta, beneficiado por ventos alísios oceânicos constantes com fatores de capacidade acima de 60%.',
+    description: 'Um dos maiores clusters eólicos integrados do mundo no município de Serra do Mel (33 parques: Vamcruz, Serra Pará, Vila Acre/RN/PI/SE e VSM 1 a 4 — 1.047,7 MW outorgados), beneficiado por ventos alísios constantes.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG EOL.CV.RN.030895-1.2 e outorgas de Serra do Mel',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 33 CEGs em operação em Serra do Mel (1.047,66 MW outorgados)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Voltalia — Relatório de Sustentabilidade / Cluster Serra Branca (Serra do Mel)',
+        url: 'https://www.voltalia.com/static-files/67c005fe-f973-4c6d-bf08-cad0ce964c74',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2021,
       gridConnectionVoltage: '500 kV'
@@ -1713,30 +1734,31 @@ export const majorPowerPlants: PowerPlantFeature[] = [
   },
   {
     id: 'eolica-santa-vitoria',
-    name: 'Complexo Eólico Santa Vitória do Palmar',
+    name: 'Complexo Eólico Chuí / Campos Neutrais',
     type: 'eolica',
-    capacityMW: 472,
+    capacityMW: 582.8,
+    cegs: ['EOL.CV.RS.030740-8.1', 'EOL.CV.RS.030741-6.1', 'EOL.CV.RS.030742-4.1', 'EOL.CV.RS.030745-9.1', 'EOL.CV.RS.030746-7.1', 'EOL.CV.RS.030747-5.1', 'EOL.CV.RS.030748-3.1', 'EOL.CV.RS.030749-1.1', 'EOL.CV.RS.030754-8.1', 'EOL.CV.RS.030755-6.1', 'EOL.CV.RS.030760-2.1', 'EOL.CV.RS.030767-0.1', 'EOL.CV.RS.030790-4.1', 'EOL.CV.RS.030791-2.1', 'EOL.CV.RS.030829-3.1', 'EOL.CV.RS.030844-7.1', 'EOL.CV.RS.031517-6.1', 'EOL.CV.RS.031539-7.1', 'EOL.CV.RS.031541-9.1', 'EOL.CV.RS.031557-5.1', 'EOL.CV.RS.031558-3.1', 'EOL.CV.RS.031559-1.1', 'EOL.CV.RS.031561-3.1', 'EOL.CV.RS.031578-8.1', 'EOL.CV.RS.031600-8.1', 'EOL.CV.RS.031601-6.1', 'EOL.CV.RS.031602-4.1', 'EOL.CV.RS.031610-5.1'],
     subsystem: 'S',
     state: 'RS',
     riverOrRegion: 'Santa Vitória do Palmar / Chuí',
-    operator: 'Omega Energia / Echoenergia',
+    operator: 'Serena Energia (ex-Omega Energia)',
     coordinates: [-52.5500, -33.5200],
-    description: 'O parque eólico mais meridional do Brasil, na fronteira sul gaúcha junto à Lagoa Mirim, impulsionado por frentes polares e ventos do Atlântico Sul.',
+    description: 'Conjunto eólico mais meridional do Brasil na fronteira sul gaúcha junto à Lagoa Mirim, formado por 28 parques dos subcomplexos Geribatu (258 MW), Chuí (161,9 MW) e Hermenegildo (162,9 MW), totalizando 582,8 MW.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG EOL.CV.RS.030740-8.1 e outorgas de Santa Vitória do Palmar',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 28 CEGs do Complexo Chuí / Campos Neutrais (Geribatu, Chuí e Hermenegildo — 582,79 MW)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Eletrobras — Complexo Eólico Campos Neutrais (Geribatu, Chuí e Hermenegildo — 583 MW)',
+        url: 'https://www.eletrobras.com/pt/Paginas/Noticia.aspx?ID=1442',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
-      commissionYear: 2017,
+      commissionYear: 2015,
       gridConnectionVoltage: '525 kV'
     }
   },
@@ -1744,55 +1766,57 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'eolica-ventos-araripe',
     name: 'Complexo Eólico Ventos do Araripe III',
     type: 'eolica',
-    capacityMW: 359,
+    capacityMW: 357.9,
+    cegs: ['EOL.CV.PE.031761-6.1', 'EOL.CV.PE.031762-4.1', 'EOL.CV.PE.031763-2.1', 'EOL.CV.PE.032365-9.1', 'EOL.CV.PE.031764-0.1', 'EOL.CV.PI.031746-2.2', 'EOL.CV.PI.031747-0.2', 'EOL.CV.PI.031766-7.1', 'EOL.CV.PI.031749-7.1', 'EOL.CV.PI.031767-5.1', 'EOL.CV.PI.032366-7.1', 'EOL.CV.PI.032367-5.1', 'EOL.CV.PI.033667-0.1', 'EOL.CV.PI.032368-3.1'],
     subsystem: 'NE',
     state: 'PI/PE',
-    riverOrRegion: 'Chapada do Araripe (Simões / Araripina)',
-    operator: 'Casa dos Ventos',
+    riverOrRegion: 'Chapada do Araripe (Simões / Curral Novo do Piauí / Araripina)',
+    operator: 'Auren Energia (desenvolvido pela Casa dos Ventos)',
     coordinates: [-40.7500, -7.6500],
-    description: 'Instalado no altiplano da Chapada do Araripe na divisa PI/PE, usufrui de ventos termais laminares de altíssima densidade energética.',
+    description: 'Instalado no topo da Chapada do Araripe (900 m de altitude) na divisa PI/PE, reúne 14 parques (Ventos de Santo Estevão, Santo Augusto, Santo Onofre IV e São Virgílio) que somam 357,9 MW outorgados.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG EOL.CV.PI.032368-3.1 e outorgas de Ventos do Araripe III',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 14 CEGs de Ventos do Araripe III em PI e PE (357,90 MW outorgados)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Auren Energia RI — Central de Resultados Ventos do Araripe III',
+        url: 'https://ri.aurenenergia.com.br/informacoes-financeiras/central-de-resultados-ventos-do-araripe-lll/',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2017,
-      gridConnectionVoltage: '230 kV'
+      gridConnectionVoltage: '230 kV / 500 kV'
     }
   },
   {
     id: 'eolica-coxilha-negra',
     name: 'Complexo Eólico Coxilha Negra',
     type: 'eolica',
-    capacityMW: 302,
+    capacityMW: 302.4,
+    cegs: ['EOL.CV.RS.032236-9.1', 'EOL.CV.RS.032237-7.1', 'EOL.CV.RS.033807-9.1'],
     subsystem: 'S',
     state: 'RS',
     riverOrRegion: 'Santana do Livramento (Fronteira Oeste)',
-    operator: 'CGT Eletrosul',
+    operator: 'Axia Energia Sul (CGT Eletrosul)',
     coordinates: [-55.5300, -30.8500],
-    description: 'Polo eólico estratégico nos pampas da fronteira Brasil-Uruguai, diversificando a geração renovável do Subsistema Sul.',
+    description: 'Polo eólico estratégico nos pampas da fronteira Brasil-Uruguai, composto pelos parques Coxilha Negra 2 (100,8 MW), Coxilha Negra 3 (105,0 MW) e Coxilha Negra 4 (96,6 MW), totalizando 302,4 MW e 72 aerogeradores.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG EOL.CV.RS.030348-8.1 e outorgas de Coxilha Negra / Cerro Chato',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 3 CEGs EOL.CV.RS.032236-9.1, 032237-7.1 e 033807-9.1 (Coxilha Negra 2, 3 e 4 — 302,4 MW)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Axia Energia — Complexo Eólico Coxilha Negra (302,4 MW)',
+        url: 'https://axia.com.br/w/complexo-eolico-coxilha-negra',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2024,
       gridConnectionVoltage: '230 kV'
@@ -1802,57 +1826,59 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'solar-mendubim',
     name: 'Complexo Solar Mendubim',
     type: 'solar',
-    capacityMW: 531,
+    capacityMW: 452.6,
+    cegs: ['UFV.RS.RN.037749-0.1', 'UFV.RS.RN.037750-3.1', 'UFV.RS.RN.037751-1.1', 'UFV.RS.RN.037752-0.1', 'UFV.RS.RN.037753-8.1', 'UFV.RS.RN.037754-6.1', 'UFV.RS.RN.037755-4.1', 'UFV.RS.RN.037769-4.1', 'UFV.RS.RN.037770-8.1', 'UFV.RS.RN.037771-6.1', 'UFV.RS.RN.037772-4.1', 'UFV.RS.RN.037773-2.1', 'UFV.RS.RN.037774-0.1'],
     subsystem: 'NE',
     state: 'RN',
     riverOrRegion: 'Açu',
     operator: 'Scatec / Equinor / Hydro Rein',
     coordinates: [-36.9100, -5.5800],
-    description: 'Parque fotovoltaico de grande porte no polo solar de Açu, projetado para abastecimento de indústrias eletrointensivas e injeção na rede de 500 kV.',
+    description: 'Parque fotovoltaico de grande porte no polo de Açu formado por 13 UFVs (Mendubim I a XIII) que somam 452,6 MW AC outorgados (531 MWp DC), voltado à autoprodução industrial e mercado livre.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UFV.RS.RN.037749-0.1 a 037761-9.1 (Complexo Solar Mendubim I-XIII)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 13 CEGs UFV Mendubim I a XIII (452,59 MW AC outorgados)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Equinor Brasil — Complexo Solar Mendubim inicia operação comercial no RN',
+        url: 'https://www.equinor.com.br/noticias/20240306-mendubim',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2024,
-      gridConnectionVoltage: '500 kV'
+      gridConnectionVoltage: '230 kV / 500 kV'
     }
   },
   {
     id: 'solar-sol-do-sertao',
     name: 'Complexo Solar Sol do Sertão',
     type: 'solar',
-    capacityMW: 474,
+    capacityMW: 415,
+    cegs: ['UFV.RS.BA.032049-8.1', 'UFV.RS.BA.032050-1.1', 'UFV.RS.BA.032052-8.1', 'UFV.RS.BA.032053-6.1', 'UFV.RS.BA.032059-5.1', 'UFV.RS.BA.032065-0.1', 'UFV.RS.BA.032066-8.1', 'UFV.RS.BA.032067-6.1'],
     subsystem: 'NE',
     state: 'BA',
     riverOrRegion: 'Oliveira dos Brejinhos',
-    operator: 'Essentia Energia / Patria',
+    operator: 'Essentia Energia (Pátria Investimentos)',
     coordinates: [-42.8900, -12.3100],
-    description: 'Mega empreendimento fotovoltaico no sertão baiano com mais de 1 milhão de módulos bifaciais, conectado à SE Bom Jesus da Lapa em 500 kV.',
+    description: 'Mega empreendimento fotovoltaico no oeste baiano formado por 8 UFVs (415,0 MW AC outorgados / 474 MWp DC), conectado à SE Bom Jesus da Lapa II.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UFV.RS.BA.032049-8.1 a 032052-8.1 (Complexo Sol do Sertão)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 8 CEGs das SPEs Sol do Sertão OB I, II e III em Oliveira dos Brejinhos (415,0 MW AC)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'BNDES — Relatório Anual (Financiamento do Complexo Solar Sol do Sertão — 415 MW AC / 474 MWp)',
+        url: 'https://web.bndes.gov.br/bib/jspui/bitstream/1408/20901/1/BNDES_RA2020.pdf',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
-      commissionYear: 2022,
+      commissionYear: 2021,
       gridConnectionVoltage: '500 kV'
     }
   },
@@ -1860,55 +1886,57 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'solar-lar-do-sol',
     name: 'Complexo Solar Lar do Sol',
     type: 'solar',
-    capacityMW: 415,
+    capacityMW: 495,
+    cegs: ['UFV.RS.MG.037830-5.1', 'UFV.RS.MG.037831-3.1', 'UFV.RS.MG.037832-1.1', 'UFV.RS.MG.037833-0.1', 'UFV.RS.MG.037834-8.1', 'UFV.RS.MG.037835-6.1', 'UFV.RS.MG.037836-4.1', 'UFV.RS.MG.037837-2.1', 'UFV.RS.MG.037838-0.1', 'UFV.RS.MG.037839-9.1'],
     subsystem: 'SE/CO',
     state: 'MG',
     riverOrRegion: 'Pirapora',
-    operator: 'Casablanca / Atlas Renewable Energy',
+    operator: 'Atlas Renewable Energy',
     coordinates: [-44.9500, -17.4000],
-    description: 'Expansão do polo solar do Médio São Francisco em Pirapora, contratada em modelo de autoprodução de energia renovável para a indústria.',
+    description: 'Expansão do polo solar do Médio São Francisco em Pirapora, composto por 10 UFVs (Lar do Sol 1 a 10) de 49,5 MW AC cada, somando 495 MW AC outorgados (~598 MWp DC) voltados à autoprodução industrial.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UFV.RS.MG.037830-5.1 a 037836-4.1 (Complexo Solar Lar do Sol 1-7)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 10 CEGs UFV.RS.MG.037830-5.1 a 037839-9.1 (Lar do Sol 1 a 10 — 495,0 MW AC)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Atlas Renewable Energy — Planta Solar Lar do Sol (Minas Gerais)',
+        url: 'https://pt.atlasrenewableenergy.com/proyectos/planta-solar-lar-do-sol-minas-gerais-brasil/',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2023,
-      gridConnectionVoltage: '230 kV'
+      gridConnectionVoltage: '230 kV / 500 kV'
     }
   },
   {
     id: 'solar-arinos',
     name: 'Complexo Solar Arinos',
     type: 'solar',
-    capacityMW: 412,
+    capacityMW: 336.8,
+    cegs: ['UFV.RS.MG.047299-9.1', 'UFV.RS.MG.047301-4.1', 'UFV.RS.MG.047302-2.1', 'UFV.RS.MG.047303-0.1', 'UFV.RS.MG.047314-6.1', 'UFV.RS.MG.047315-4.1', 'UFV.RS.MG.047316-2.1'],
     subsystem: 'SE/CO',
     state: 'MG',
     riverOrRegion: 'Arinos (Noroeste de MG)',
     operator: 'Newave Energia / Gerdau',
     coordinates: [-46.1000, -15.9100],
-    description: 'Instalação solar de grande escala no Noroeste Mineiro dedicada à descarbonização da siderurgia e indústria de transformação.',
+    description: 'Parque fotovoltaico no Noroeste Mineiro composto por 7 UFVs (Arinos 3, 5 a 7 e 18 a 20) de 48,12 MW AC cada, somando 336,8 MW AC outorgados (~421 MWp DC) dedicados à autoprodução siderúrgica e mercado livre.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UFV.RS.MG.047297-2.1 a 047331-7.1 (Complexo Solar Arinos 1-35)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 7 CEGs de Usina Solar Arinos SPE S.A. (Arinos 3, 5, 6, 7, 18, 19 e 20 — 336,83 MW AC)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'EPE — Relatório EPE-DEE-RE-076/2022-r0 (Garantia Física das UFVs Arinos 3, 5 a 7 e 18 a 20)',
+        url: 'https://www.epe.gov.br/sites-pt/publicacoes-dados-abertos/publicacoes/PublicacoesArquivos/publicacao-522/topico-546/EPE-DEE-RE-076-2022-r0_CalcGF_ACL_Arinos%203,%205%20a%207%20e%2018%20a%2020.pdf',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2024,
       gridConnectionVoltage: '500 kV'
@@ -1916,31 +1944,32 @@ export const majorPowerPlants: PowerPlantFeature[] = [
   },
   {
     id: 'termica-termomacao',
-    name: 'UTE Termomacaé',
+    name: 'UTE Termomacaé (Mário Lago)',
     type: 'termica',
-    capacityMW: 929,
+    capacityMW: 900,
+    cegs: ['UTE.GN.RJ.028029-1.1'],
     subsystem: 'SE/CO',
     state: 'RJ',
     riverOrRegion: 'Macaé',
     operator: 'Petrobras',
     coordinates: [-41.8000, -22.3500],
-    description: 'Uma das maiores termelétricas a gás natural em ciclo aberto do país, oferecendo flexibilidade e prontidão para suporte de ponta ao Sudeste.',
+    description: 'Uma das maiores termelétricas a gás natural em ciclo aberto do país (900 MW outorgados / 922,6 MW fiscalizados em 20 turbinas aeroderivadas), oferecendo partida rápida e suporte de ponta ao Sudeste.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UTE.GN.RJ.028029-1.1 (Termomacaé / Mário Lago)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — CEG UTE.GN.RJ.028029-1.1 (Mário Lago / Termomacaé — 900,0 MW outorgados)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Petrobras — Ativos de Gás e Energia (UTE Termomacaé / Mário Lago)',
+        url: 'https://petrobras.com.br/quem-somos/gas',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
-      commissionYear: 2002,
-      turbinesOrUnits: '2 turbinas a gás GE 7FA (ciclo aberto)',
+      commissionYear: 2001,
+      turbinesOrUnits: '20 turbogeradores aeroderivados GE LM6000 (ciclo simples)',
       gridConnectionVoltage: '345 kV'
     }
   },
@@ -1948,29 +1977,30 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'termica-jorge-lacerda',
     name: 'Complexo Termelétrico Jorge Lacerda',
     type: 'termica',
-    capacityMW: 857,
+    capacityMW: 740,
+    cegs: ['UTE.CM.SC.001260-2.1', 'UTE.CM.SC.027093-8.1', 'UTE.CM.SC.027094-6.1'],
     subsystem: 'S',
     state: 'SC',
-    riverOrRegion: 'Capivari de Baixo / Tubarão',
+    riverOrRegion: 'Capivari de Baixo',
     operator: 'Diamante Geração de Energia',
     coordinates: [-49.0000, -28.4500],
-    description: 'Maior complexo termelétrico a carvão mineral da América Latina, abastecido pela bacia carbonífera de Santa Catarina.',
+    description: 'Maior complexo termelétrico a carvão mineral da América Latina, integrado pelas usinas Jorge Lacerda I e II (190 MW outorgados vigentes), III (220 MW) e IV (330 MW), totalizando 740 MW outorgados vigentes (857 MW instalados históricos).',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UTE.CM.SC.001260-2.1 a 001262-9.1 (Jorge Lacerda I-IV)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — 3 CEGs UTE.CM.SC.001260-2.1, 027093-8.1 e 027094-6.1 (Jorge Lacerda I/II, III e IV — 740,0 MW outorgados)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Diamante Geração de Energia — Complexo Termelétrico Jorge Lacerda',
+        url: 'https://www.diamanteenergia.com/pt/untitled/pages-header/complexo-termeletrico-jorge-lacerda',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 1965,
-      turbinesOrUnits: '7 unidades geradoras a vapor (Fases A, B e C)',
+      turbinesOrUnits: 'Unidades a vapor (UTLA, UTLB e UTLC)',
       gridConnectionVoltage: '230 kV / 138 kV'
     }
   },
@@ -2102,29 +2132,30 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'termica-termopernambuco',
     name: 'UTE Termopernambuco',
     type: 'termica',
-    capacityMW: 498,
+    capacityMW: 550,
+    cegs: ['UTE.GN.PE.028031-3.1'],
     subsystem: 'NE',
     state: 'PE',
     riverOrRegion: 'Complexo Industrial e Portuário de Suape (Ipojuca)',
     operator: 'Neoenergia',
     coordinates: [-35.0000, -8.4000],
-    description: 'Instalada no Complexo de Suape, gera eletricidade em ciclo combinado a gás natural para abastecimento do litoral e pólo fabril pernambucano.',
+    description: 'Instalada no Complexo de Suape, gera eletricidade em ciclo combinado a gás natural (550 MW outorgados / 532,9 MW fiscalizados) para abastecimento do litoral e polo industrial pernambucano.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UTE.GN.PE.028031-3.1 (Termopernambuco)',
-            url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
-            accessedAt: '2026-09-25'
+        label: 'ANEEL SIGA — CEG UTE.GN.PE.028031-3.1 (Termopernambuco — 550,0 MW outorgados)',
+        url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
+        accessedAt: '2026-10-18'
       },
       {
-            label: 'ONS — Cadastro de Capacidade de Geração',
-            url: 'https://dados.ons.org.br/dataset/capacidade-geracao',
-            accessedAt: '2026-09-25'
+        label: 'Neoenergia — Termopernambuco (Complexo Industrial de Suape)',
+        url: 'https://www.neoenergia.com/w/termopernambuco-realiza-parada-anual-de-manutencao-em-tempo-recorde',
+        accessedAt: '2026-10-18'
       }
-],
+    ],
     technicalDetails: {
       commissionYear: 2004,
-      turbinesOrUnits: '2 turbinas a gás + 1 a vapor (Alstom)',
+      turbinesOrUnits: '2 turbinas a gás + 1 a vapor (GE / Alstom)',
       gridConnectionVoltage: '230 kV'
     }
   },
