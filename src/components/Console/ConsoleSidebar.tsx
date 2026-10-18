@@ -31,7 +31,7 @@ interface ConsoleSidebarProps {
   onClearSelection: () => void;
   showSubsystems: boolean;
   setShowSubsystems: (show: boolean) => void;
-  onOpenInterchangeModal?: (id?: InterchangeId) => void;
+  onOpenInterchange?: (id?: InterchangeId) => void;
 }
 
 const PLANT_TYPES = [
@@ -73,7 +73,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
   onClearSelection,
   showSubsystems,
   setShowSubsystems,
-  onOpenInterchangeModal
+  onOpenInterchange
 }) => {
   const [assetTab, setAssetTab] = useState<'plants' | 'lines'>('plants');
   const hasSelection = !!(selectedPlant || selectedLine);
@@ -162,10 +162,10 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
           <section className="px-4 py-4">
             <SectionTitle
               aside={
-                onOpenInterchangeModal && (
+                onOpenInterchange && (
                   <button
                     type="button"
-                    onClick={() => onOpenInterchangeModal()}
+                    onClick={() => onOpenInterchange()}
                     className="text-[11px] text-slate-500 hover:text-slate-200 transition-colors cursor-pointer"
                   >
                     Detalhes
@@ -183,7 +183,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                   <li key={ic.id}>
                     <button
                       type="button"
-                      onClick={() => onOpenInterchangeModal?.(ic.id)}
+                      onClick={() => onOpenInterchange?.(ic.id)}
                       className="w-full text-left group cursor-pointer"
                       title={ic.name}
                     >

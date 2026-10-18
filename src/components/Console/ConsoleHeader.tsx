@@ -53,7 +53,7 @@ export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
           onClick={onOpenCurve}
           className={`${ghostButton} flex items-baseline gap-2`}
           title={`Carga instantânea do SIN (${isLive ? 'ONS' : 'snapshot de referência'}) · abrir curva de carga 24h`}
-          aria-label="Abrir Curva de Carga 24h"
+          aria-label="Abrir curva de carga"
         >
           <span className="font-mono tabular-nums text-slate-100">{currentSinLoadGW} GW</span>
           <span className="font-mono tabular-nums text-slate-500 hidden sm:inline">{telemetry.latestTimeLabel}</span>
@@ -65,7 +65,7 @@ export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
         <button
           onClick={onOpenSimulator}
           className="h-7 px-2.5 rounded-md text-xs text-cyan-300 hover:bg-cyan-500/10 transition-colors cursor-pointer"
-          aria-label="Abrir Simulador de Despacho 60 Hz"
+          aria-label="Abrir simulador 60 Hz"
         >
           Simulador 60 Hz
         </button>
