@@ -1,5 +1,7 @@
 import { ArrowLeftRight, BookOpen, Gauge, Link2, Ruler, TrendingUp, type LucideIcon } from 'lucide-react';
 
+export type AppView = 'mapa' | 'sistema';
+
 export type SectionId = 'intercambios' | 'simulador' | 'cadeia' | 'dossies' | 'preco' | 'escalas';
 
 export interface SectionDef {
@@ -30,7 +32,7 @@ export const SECTION_GROUPS: { label: string; sections: SectionDef[] }[] = [
 
 export const SECTIONS: SectionDef[] = SECTION_GROUPS.flatMap((group) => group.sections);
 
-export const DEFAULT_SECTION: SectionId = 'cadeia';
+export const DEFAULT_SECTION: SectionId = 'simulador';
 
 export const isSectionId = (value: string | null): value is SectionId =>
   SECTIONS.some((section) => section.id === value);

@@ -41,7 +41,7 @@ Todos os débitos de honestidade e densidade visual foram sanados:
 4. **Hover cirúrgico:** tooltips do mapa exibem apenas o nome do ativo; especificação técnica reservada ao [`NodeInspector`](../src/components/Inspector/NodeInspector.tsx).
 5. **Redução de camadas de linha:** de 3 para 2 (`lines-main` + `lines-selected`), sem glow cosmético.
 6. **Intercâmbios simplificados:** visão inicial do [`InterchangeSection`](../src/components/Interchange/InterchangeSection.tsx) focada em carregamento (%) e margem operativa (GW), com curva 24h e dossiê sob demanda.
-7. **Modo Guia enxuto:** [`SinDossiersSection`](../src/components/Dossiers/SinDossiersSection.tsx) e [`ValueChainSection`](../src/components/EnergyChain/ValueChainSection.tsx) padronizados em tipografia técnica SCADA (`font-mono text-xs`), métricas em destaque e termos-chave em negrito.
+7. **Aba Sistema enxuta:** [`SinDossiersSection`](../src/components/Dossiers/SinDossiersSection.tsx) e [`ValueChainSection`](../src/components/EnergyChain/ValueChainSection.tsx) padronizados em tipografia técnica SCADA (`font-mono text-xs`), métricas em destaque e termos-chave em negrito.
 
 ### P2 — Robustez
 
