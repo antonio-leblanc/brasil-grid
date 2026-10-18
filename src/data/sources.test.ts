@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { energyChainStages } from './energyChainData';
 import { referenceGridSnapshot } from './gridData';
 import { regionalInterchanges } from './interchangeData';
-import { cmoHourlyProfile } from './marketData';
+import { cmoHourlyProfile, marketMonthly } from './marketData';
 import { majorPowerPlants } from './powerPlantsData';
 import { powerVsEnergyExplainer, scaleLevels } from './scaleData';
 import { sinDossiers } from './sinDossiersData';
@@ -18,7 +18,7 @@ const DATASETS: Record<string, unknown> = {
   energyChain: energyChainStages,
   gridSnapshot: referenceGridSnapshot,
   interchanges: regionalInterchanges,
-  market: cmoHourlyProfile,
+  market: { cmoHourlyProfile, marketMonthly },
   powerPlants: majorPowerPlants,
   scales: { powerVsEnergyExplainer, scaleLevels },
   dossiers: sinDossiers,
