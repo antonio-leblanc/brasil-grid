@@ -13,7 +13,7 @@ São duas abas: **Mapa** e **Sistema**.
 A malha de transmissão e os grandes polos de geração do SIN, sobre MapLibre GL.
 
 - **Transmissão:** os bipolos de ±800 kV de Belo Monte (Xingu–Estreito e Xingu–Terminal Rio, ~2.540 km), os de ±600 kV do Madeira e de Itaipu, a malha tronco de 500–765 kV e linhas regionais de 230–440 kV selecionadas.
-- **Geração:** Itaipu (14 GW), Belo Monte (11,2 GW), Tucuruí (8,4 GW), Angra 1 e 2 (2,0 GW), complexos eólicos e solares. O tamanho do ponto acompanha a capacidade instalada.
+- **Geração:** Itaipu (14 GW), Belo Monte (11,2 GW), Tucuruí (8,5 GW), Angra 1 e 2 (2,0 GW), complexos eólicos e solares. O tamanho do ponto acompanha a capacidade instalada.
 - Filtro por tensão e por fonte, contorno dos 4 subsistemas do ONS e ficha de cada usina e linha com a fonte do dado.
 
 ### Sistema

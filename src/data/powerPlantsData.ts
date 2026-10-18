@@ -11,11 +11,11 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     riverOrRegion: 'Rio Paraná (Foz do Iguaçu)',
     operator: 'Itaipu Binacional (Brasil / Paraguai)',
     coordinates: [-54.5889, -25.4083],
-    description: 'Segunda maior usina do mundo em geração histórica e o maior colosso do setor elétrico sul-americano. Central binacional operando com 20 turbinas Francis de 700 MW cada (50 Hz Paraguai / 60 Hz Brasil).',
+    description: 'Segunda maior usina do mundo em geração histórica. Binacional, com 20 unidades Francis de 700 MW: 10 em 60 Hz (parte brasileira, 7.000 MW outorgados pela ANEEL) e 10 em 50 Hz (parte paraguaia). A energia paraguaia não consumida no Paraguai é cedida ao Brasil e chega ao SIN pelos bipolos de ±600 kV até Ibiúna, por isso o ponto no mapa mostra os 14.000 MW da usina inteira.',
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.PR.001198-3.01 (Itaipu Binacional)',
+        label: 'ANEEL SIGA — CEG UHE.PH.PR.001161-4.1 (Itaipu, parte brasileira: 7.000 MW outorgados; o setor paraguaio de 50 Hz não tem outorga ANEEL)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -46,7 +46,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.PA.030460-3.01 (Belo Monte) & UHE.PH.PA.030461-1.01 (Pimental)',
+        label: 'ANEEL SIGA — CEG UHE.PH.PA.030354-2.1 (Belo Monte, inclui a casa de força de Pimental)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -67,7 +67,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'tucurui',
     name: 'UHE Tucuruí',
     type: 'hidro',
-    capacityMW: 8370,
+    capacityMW: 8535,
     subsystem: 'N',
     state: 'PA',
     riverOrRegion: 'Rio Tocantins (Tucuruí)',
@@ -77,7 +77,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.PA.002882-7.01 (Tucuruí)',
+        label: 'ANEEL SIGA — CEG UHE.PH.PA.002889-4.1 (Tucuruí)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -107,7 +107,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.RO.030164-7.01 (Jirau)',
+        label: 'ANEEL SIGA — CEG UHE.PH.RO.029736-4.1 (Jirau)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -137,7 +137,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.RO.030064-0.01 (Santo Antônio)',
+        label: 'ANEEL SIGA — CEG UHE.PH.RO.029707-0.1 (Santo Antônio)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -167,7 +167,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.AL.002934-3.01 (Xingó)',
+        label: 'ANEEL SIGA — CEG UHE.PH.SE.027053-9.1 (Xingó)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -197,7 +197,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.BA.001968-2.01 a UHE.PH.BA.001971-2.01 (Paulo Afonso I-IV) & UHE.PH.BA.000109-0.01 (Apolônio Sales)',
+        label: 'ANEEL SIGA — CEG UHE.PH.BA.002012-5.1, 027048-2.1, 027049-0.1 e 027050-4.1 (Paulo Afonso I-IV) & UHE.PH.AL.001510-5.1 (Apolônio Sales)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -346,7 +346,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.SP.001007-3.01 (Ilha Solteira)',
+        label: 'ANEEL SIGA — CEG UHE.PH.SP.001120-7.1 (Ilha Solteira)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -436,7 +436,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.PR.000966-0.01 (Gov. Bento Munhoz da Rocha Netto)',
+        label: 'ANEEL SIGA — CEG UHE.PH.PR.000984-9.1 (Gov. Bento Munhoz da Rocha Netto)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -526,7 +526,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.MG.001428-1.01 (Marimbondo)',
+        label: 'ANEEL SIGA — CEG UHE.PH.MG.001417-6.1 (Marimbondo)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -586,7 +586,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.MG.002621-2.01 (São Simão)',
+        label: 'ANEEL SIGA — CEG UHE.PH.GO.002704-9.1 (São Simão)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -790,7 +790,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.MT.030588-0.01 (Teles Pires)',
+        label: 'ANEEL SIGA — CEG UHE.PH.PA.030557-0.1 (Teles Pires)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -820,7 +820,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.SP.000898-2.01 (Engenheiro Sérgio Motta)',
+        label: 'ANEEL SIGA — CEG UHE.PH.SP.002127-0.1 (Porto Primavera / Engenheiro Sérgio Motta)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -1146,7 +1146,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.GO.001199-1.01 (Itumbiara)',
+        label: 'ANEEL SIGA — CEG UHE.PH.MG.001194-0.1 (Itumbiara)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -1176,7 +1176,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.SP.000885-0.01 (Engenheiro Souza Dias)',
+        label: 'ANEEL SIGA — CEG UHE.PH.SP.001282-3.1 (Jupiá / Engenheiro Souza Dias)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -1206,7 +1206,7 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     verification: 'verified',
     sources: [
       {
-        label: 'ANEEL SIGA — CEG UHE.PH.PE.001334-0.01 (Luiz Gonzaga)',
+        label: 'ANEEL SIGA — CEG UHE.PH.PE.001174-6.1 (Luiz Gonzaga / Itaparica)',
         url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
         accessedAt: '2026-09-25'
       },
@@ -2118,17 +2118,17 @@ export const majorPowerPlants: PowerPlantFeature[] = [
     id: 'biomassa-sao-martinho',
     name: 'UTE São Martinho (Biomassa)',
     type: 'termica',
-    capacityMW: 210,
+    capacityMW: 73,
     subsystem: 'SE/CO',
     state: 'SP',
     riverOrRegion: 'Pradópolis (Ribeirão Preto)',
     operator: 'Usina São Martinho',
     coordinates: [-48.0667, -21.3667],
-    description: 'Maior termelétrica de cogeração a partir de biomassa de cana-de-açúcar (bagaço e palha) do planeta, exportando energia limpa no pico da safra.',
+    description: 'Cogeração a bagaço de cana na usina de Pradópolis: queima o resíduo da moagem e exporta o excedente para a rede durante a safra, que coincide com o período seco dos reservatórios.',
     verification: 'verified',
     sources: [
       {
-            label: 'ANEEL SIGA — CEG UTE.AI.SP.026874-7.1 (São Martinho / Bioenergia)',
+            label: 'ANEEL SIGA — CEG UTE.AI.SP.026874-7.1 (São Martinho, Pradópolis)',
             url: 'https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel',
             accessedAt: '2026-09-25'
       },
