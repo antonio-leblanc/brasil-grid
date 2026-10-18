@@ -1,14 +1,10 @@
 import React, { Suspense, lazy } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { cn } from '../../utils/cn';
-import type { NationalTelemetrySnapshot } from '../../services/onsApi';
 import type { InterchangeId } from '../../data/interchangeData';
 import { SECTION_GROUPS, SECTIONS, type SectionId } from './sections';
 
 // Code-splitting keeps these out of the initial map bundle.
-const LoadCurveSection = lazy(() =>
-  import('../Telemetry/LoadCurveSection').then((m) => ({ default: m.LoadCurveSection }))
-);
 const InterchangeSection = lazy(() =>
   import('../Interchange/InterchangeSection').then((m) => ({ default: m.InterchangeSection }))
 );
@@ -36,10 +32,6 @@ interface LearnViewProps {
   activeSection: SectionId;
   onSelectSection: (id: SectionId) => void;
   onBack: () => void;
-  telemetry: NationalTelemetrySnapshot;
-  isLive: boolean;
-  isLoading: boolean;
-  onRefresh: () => void;
   selectedInterchangeId: InterchangeId;
   onSelectInterchange: (id: InterchangeId) => void;
 }
@@ -48,10 +40,6 @@ export const LearnView: React.FC<LearnViewProps> = ({
   activeSection,
   onSelectSection,
   onBack,
-  telemetry,
-  isLive,
-  isLoading,
-  onRefresh,
   selectedInterchangeId,
   onSelectInterchange
 }) => {
@@ -59,8 +47,6 @@ export const LearnView: React.FC<LearnViewProps> = ({
 
   const renderSection = () => {
     switch (currentSection.id) {
-      case 'curva':
-        return <LoadCurveSection telemetry={telemetry} isLive={isLive} isLoading={isLoading} onRefresh={onRefresh} />;
       case 'intercambios':
         return <InterchangeSection selectedId={selectedInterchangeId} onSelect={onSelectInterchange} />;
       case 'simulador':

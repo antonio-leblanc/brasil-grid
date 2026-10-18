@@ -1,6 +1,6 @@
-import { Activity, ArrowLeftRight, BookOpen, Gauge, Link2, Ruler, TrendingUp, type LucideIcon } from 'lucide-react';
+import { ArrowLeftRight, BookOpen, Gauge, Link2, Ruler, TrendingUp, type LucideIcon } from 'lucide-react';
 
-export type SectionId = 'curva' | 'intercambios' | 'simulador' | 'cadeia' | 'dossies' | 'preco' | 'escalas';
+export type SectionId = 'intercambios' | 'simulador' | 'cadeia' | 'dossies' | 'preco' | 'escalas';
 
 export interface SectionDef {
   id: SectionId;
@@ -13,7 +13,6 @@ export const SECTION_GROUPS: { label: string; sections: SectionDef[] }[] = [
   {
     label: 'Operação',
     sections: [
-      { id: 'curva', label: 'Curva de carga', icon: Activity },
       { id: 'intercambios', label: 'Intercâmbios', icon: ArrowLeftRight, wide: true },
       { id: 'simulador', label: 'Simulador 60 Hz', icon: Gauge, wide: true }
     ]

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import type { SimulatorDay } from '../../data/simulatorDayData';
-import type { ScheduledTrip } from '../../services/gridPhysics';
+import type { DaySchedule, ScheduledTrip } from '../../services/gridPhysics';
 import { DAY_SCHEDULED_TRIPS, dayScheduleAt, synchronousInertiaH } from '../../services/gridPhysics';
 import { formatDecimal } from '../../utils/format';
 
@@ -12,18 +12,20 @@ interface DayChartProps {
 
 const DAY_SECONDS = 86400;
 const STACK_MAX_MW = 100000;
+const MMGD_FILL = '#fde68a';
 const INERTIA_MAX_S = 5;
 const SAMPLE_STEP_S = 900;
 const W = 1000;
 const STACK_H = 160;
 const INERTIA_H = 40;
 
-const LAYERS = [
-  { key: 'hydroMW', label: 'Hidro', fill: '#34d399' },
-  { key: 'thermalMW', label: 'Térmica', fill: '#f43f5e' },
-  { key: 'windMW', label: 'Eólica', fill: '#38bdf8' },
-  { key: 'solarMW', label: 'Solar', fill: '#fbbf24' }
-] as const;
+const LAYERS: { key: string; label: string; fill: string; mw: (s: DaySchedule) => number }[] = [
+  { key: 'hydro', label: 'Hidro', fill: '#34d399', mw: (s) => s.hydroMW },
+  { key: 'thermal', label: 'Térmica', fill: '#f43f5e', mw: (s) => s.thermalMW },
+  { key: 'wind', label: 'Eólica', fill: '#38bdf8', mw: (s) => s.windMW },
+  { key: 'solar', label: 'Solar centralizada', fill: '#fbbf24', mw: (s) => s.solarMW - s.mmgdMW },
+  { key: 'mmgd', label: 'Solar MMGD', fill: MMGD_FILL, mw: (s) => s.mmgdMW }
+];
 
 const x = (seconds: number) => (seconds / DAY_SECONDS) * W;
 const pct = (seconds: number) => `${(Math.max(0, Math.min(DAY_SECONDS, seconds)) / DAY_SECONDS) * 100}%`;
@@ -38,7 +40,7 @@ export const DayChart: React.FC<DayChartProps> = ({ day, simTimeSeconds, pending
     const cumulative = schedules.map(() => 0);
     const layerPaths = LAYERS.map((layer) => {
       const lower = [...cumulative];
-      schedules.forEach((s, i) => (cumulative[i] += s[layer.key]));
+      schedules.forEach((s, i) => (cumulative[i] += layer.mw(s)));
       const top = samples.map((t, i) => `${x(t).toFixed(1)},${y(cumulative[i]).toFixed(1)}`);
       const bottom = samples.map((t, i) => `${x(t).toFixed(1)},${y(lower[i]).toFixed(1)}`).reverse();
       return { ...layer, d: `M${top.join('L')}L${bottom.join('L')}Z` };
@@ -63,7 +65,10 @@ export const DayChart: React.FC<DayChartProps> = ({ day, simTimeSeconds, pending
         <span className="flex items-center gap-3 text-slate-400">
           {LAYERS.map((l) => (
             <span key={l.key} className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: l.fill }} />
+              <span
+                className={`w-2 h-2 rounded-sm ${l.key === 'mmgd' ? 'border border-amber-200/80' : ''}`}
+                style={{ backgroundColor: l.key === 'mmgd' ? 'transparent' : l.fill }}
+              />
               {l.label}
             </span>
           ))}
@@ -83,9 +88,19 @@ export const DayChart: React.FC<DayChartProps> = ({ day, simTimeSeconds, pending
               vectorEffect="non-scaling-stroke"
             />
           ))}
-          {layerPaths.map((l) => (
-            <path key={l.key} d={l.d} fill={l.fill} fillOpacity={0.55} />
-          ))}
+          <defs>
+            <pattern id="mmgdHatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <rect width="6" height="6" fill={MMGD_FILL} fillOpacity={0.25} />
+              <line x1="0" y1="0" x2="0" y2="6" stroke={MMGD_FILL} strokeWidth="2" strokeOpacity={0.7} />
+            </pattern>
+          </defs>
+          {layerPaths.map((l) =>
+            l.key === 'mmgd' ? (
+              <path key={l.key} d={l.d} fill="url(#mmgdHatch)" />
+            ) : (
+              <path key={l.key} d={l.d} fill={l.fill} fillOpacity={0.55} />
+            )
+          )}
           <rect x={x(simTimeSeconds)} y={0} width={W - x(simTimeSeconds)} height={STACK_H} fill="#07090e" fillOpacity={0.55} />
         </svg>
 

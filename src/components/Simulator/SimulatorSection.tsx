@@ -27,6 +27,8 @@ import { SegmentedControl, type SegmentOption } from '../Controls/SegmentedContr
 
 type ScenarioId = GridSimulationState['scenarioId'];
 
+const peakMmgdMW = Math.max(...simulatorDay.hours.map((h) => h.mmgdMW));
+
 const tripHours = DAY_SCHEDULED_TRIPS.map((t) => `${t.atSeconds / 3600}h`).join(' e às ');
 
 const SCENARIOS: { id: ScenarioId; label: string; description: string }[] = [
@@ -277,6 +279,12 @@ export const SimulatorSection: React.FC = () => {
             O CAG (regulação secundária) corrige o programa das hidrelétricas nos minutos seguintes até a frequência
             voltar a 60 Hz. Inércia H = energia cinética das máquinas síncronas ÷ geração total: cai ao meio-dia,
             quando solar e eólica, sem massa girante, dominam.
+          </p>
+          <p>
+            <span className="text-slate-300">Curva do pato.</span> A solar hachurada é MMGD, a micro e minigeração atrás dos
+            medidores das distribuidoras: o ONS não a despacha, só a estima com dados meteorológicos. Ela chega a{' '}
+            <span className="font-mono">{formatDecimal(peakMmgdMW / 1000, 1)} GW</span> perto do meio-dia e afunda a carga que
+            as usinas atendem; no fim da tarde some com a carga ainda alta e as hidrelétricas fazem a rampa.
           </p>
         </div>
       </details>

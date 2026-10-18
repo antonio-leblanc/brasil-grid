@@ -41,7 +41,7 @@ Em vez de ferramentas comerciais ou relatórios estáticos em PDF de centenas de
 ### 3. 📚 Dossiês Técnicos do SIN
 * Anatomia da perturbação de 15/08/2023 (abertura da LT 500 kV Quixadá–Fortaleza II, desempenho do controle de tensão de parques eólicos/solares abaixo do previsto nos modelos, separação do SIN e atuação do ERAC).
 * O custo futuro da água e a formação de CMO/PLD pela cadeia de modelos NEWAVE, DECOMP e DESSEM.
-* Complementados pelo **Simulador 60 Hz** (equação de swing agregada, regulação primária, ERAC e curva P(f) de IBRs), pela **Curva de Carga 24h** (Dados Abertos ONS) e pelo painel de **Intercâmbios Regionais**.
+* Complementados pelo **Simulador 60 Hz** (equação de swing agregada, regulação primária, ERAC e curva P(f) de IBRs), com o dia verificado do SIN separando a solar centralizada da MMGD, e pelo painel de **Intercâmbios Regionais**.
 
 ### 4. 📐 Régua de Grandezas: Desmistificando Watts (W a TWh)
 * Esclarecimento conceitual entre **Potência** (kW, MW, GW — taxa instantânea) e **Energia** (kWh, MWh, GWh — volume acumulado no tempo).
@@ -90,7 +90,7 @@ npm run build
 * [ANEEL — Agência Nacional de Energia Elétrica](https://www.gov.br/aneel) (SIGEL — Sistema de Informações Georreferenciadas do Setor Elétrico)
 * [EPE — Empresa de Pesquisa Energética](https://www.epe.gov.br) (Balanço Energético Nacional - BEN)
 
-> ℹ️ **Transparência de Telemetria:** A curva de carga (carga global, supervisionada e MMGD) é lida da API de Dados Abertos do ONS (Carga Verificada, com cache e *fallback* para um snapshot sintético quando a API está indisponível). Frequência, intercâmbios e composição da matriz exibidos no console são **snapshots de referência** para fins educacionais, não telemetria em tempo real. O simulador 60 Hz é um modelo didático de barra única, com parâmetros ilustrativos.
+> ℹ️ **Transparência de Telemetria:** A carga global do SIN no header é lida da API de Dados Abertos do ONS (Carga Verificada, com cache e *fallback* para um snapshot sintético quando a API está indisponível). Frequência, intercâmbios e composição da matriz exibidos no console são **snapshots de referência** para fins educacionais, não telemetria em tempo real. O simulador 60 Hz é um modelo didático de barra única, com parâmetros ilustrativos.
 
 ---
 

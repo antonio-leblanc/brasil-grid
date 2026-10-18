@@ -9,7 +9,6 @@ interface ConsoleHeaderProps {
   isLive: boolean;
   isLoading: boolean;
   onRefresh: () => void;
-  onOpenCurve: () => void;
   onOpenSimulator: () => void;
   onOpenLearn: () => void;
 }
@@ -24,7 +23,6 @@ export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
   isLive,
   isLoading,
   onRefresh,
-  onOpenCurve,
   onOpenSimulator,
   onOpenLearn
 }) => {
@@ -49,16 +47,14 @@ export const ConsoleHeader: React.FC<ConsoleHeaderProps> = ({
       </div>
 
       <div className="flex items-center gap-1">
-        <button
-          onClick={onOpenCurve}
-          className={`${ghostButton} flex items-baseline gap-2`}
-          title={`Carga instantânea do SIN (${isLive ? 'ONS' : 'snapshot de referência'}) · abrir curva de carga 24h`}
-          aria-label="Abrir curva de carga"
+        <span
+          className="h-7 px-2.5 flex items-center gap-2 text-xs"
+          title={`Carga global do SIN na última meia hora (${isLive ? 'ONS' : 'snapshot de referência'})`}
         >
           <span className="font-mono tabular-nums text-slate-100">{currentSinLoadGW} GW</span>
           <span className="font-mono tabular-nums text-slate-500 hidden sm:inline">{telemetry.latestTimeLabel}</span>
           <span className={isLive ? 'text-slate-500' : 'text-amber-400'}>{isLive ? 'ONS' : 'ref.'}</span>
-        </button>
+        </span>
 
         <span className="w-px h-4 bg-slate-800 mx-1" />
 

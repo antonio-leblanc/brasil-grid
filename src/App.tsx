@@ -150,10 +150,6 @@ export function App() {
         activeSection={section}
         onSelectSection={setSection}
         onBack={() => setSection(null)}
-        telemetry={telemetry}
-        isLive={isLive}
-        isLoading={isTelemetryLoading}
-        onRefresh={refreshTelemetry}
         selectedInterchangeId={selectedInterchangeId}
         onSelectInterchange={setSelectedInterchangeId}
       />
@@ -172,7 +168,6 @@ export function App() {
         isLive={isLive}
         isLoading={isTelemetryLoading}
         onRefresh={refreshTelemetry}
-        onOpenCurve={() => setSection('curva')}
         onOpenSimulator={() => setSection('simulador')}
         onOpenLearn={() => setSection(DEFAULT_SECTION)}
       />
