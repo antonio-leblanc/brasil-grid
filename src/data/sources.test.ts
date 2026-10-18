@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { energyChainStages } from './energyChainData';
 import { referenceGridSnapshot } from './gridData';
 import { regionalInterchanges } from './interchangeData';
+import { cmoHourlyProfile } from './marketData';
 import { majorPowerPlants } from './powerPlantsData';
 import { powerVsEnergyExplainer, scaleLevels } from './scaleData';
 import { sinDossiers } from './sinDossiersData';
@@ -17,6 +18,7 @@ const DATASETS: Record<string, unknown> = {
   energyChain: energyChainStages,
   gridSnapshot: referenceGridSnapshot,
   interchanges: regionalInterchanges,
+  market: cmoHourlyProfile,
   powerPlants: majorPowerPlants,
   scales: { powerVsEnergyExplainer, scaleLevels },
   dossiers: sinDossiers,
@@ -66,7 +68,7 @@ function isRootUrl(url: string): boolean {
 describe('proveniência dos dados (SourceRef)', () => {
   it('encontra fontes em todos os datasets', () => {
     const datasetsWithSources = new Set(allSources.map(({ owner }) => owner.split(':')[0]));
-    for (const dataset of ['energyChain', 'interchanges', 'powerPlants', 'scales', 'dossiers', 'transmissionLines']) {
+    for (const dataset of ['energyChain', 'interchanges', 'market', 'powerPlants', 'scales', 'dossiers', 'transmissionLines']) {
       expect(datasetsWithSources).toContain(dataset);
     }
   });

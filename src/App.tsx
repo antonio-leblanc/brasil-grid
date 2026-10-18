@@ -22,7 +22,7 @@ const InterchangeModal = lazy(() =>
 
 type AppMode = 'mapa' | 'guia';
 
-const LEARN_TABS = ['cadeia', 'dossies', 'escalas', 'mercado'];
+const LEARN_TABS = ['cadeia', 'dossies', 'preco', 'escalas', 'mercado'];
 const VALID_PLANT_TYPES = ['all', 'hidro', 'solar', 'eolica', 'nuclear', 'termica'];
 const VALID_INTERCHANGES: InterchangeId[] = ['NE_SECO', 'N_SECO', 'N_NE', 'S_SECO'];
 
