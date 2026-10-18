@@ -68,7 +68,6 @@ Critério: um elemento só fica permanente na tela se responde a uma pergunta f�
 
 ## Preço e mercado (feature, exige plano)
 
-- [ ] **Arquivar o repo `laboratorio-energia`** depois do merge: o código e o histórico já vivem em [`pipeline/`](pipeline/).
 - [ ] **Pilar "Preço":** EAR × CMO, perfil horário do CMO por ano (curva do pato) e custo de modulação, desenhados em JS a partir de JSON gerado pelo pipeline, não PNG. Junta com o item do snapshot ONS na CI (P2).
 - [ ] **Solar e volatilidade intradiária:** quanto da curva do pato vem de geração distribuída e solar centralizada, e corte de geração (*curtailment*) no meio do dia.
 - [ ] **Depois:** previsão (ENA prevista no PMO do ONS, saída do novomodelo quando rodar em sombra em 2027) e expansão contratada em leilão. Só com fonte profunda, sem feed de notícia.
