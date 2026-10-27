@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { sinDossiers } from '../../data/sinDossiersData';
 import { SourcesList } from '../Sources/SourcesList';
 import { cn } from '../../utils/cn';
+import { useI18n } from '../../i18n/context';
+import { localizeDossier } from '../../i18n/data/sinDossiers';
+import { useDossiersCopy } from './copy';
 
 type StepBadgeType = (typeof sinDossiers)[number]['steps'][number]['badgeType'];
 
@@ -25,21 +28,22 @@ const Label: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 export const SinDossiersSection: React.FC = () => {
+  const { lang } = useI18n();
+  const copy = useDossiersCopy();
+  const dossiers = useMemo(() => sinDossiers.map((d) => localizeDossier(d, lang)), [lang]);
   const [activeDossierId, setActiveDossierId] = useState<string>(sinDossiers[0].id);
 
-  const activeDossier = sinDossiers.find((d) => d.id === activeDossierId) ?? sinDossiers[0];
+  const activeDossier = dossiers.find((d) => d.id === activeDossierId) ?? dossiers[0];
 
   return (
     <section className="space-y-6">
       <header>
-        <h2 className="text-lg font-semibold text-slate-100">Dossiês do SIN</h2>
-        <p className="mt-1 text-xs text-slate-400">
-          Eventos críticos, transitórios eletromecânicos, controle de frequência/tensão e modelagem ONS/CCEE.
-        </p>
+        <h2 className="text-lg font-semibold text-slate-100">{copy.title}</h2>
+        <p className="mt-1 text-xs text-slate-400">{copy.intro}</p>
       </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-        {sinDossiers.map((dossier) => {
+        {dossiers.map((dossier) => {
           const isSelected = dossier.id === activeDossier.id;
           return (
             <button
@@ -80,7 +84,7 @@ export const SinDossiersSection: React.FC = () => {
 
         {activeDossier.keyFormulas && activeDossier.keyFormulas.length > 0 && (
           <div className="space-y-3">
-            <Label>Formulações físicas</Label>
+            <Label>{copy.formulas}</Label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
               {activeDossier.keyFormulas.map((formula, idx) => (
                 <div key={idx} className="space-y-1.5">
@@ -111,7 +115,7 @@ export const SinDossiersSection: React.FC = () => {
                 <p className="mt-1 text-xs text-slate-300 leading-relaxed">{step.description}</p>
                 {step.technicalDetail && (
                   <p className="mt-1.5 text-[11px] text-slate-400 leading-relaxed">
-                    <span className="text-slate-500">Nota técnica: </span>
+                    <span className="text-slate-500">{copy.technicalNote}</span>
                     {step.technicalDetail}
                   </p>
                 )}
@@ -121,7 +125,7 @@ export const SinDossiersSection: React.FC = () => {
         </div>
 
         <div className="space-y-3 border-t border-slate-800 pt-6">
-          <Label>Lições de engenharia e contramedidas</Label>
+          <Label>{copy.lessons}</Label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
             {activeDossier.lessonsLearned.map((lesson, idx) => (
               <div key={idx}>

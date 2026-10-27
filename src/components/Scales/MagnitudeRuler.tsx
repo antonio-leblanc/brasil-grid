@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { scaleLevels, powerVsEnergyExplainer } from '../../data/scaleData';
 import { SourcesList } from '../Sources/SourcesList';
 import { cn } from '../../utils/cn';
+import { useI18n } from '../../i18n/context';
+import { localizeExplainer, localizeScaleLevel } from '../../i18n/data/scales';
+import { useScalesCopy } from './copy';
 
 const ExplainerColumn: React.FC<{
   entry: typeof powerVsEnergyExplainer.power;
@@ -19,26 +22,28 @@ const ExplainerColumn: React.FC<{
 );
 
 export const MagnitudeRuler: React.FC = () => {
+  const { lang } = useI18n();
+  const copy = useScalesCopy();
+  const levels = useMemo(() => scaleLevels.map((l) => localizeScaleLevel(l, lang)), [lang]);
+  const explainer = localizeExplainer(lang);
   const [selectedUnit, setSelectedUnit] = useState<string>('GW');
 
-  const currentLevel = scaleLevels.find((s) => s.unit === selectedUnit) || scaleLevels[3];
+  const currentLevel = levels.find((s) => s.unit === selectedUnit) || levels[3];
 
   return (
     <section className="space-y-6">
       <header>
-        <h2 className="text-lg font-semibold text-slate-100">Régua de grandezas</h2>
-        <p className="mt-1 text-xs text-slate-400">
-          Cada prefixo (k, M, G, T) multiplica a grandeza por 10³.
-        </p>
+        <h2 className="text-lg font-semibold text-slate-100">{copy.title}</h2>
+        <p className="mt-1 text-xs text-slate-400">{copy.intro}</p>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 border-y border-slate-800/70 py-5">
-        <ExplainerColumn entry={powerVsEnergyExplainer.power} kind="instantâneo" accent="text-amber-400" />
-        <ExplainerColumn entry={powerVsEnergyExplainer.energy} kind="acumulado" accent="text-cyan-300" />
+        <ExplainerColumn entry={explainer.power} kind={copy.instantaneous} accent="text-amber-400" />
+        <ExplainerColumn entry={explainer.energy} kind={copy.cumulative} accent="text-cyan-300" />
       </div>
 
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-        {scaleLevels.map((lvl) => {
+        {levels.map((lvl) => {
           const isSelected = lvl.unit === selectedUnit;
           return (
             <button

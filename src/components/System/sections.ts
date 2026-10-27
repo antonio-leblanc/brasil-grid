@@ -29,9 +29,9 @@ export const SECTION_GROUPS: { id: SectionGroupId; sections: SectionDef[] }[] = 
   {
     id: 'referencia',
     sections: [
-      { id: 'cadeia', icon: Link2 },
-      { id: 'dossies', icon: BookOpen },
-      { id: 'escalas', icon: Ruler }
+      { id: 'cadeia', icon: Link2, translated: true },
+      { id: 'dossies', icon: BookOpen, translated: true },
+      { id: 'escalas', icon: Ruler, translated: true }
     ]
   }
 ];

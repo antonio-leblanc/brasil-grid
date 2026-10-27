@@ -8,8 +8,6 @@ An open lab for understanding Brazil's National Interconnected System (SIN) and 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald?style=flat-square)](LICENSE)
 
-> The app interface is in Portuguese for now. An English version is in progress.
-
 ## What's in the app
 
 Two tabs: **Map** and **System**.

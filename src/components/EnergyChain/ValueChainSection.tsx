@@ -1,24 +1,28 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { energyChainStages } from '../../data/energyChainData';
 import { SourcesList } from '../Sources/SourcesList';
 import { cn } from '../../utils/cn';
+import { useI18n } from '../../i18n/context';
+import { localizeStage } from '../../i18n/data/energyChain';
+import { useValueChainCopy } from './copy';
 
 export const ValueChainSection: React.FC = () => {
+  const { lang } = useI18n();
+  const copy = useValueChainCopy();
+  const stages = useMemo(() => energyChainStages.map((s) => localizeStage(s, lang)), [lang]);
   const [selectedId, setSelectedId] = useState<string>('comercializacao');
 
-  const activeStage = energyChainStages.find((s) => s.id === selectedId) || energyChainStages[3];
+  const activeStage = stages.find((s) => s.id === selectedId) || stages[3];
 
   return (
     <section className="space-y-6">
       <header>
-        <h2 className="text-lg font-semibold text-slate-100">Cadeia de valor do setor elétrico</h2>
-        <p className="mt-1 text-xs text-slate-400">
-          Quatro elos funcionais: limites físicos de tensão, governança (ANEEL/ONS) e liquidação contábil CCEE.
-        </p>
+        <h2 className="text-lg font-semibold text-slate-100">{copy.title}</h2>
+        <p className="mt-1 text-xs text-slate-400">{copy.intro}</p>
       </header>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-        {energyChainStages.map((stage) => {
+        {stages.map((stage) => {
           const isSelected = stage.id === selectedId;
           return (
             <button
@@ -53,17 +57,17 @@ export const ValueChainSection: React.FC = () => {
 
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
             <div>
-              <dt className="text-[11px] text-slate-500">Modelo de remuneração</dt>
+              <dt className="text-[11px] text-slate-500">{copy.revenueModel}</dt>
               <dd className="mt-1 text-xs text-slate-300 leading-relaxed">{activeStage.revenueModel}</dd>
             </div>
             <div>
-              <dt className="text-[11px] text-slate-500">Regulação e governança</dt>
+              <dt className="text-[11px] text-slate-500">{copy.regulator}</dt>
               <dd className="mt-1 text-xs text-slate-300 leading-relaxed">{activeStage.regulator}</dd>
             </div>
           </dl>
 
           <div>
-            <h4 className="text-[11px] text-slate-500">Dinâmica operacional</h4>
+            <h4 className="text-[11px] text-slate-500">{copy.highlights}</h4>
             <ul className="mt-2 space-y-2">
               {activeStage.highlights.map((h, i) => {
                 const colonIndex = h.indexOf(':');
@@ -87,7 +91,7 @@ export const ValueChainSection: React.FC = () => {
 
         <aside className="w-full lg:w-72 space-y-6">
           <div>
-            <h4 className="text-[11px] text-slate-500">Métricas do elo</h4>
+            <h4 className="text-[11px] text-slate-500">{copy.metrics}</h4>
             <dl className="mt-1 divide-y divide-slate-800/70 border-y border-slate-800/70">
               {activeStage.keyMetrics.map((m, i) => (
                 <div key={i} className="py-2 flex items-baseline justify-between gap-4">
@@ -99,7 +103,7 @@ export const ValueChainSection: React.FC = () => {
           </div>
 
           <div>
-            <h4 className="text-[11px] text-slate-500">Agentes no Brasil</h4>
+            <h4 className="text-[11px] text-slate-500">{copy.companies}</h4>
             <ul className="mt-1 divide-y divide-slate-800/70 border-y border-slate-800/70">
               {activeStage.mainCompanies.map((c, i) => (
                 <li key={i} className="py-2">
