@@ -20,6 +20,7 @@ import type { PowerPlantFeature, TransmissionLineFeature } from '../../data/grid
 import type { NationalTelemetrySnapshot } from '../../services/onsApi';
 import { useI18n } from '../../i18n/context';
 import { formatDecimal } from '../../utils/format';
+import { localizeLine, localizePlant } from '../../i18n/data/assets';
 import {
   getLineMapLibreFilter,
   getPlantMapLibreFilter,
@@ -101,15 +102,17 @@ export const GridMap: React.FC<GridMapProps> = ({
   const onSelectLineRef = useRef(setSelectedLine);
   const showSubsystemsRef = useRef(showSubsystems);
   const telemetryRef = useRef<NationalTelemetrySnapshot | undefined>(telemetry);
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const messagesRef = useRef(t);
+  const langRef = useRef(lang);
   useEffect(() => {
     onSelectPlantRef.current = setSelectedPlant;
     onSelectLineRef.current = setSelectedLine;
     showSubsystemsRef.current = showSubsystems;
     telemetryRef.current = telemetry;
     messagesRef.current = t;
-  }, [setSelectedPlant, setSelectedLine, showSubsystems, telemetry, t]);
+    langRef.current = lang;
+  }, [setSelectedPlant, setSelectedLine, showSubsystems, telemetry, t, lang]);
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
@@ -135,6 +138,15 @@ export const GridMap: React.FC<GridMapProps> = ({
       className: 'grid-map-tooltip'
     });
     popupRef.current = popup;
+
+    const plantName = (id: string | undefined) => {
+      const plant = majorPowerPlants.find((item) => item.id === id);
+      return plant && localizePlant(plant, langRef.current).name;
+    };
+    const lineName = (id: string | undefined) => {
+      const line = majorTransmissionLines.find((item) => item.id === id);
+      return line && localizeLine(line, langRef.current).name;
+    };
 
     const setupLayers = () => {
       // 0. Subsystems Vector Layer
@@ -330,7 +342,7 @@ export const GridMap: React.FC<GridMapProps> = ({
             .setLngLat(e.lngLat)
             .setHTML(`
               <div class="px-2.5 py-1 rounded bg-[#07090e]/95 border border-slate-700/80 shadow-xl font-mono text-xs text-white font-semibold select-none pointer-events-none">
-                ${p?.name}
+                ${lineName(p?.id) ?? p?.name}
               </div>
             `)
             .addTo(mapInstance);
@@ -488,7 +500,7 @@ export const GridMap: React.FC<GridMapProps> = ({
             .setLngLat(coords)
             .setHTML(`
               <div class="px-2.5 py-1 rounded bg-[#07090e]/95 border border-slate-700/80 shadow-xl font-mono text-xs text-white font-semibold select-none pointer-events-none">
-                ${p?.name}
+                ${plantName(p?.id) ?? p?.name}
               </div>
             `)
             .addTo(mapInstance);

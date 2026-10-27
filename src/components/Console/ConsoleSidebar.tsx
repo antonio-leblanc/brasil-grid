@@ -18,6 +18,7 @@ import {
 import { cn } from '../../utils/cn';
 import { useI18n } from '../../i18n/context';
 import { localizeInterchange } from '../../i18n/data/interchanges';
+import { localizeLine, localizePlant } from '../../i18n/data/assets';
 import { formatDecimal, formatNumber } from '../../utils/format';
 
 interface ConsoleSidebarProps {
@@ -84,6 +85,8 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
 
   const filteredPlants = majorPowerPlants.filter((p) => matchesPlantFilter(p, plantTypeFilter));
   const filteredLines = majorTransmissionLines.filter((line) => matchesLineFilter(line, voltageFilter));
+  const plantText = (plant: PowerPlantFeature) => localizePlant(plant, lang);
+  const lineText = (line: TransmissionLineFeature) => localizeLine(line, lang);
 
   return (
     <aside className="h-full flex flex-col z-30 w-full sm:w-[360px] shrink-0 bg-[#090c13] border-r border-slate-800">
@@ -241,9 +244,9 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                         className="w-full px-4 py-2 flex items-center justify-between text-left hover:bg-slate-900 transition-colors cursor-pointer"
                       >
                         <span className="truncate mr-3">
-                          <span className="block text-xs text-slate-200 truncate">{plant.name}</span>
+                          <span className="block text-xs text-slate-200 truncate">{plantText(plant).name}</span>
                           <span className="block text-[11px] text-slate-500 truncate">
-                            {plant.state} · {plant.riverOrRegion}
+                            {plant.state} · {plantText(plant).riverOrRegion}
                           </span>
                         </span>
                         <span className="text-xs font-mono tabular-nums text-slate-300 shrink-0">
@@ -264,9 +267,9 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                       className="w-full px-4 py-2 flex items-center justify-between text-left hover:bg-slate-900 transition-colors cursor-pointer"
                     >
                       <span className="truncate mr-3">
-                        <span className="block text-xs text-slate-200 truncate">{line.name}</span>
+                        <span className="block text-xs text-slate-200 truncate">{lineText(line).name}</span>
                         <span className="block text-[11px] text-slate-500 truncate">
-                          {formatNumber(line.lengthKm)} km · {line.concessionaire}
+                          {formatNumber(line.lengthKm)} km · {lineText(line).concessionaire}
                         </span>
                       </span>
                       <span className="text-xs font-mono tabular-nums text-slate-300 shrink-0">

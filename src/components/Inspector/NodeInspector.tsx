@@ -4,6 +4,7 @@ import { SourcesList } from '../Sources/SourcesList';
 import { ArrowLeft, Link2, X } from 'lucide-react';
 import { useI18n } from '../../i18n/context';
 import { formatNumber } from '../../utils/format';
+import { localizeLine, localizePlant } from '../../i18n/data/assets';
 
 interface NodeInspectorProps {
   plant: PowerPlantFeature | null;
@@ -50,8 +51,10 @@ const UnverifiedNote = () => {
   );
 };
 
-export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant, line, onBack, onClose }) => {
-  const { t } = useI18n();
+export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant: rawPlant, line: rawLine, onBack, onClose }) => {
+  const { t, lang } = useI18n();
+  const plant = rawPlant && localizePlant(rawPlant, lang);
+  const line = rawLine && localizeLine(rawLine, lang);
   const [isCopied, setIsCopied] = useState(false);
 
   if (!plant && !line) return null;
