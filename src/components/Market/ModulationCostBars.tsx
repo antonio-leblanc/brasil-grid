@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getNumberLocale } from '../../i18n/language';
 import type { MarketMonth } from '../../data/marketData';
 import { formatMonth } from './format';
 
@@ -99,7 +100,7 @@ export const ModulationCostBars: React.FC<ModulationCostBarsProps> = ({ months }
         >
           <div className="mb-0.5 font-mono tabular-nums text-slate-200">{formatMonth(hovered.mes)}</div>
           <div className="font-mono tabular-nums text-slate-100">
-            R$ {hovered.modulacao.toLocaleString('pt-BR', { minimumFractionDigits: 1 })}/MWh
+            R$ {hovered.modulacao.toLocaleString(getNumberLocale(), { minimumFractionDigits: 1 })}/MWh
           </div>
         </div>
       )}

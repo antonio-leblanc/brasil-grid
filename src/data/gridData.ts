@@ -60,6 +60,7 @@ export interface GridSnapshot {
     direction: 'EXPORT' | 'IMPORT';
   }[];
   generationMix: {
+    id: GenerationMixId;
     source: string;
     mw: number;
     pct: number;
@@ -71,6 +72,8 @@ export interface GridSnapshot {
  * Snapshot estático de referência técnica do Sistema Interligado Nacional (SIN).
  * Valores representativos para modelagem física e educacional (não constitui telemetria em tempo real).
  */
+export type GenerationMixId = 'hidraulica' | 'eolica' | 'solar' | 'termica' | 'biomassa' | 'nuclear';
+
 export const referenceGridSnapshot: GridSnapshot = {
   frequencyHz: 60.00,
   instantaneousLoadMW: 85420,
@@ -97,12 +100,12 @@ export const referenceGridSnapshot: GridSnapshot = {
     { from: 'S', to: 'SE/CO', flowMW: 2340, direction: 'EXPORT' }
   ],
   generationMix: [
-    { source: 'Hidráulica', mw: 48200, pct: 56.4, color: '#38bdf8' },
-    { source: 'Eólica', mw: 13500, pct: 15.8, color: '#34d399' },
-    { source: 'Solar Fotov.', mw: 9600, pct: 11.2, color: '#facc15' },
-    { source: 'Térmica/Gás', mw: 8200, pct: 9.6, color: '#f97316' },
-    { source: 'Biomassa', mw: 4000, pct: 4.7, color: '#a855f7' },
-    { source: 'Nuclear', mw: 1920, pct: 2.3, color: '#ec4899' }
+    { id: 'hidraulica', source: 'Hidráulica', mw: 48200, pct: 56.4, color: '#38bdf8' },
+    { id: 'eolica', source: 'Eólica', mw: 13500, pct: 15.8, color: '#34d399' },
+    { id: 'solar', source: 'Solar Fotov.', mw: 9600, pct: 11.2, color: '#facc15' },
+    { id: 'termica', source: 'Térmica/Gás', mw: 8200, pct: 9.6, color: '#f97316' },
+    { id: 'biomassa', source: 'Biomassa', mw: 4000, pct: 4.7, color: '#a855f7' },
+    { id: 'nuclear', source: 'Nuclear', mw: 1920, pct: 2.3, color: '#ec4899' }
   ]
 };
 

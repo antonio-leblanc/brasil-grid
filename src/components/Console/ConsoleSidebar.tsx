@@ -16,6 +16,8 @@ import {
   matchesPlantFilter
 } from '../../data/gridFilters';
 import { cn } from '../../utils/cn';
+import { useI18n } from '../../i18n/context';
+import { formatDecimal, formatNumber } from '../../utils/format';
 
 interface ConsoleSidebarProps {
   isOpen: boolean;
@@ -35,22 +37,15 @@ interface ConsoleSidebarProps {
 }
 
 const PLANT_TYPES = [
-  { id: 'all', label: 'Todas', icon: undefined },
-  { id: 'hidro', label: 'Hidro', icon: Droplet },
-  { id: 'solar', label: 'Solar', icon: Sun },
-  { id: 'eolica', label: 'Eólica', icon: Wind },
-  { id: 'nuclear', label: 'Nuclear', icon: Atom },
-  { id: 'termica', label: 'Térmica', icon: Flame }
-];
+  { id: 'all', icon: undefined },
+  { id: 'hidro', icon: Droplet },
+  { id: 'solar', icon: Sun },
+  { id: 'eolica', icon: Wind },
+  { id: 'nuclear', icon: Atom },
+  { id: 'termica', icon: Flame }
+] as const;
 
-const VOLTAGE_FILTERS: { id: LineVoltageFilter; label: string; aria: string }[] = [
-  { id: 'all', label: 'Todas', aria: 'Filtrar todas as linhas' },
-  { id: 'CC', label: 'HVDC', aria: 'Filtrar bipolos HVDC em Corrente Contínua (±800 kV e ±600 kV)' },
-  { id: '500', label: '≥ 500 kV', aria: 'Filtrar linhas de 500 kV ou superior' }
-];
-
-const formatGW = (mw: number) =>
-  (mw / 1000).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const formatGW = (mw: number) => formatDecimal(mw / 1000, 1);
 
 const SectionTitle: React.FC<{ children: React.ReactNode; aside?: React.ReactNode }> = ({ children, aside }) => (
   <div className="flex items-baseline justify-between mb-2">
@@ -75,7 +70,13 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
   setShowSubsystems,
   onOpenInterchange
 }) => {
+  const { t } = useI18n();
   const [assetTab, setAssetTab] = useState<'plants' | 'lines'>('plants');
+  const voltageFilters: { id: LineVoltageFilter; label: string; aria: string }[] = [
+    { id: 'all', label: t.sidebar.allLines, aria: t.sidebar.allLinesAria },
+    { id: 'CC', label: 'HVDC', aria: t.sidebar.hvdcAria },
+    { id: '500', label: '≥ 500 kV', aria: t.sidebar.above500Aria }
+  ];
   const hasSelection = !!(selectedPlant || selectedLine);
 
   if (!isOpen && !hasSelection) return null;
@@ -100,15 +101,15 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
       {/* Hidden rather than unmounted so list scroll position survives a round-trip through the detail view */}
       <div className={cn('flex-1 min-h-0 flex flex-col', hasSelection && 'hidden')}>
         <div className="h-10 px-4 border-b border-slate-800 flex items-center justify-between">
-          <span className="text-sm text-slate-200">Painel do SIN</span>
+          <span className="text-sm text-slate-200">{t.sidebar.title}</span>
         </div>
 
         <div className="flex-1 overflow-y-auto divide-y divide-slate-800/70 text-sm">
           <section className="px-4 py-4 space-y-4">
             <div>
-              <SectionTitle>Transmissão</SectionTitle>
+              <SectionTitle>{t.sidebar.transmission}</SectionTitle>
               <div className="flex gap-1">
-                {VOLTAGE_FILTERS.map((f) => (
+                {voltageFilters.map((f) => (
                   <FilterButton
                     key={f.id}
                     active={voltageFilter === f.id}
@@ -123,7 +124,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
             </div>
 
             <div>
-              <SectionTitle>Fonte de geração</SectionTitle>
+              <SectionTitle>{t.sidebar.generationSource}</SectionTitle>
               <div className="grid grid-cols-3 gap-1">
                 {PLANT_TYPES.map((item) => (
                   <FilterButton
@@ -131,22 +132,22 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                     active={plantTypeFilter === item.id}
                     icon={item.icon}
                     onClick={() => setPlantTypeFilter(item.id)}
-                    aria-label={`Filtrar fonte ${item.label}`}
+                    aria-label={t.sidebar.filterSourceAria(t.sidebar.plantTypes[item.id])}
                   >
-                    {item.label}
+                    {t.sidebar.plantTypes[item.id]}
                   </FilterButton>
                 ))}
               </div>
             </div>
 
             <label className="flex items-center justify-between cursor-pointer text-xs text-slate-300">
-              <span>Limites dos 4 subsistemas</span>
+              <span>{t.sidebar.subsystemBoundaries}</span>
               <input
                 type="checkbox"
                 checked={showSubsystems}
                 onChange={() => setShowSubsystems(!showSubsystems)}
                 className="accent-cyan-500 cursor-pointer"
-                aria-label="Alternar subsistemas"
+                aria-label={t.sidebar.toggleSubsystems}
               />
             </label>
           </section>
@@ -160,12 +161,12 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                     onClick={() => onOpenInterchange()}
                     className="text-[11px] text-slate-500 hover:text-slate-200 transition-colors cursor-pointer"
                   >
-                    Detalhes
+                    {t.sidebar.details}
                   </button>
                 )
               }
             >
-              Intercâmbios <span className="text-slate-600">· fluxo de referência / limite</span>
+              {t.sidebar.interchanges} <span className="text-slate-600">{t.sidebar.interchangesHint}</span>
             </SectionTitle>
             <ul className="space-y-2.5">
               {regionalInterchanges.map((ic) => {
@@ -207,8 +208,8 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
           <section className="py-3">
             <div className="px-4 flex gap-4 text-xs border-b border-slate-800/70">
               {([
-                ['plants', `Usinas (${filteredPlants.length})`],
-                ['lines', `Linhas (${filteredLines.length})`]
+                ['plants', t.sidebar.plants(filteredPlants.length)],
+                ['lines', t.sidebar.lines(filteredLines.length)]
               ] as const).map(([id, label]) => (
                 <button
                   key={id}
@@ -229,7 +230,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
             <ul className="max-h-80 overflow-y-auto">
               {assetTab === 'plants' ? (
                 filteredPlants.length === 0 ? (
-                  <li className="px-4 py-3 text-xs text-slate-500">Nenhuma usina com os filtros atuais.</li>
+                  <li className="px-4 py-3 text-xs text-slate-500">{t.sidebar.noPlants}</li>
                 ) : (
                   filteredPlants.map((plant) => (
                     <li key={plant.id}>
@@ -252,7 +253,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                   ))
                 )
               ) : filteredLines.length === 0 ? (
-                <li className="px-4 py-3 text-xs text-slate-500">Nenhuma linha com a tensão selecionada.</li>
+                <li className="px-4 py-3 text-xs text-slate-500">{t.sidebar.noLines}</li>
               ) : (
                 filteredLines.map((line) => (
                   <li key={line.id}>
@@ -264,7 +265,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                       <span className="truncate mr-3">
                         <span className="block text-xs text-slate-200 truncate">{line.name}</span>
                         <span className="block text-[11px] text-slate-500 truncate">
-                          {line.lengthKm.toLocaleString('pt-BR')} km · {line.concessionaire}
+                          {formatNumber(line.lengthKm)} km · {line.concessionaire}
                         </span>
                       </span>
                       <span className="text-xs font-mono tabular-nums text-slate-300 shrink-0">

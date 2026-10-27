@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getNumberLocale } from '../../i18n/language';
 import type { MarketMonth } from '../../data/marketData';
 import { formatBRL, formatMonth } from './format';
 
@@ -118,7 +119,7 @@ export const EarCmoScatter: React.FC<EarCmoScatterProps> = ({ months }) => {
             <div className="mb-1 font-mono tabular-nums text-slate-200">{formatMonth(hovered.mes)}</div>
             <div className="flex justify-between gap-4 text-slate-400">
               <span>EAR Brasil</span>
-              <span className="font-mono tabular-nums text-slate-100">{hovered.earBrasil.toLocaleString('pt-BR')}%</span>
+              <span className="font-mono tabular-nums text-slate-100">{hovered.earBrasil.toLocaleString(getNumberLocale())}%</span>
             </div>
             <div className="flex justify-between gap-4 text-slate-400">
               <span>CMO SE</span>

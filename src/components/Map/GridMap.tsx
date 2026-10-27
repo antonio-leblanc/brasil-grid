@@ -18,6 +18,8 @@ import { majorPowerPlants, majorTransmissionLines } from '../../data/gridData';
 import { subsystemsGeoJSON } from '../../data/subsystemsGeoData';
 import type { PowerPlantFeature, TransmissionLineFeature } from '../../data/gridData';
 import type { NationalTelemetrySnapshot } from '../../services/onsApi';
+import { useI18n } from '../../i18n/context';
+import { formatDecimal } from '../../utils/format';
 import {
   getLineMapLibreFilter,
   getPlantMapLibreFilter,
@@ -99,12 +101,15 @@ export const GridMap: React.FC<GridMapProps> = ({
   const onSelectLineRef = useRef(setSelectedLine);
   const showSubsystemsRef = useRef(showSubsystems);
   const telemetryRef = useRef<NationalTelemetrySnapshot | undefined>(telemetry);
+  const { t } = useI18n();
+  const messagesRef = useRef(t);
   useEffect(() => {
     onSelectPlantRef.current = setSelectedPlant;
     onSelectLineRef.current = setSelectedLine;
     showSubsystemsRef.current = showSubsystems;
     telemetryRef.current = telemetry;
-  }, [setSelectedPlant, setSelectedLine, showSubsystems, telemetry]);
+    messagesRef.current = t;
+  }, [setSelectedPlant, setSelectedLine, showSubsystems, telemetry, t]);
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
@@ -192,27 +197,29 @@ export const GridMap: React.FC<GridMapProps> = ({
           const subKey = p?.id as 'SE_CO' | 'S' | 'NE' | 'N';
           const subData = currentTelemetry?.subsystems[subKey];
           const isLive = currentTelemetry?.source === 'ONS_LIVE';
+          const m = messagesRef.current.map;
+          const subsystemName = m.subsystemNames[subKey] ?? p?.name;
 
           const loadDetailsHtml = subData
             ? `<div class="text-[10px] text-slate-300 pt-1 border-t border-slate-800/80 space-y-0.5">
                  <div class="flex items-center justify-between">
-                   <span class="text-slate-400">Demanda Atual:</span>
-                   <strong class="text-cyan-300 font-bold">${(subData.currentLoadMW / 1000).toFixed(1)} GW</strong>
+                   <span class="text-slate-400">${m.currentDemand}</span>
+                   <strong class="text-cyan-300 font-bold">${formatDecimal(subData.currentLoadMW / 1000, 1)} GW</strong>
                  </div>
                  <div class="flex items-center justify-between text-slate-400 text-[9px]">
-                   <span>Pico Diário:</span>
-                   <span class="text-amber-300 font-semibold">${(subData.peakLoadMW / 1000).toFixed(1)} GW (${subData.peakTime})</span>
+                   <span>${m.dailyPeak}</span>
+                   <span class="text-amber-300 font-semibold">${formatDecimal(subData.peakLoadMW / 1000, 1)} GW (${subData.peakTime})</span>
                  </div>
                  ${subData.solarMmgdMW > 0 ? `
                  <div class="flex items-center justify-between text-slate-400 text-[9px]">
-                   <span>Solar GD (MMGD):</span>
-                   <span class="text-yellow-400 font-semibold">${(subData.solarMmgdMW / 1000).toFixed(1)} GW</span>
+                   <span>${m.distributedSolar}</span>
+                   <span class="text-yellow-400 font-semibold">${formatDecimal(subData.solarMmgdMW / 1000, 1)} GW</span>
                  </div>` : ''}
-                 <div class="text-slate-500 truncate max-w-[230px] pt-0.5">Estados: ${statesStr}</div>
+                 <div class="text-slate-500 truncate max-w-[230px] pt-0.5">${m.states} ${statesStr}</div>
                </div>`
             : `<div class="text-[10px] text-slate-300 pt-1 border-t border-slate-800/80 space-y-0.5">
-                 <div>Participação Carga: <strong class="text-cyan-400 font-bold">${p?.loadShare}</strong></div>
-                 <div class="text-slate-500 truncate max-w-[220px]">Estados: ${statesStr}</div>
+                 <div>${m.loadShare} <strong class="text-cyan-400 font-bold">${p?.loadShare}</strong></div>
+                 <div class="text-slate-500 truncate max-w-[220px]">${m.states} ${statesStr}</div>
                </div>`;
 
           popupRef.current
@@ -220,7 +227,7 @@ export const GridMap: React.FC<GridMapProps> = ({
             .setHTML(`
               <div class="px-3 py-2 rounded-lg bg-[#07090e]/95 border border-slate-700/80 shadow-2xl backdrop-blur-md font-mono text-left select-none pointer-events-none min-w-[220px]">
                 <div class="flex items-center justify-between gap-2 mb-1">
-                  <span class="text-xs font-bold text-white tracking-wide">${p?.name}</span>
+                  <span class="text-xs font-bold text-white tracking-wide">${subsystemName}</span>
                   <div class="flex items-center space-x-1">
                     <span class="text-[8px] px-1 py-0.2 rounded border ${
                       isLive ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-300' : 'border-slate-700 bg-slate-800 text-slate-400'

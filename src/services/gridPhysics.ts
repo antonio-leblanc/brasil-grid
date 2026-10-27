@@ -1,3 +1,4 @@
+import { getNumberLocale } from '../i18n/language';
 import type { SimulatorDay, SimulatorDayHour } from '../data/simulatorDayData';
 import { simulatorDay } from '../data/simulatorDayData';
 
@@ -695,7 +696,7 @@ export function applyGeneratorTrip(state: GridSimulationState, tripMW: number): 
   const committedMW = Math.max(minTechnicalMW, Math.min(maxCapacityMW, state.hydro.committedMW - lostMW));
   const events = [...state.events];
   pushEvent(events, 'trip', state.simTimeSeconds, 'critical',
-    `CONTINGÊNCIA: desligamento intempestivo de ${lostMW.toLocaleString('pt-BR')} MW em unidades hidrelétricas. A inércia e a reserva dessas máquinas saem junto.`);
+    `CONTINGÊNCIA: desligamento intempestivo de ${lostMW.toLocaleString(getNumberLocale())} MW em unidades hidrelétricas. A inércia e a reserva dessas máquinas saem junto.`);
 
   return {
     ...state,

@@ -4,31 +4,32 @@ export type AppView = 'mapa' | 'sistema';
 
 export type SectionId = 'intercambios' | 'simulador' | 'cadeia' | 'dossies' | 'preco' | 'escalas';
 
+export type SectionGroupId = 'operacao' | 'mercado' | 'referencia';
+
 export interface SectionDef {
   id: SectionId;
-  label: string;
   icon: LucideIcon;
   wide?: boolean;
 }
 
-export const SECTION_GROUPS: { label: string; sections: SectionDef[] }[] = [
+export const SECTION_GROUPS: { id: SectionGroupId; sections: SectionDef[] }[] = [
   {
-    label: 'Operação',
+    id: 'operacao',
     sections: [
-      { id: 'intercambios', label: 'Intercâmbios', icon: ArrowLeftRight, wide: true },
-      { id: 'simulador', label: 'Simulador 60 Hz', icon: Gauge, wide: true }
+      { id: 'intercambios', icon: ArrowLeftRight, wide: true },
+      { id: 'simulador', icon: Gauge, wide: true }
     ]
   },
   {
-    label: 'Mercado',
-    sections: [{ id: 'preco', label: 'Preço', icon: TrendingUp }]
+    id: 'mercado',
+    sections: [{ id: 'preco', icon: TrendingUp }]
   },
   {
-    label: 'Referência',
+    id: 'referencia',
     sections: [
-      { id: 'cadeia', label: 'Cadeia de valor do SEB', icon: Link2 },
-      { id: 'dossies', label: 'Dossiês do SIN', icon: BookOpen },
-      { id: 'escalas', label: 'Régua de grandezas', icon: Ruler }
+      { id: 'cadeia', icon: Link2 },
+      { id: 'dossies', icon: BookOpen },
+      { id: 'escalas', icon: Ruler }
     ]
   }
 ];

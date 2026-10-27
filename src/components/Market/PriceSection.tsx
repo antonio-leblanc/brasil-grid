@@ -1,4 +1,5 @@
 import React from 'react';
+import { getNumberLocale } from '../../i18n/language';
 import { cmoHourlyProfile, marketMonthly, type MarketMonth } from '../../data/marketData';
 import { SourcesList } from '../Sources/SourcesList';
 import { CmoHourlyProfileChart } from './CmoHourlyProfileChart';
@@ -8,7 +9,7 @@ import { ModulationCostBars } from './ModulationCostBars';
 
 const SIMILAR_WATER = { min: 60, max: 75 };
 
-const formatRatio = (ratio: number | null) => (ratio === null ? '—' : `${ratio.toLocaleString('pt-BR', { minimumFractionDigits: 1 })}×`);
+const formatRatio = (ratio: number | null) => (ratio === null ? '—' : `${ratio.toLocaleString(getNumberLocale(), { minimumFractionDigits: 1 })}×`);
 
 const formatDate = (iso: string) => {
   const [year, month, day] = iso.split('-');

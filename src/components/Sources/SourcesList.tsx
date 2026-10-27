@@ -2,6 +2,7 @@ import React from 'react';
 import { ExternalLink } from 'lucide-react';
 import type { SourceRef } from '../../data/sources';
 import { cn } from '../../utils/cn';
+import { useI18n } from '../../i18n/context';
 
 interface SourcesListProps {
   sources?: SourceRef[];
@@ -9,11 +10,12 @@ interface SourcesListProps {
 }
 
 export const SourcesList: React.FC<SourcesListProps> = ({ sources, className }) => {
+  const { t } = useI18n();
   if (!sources || sources.length === 0) return null;
 
   return (
     <div className={cn('pt-3 border-t border-slate-800/70', className)}>
-      <span className="block text-[11px] text-slate-500 mb-1.5">Fontes</span>
+      <span className="block text-[11px] text-slate-500 mb-1.5">{t.sources.title}</span>
       <ul className="space-y-1">
         {sources.map((source) => (
           <li key={source.url}>

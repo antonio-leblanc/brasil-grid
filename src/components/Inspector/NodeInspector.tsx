@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import type { PowerPlantFeature, TransmissionLineFeature } from '../../data/gridData';
 import { SourcesList } from '../Sources/SourcesList';
 import { ArrowLeft, Link2, X } from 'lucide-react';
+import { useI18n } from '../../i18n/context';
+import { formatNumber } from '../../utils/format';
 
 interface NodeInspectorProps {
   plant: PowerPlantFeature | null;
@@ -39,16 +41,17 @@ const Num: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <span className="font-mono tabular-nums">{children}</span>
 );
 
-const UnverifiedNote = () => (
-  <p
-    className="mt-2 text-[11px] text-amber-400"
-    title="Dados cadastrais aguardando auditoria de link profundo com fonte primária"
-  >
-    Não auditada: aguardando fonte primária
-  </p>
-);
+const UnverifiedNote = () => {
+  const { t } = useI18n();
+  return (
+    <p className="mt-2 text-[11px] text-amber-400" title={t.inspector.unverifiedTitle}>
+      {t.inspector.unverified}
+    </p>
+  );
+};
 
 export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant, line, onBack, onClose }) => {
+  const { t } = useI18n();
   const [isCopied, setIsCopied] = useState(false);
 
   if (!plant && !line) return null;
@@ -72,17 +75,17 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant, line, onBac
           type="button"
           onClick={onBack}
           className="h-7 px-2 rounded-md flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-100 hover:bg-slate-900 transition-colors cursor-pointer"
-          aria-label="Voltar para a lista"
+          aria-label={t.inspector.backAria}
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          Voltar
+          {t.inspector.back}
         </button>
         <div className="flex items-center gap-1">
-          {isCopied && <span className="text-[11px] text-slate-400 mr-1">Copiado</span>}
-          <button type="button" onClick={handleShare} className={iconButton} aria-label="Copiar link direto para este ativo">
+          {isCopied && <span className="text-[11px] text-slate-400 mr-1">{t.inspector.copied}</span>}
+          <button type="button" onClick={handleShare} className={iconButton} aria-label={t.inspector.copyLink}>
             <Link2 className="w-4 h-4" />
           </button>
-          <button type="button" onClick={onClose} className={iconButton} aria-label="Fechar painel">
+          <button type="button" onClick={onClose} className={iconButton} aria-label={t.inspector.close}>
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -94,33 +97,33 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant, line, onBac
             <h2 className="text-base font-semibold text-slate-100 leading-snug">{plant.name}</h2>
             <p className="mt-1 flex items-center gap-2 text-xs text-slate-400">
               <span className={`w-2 h-2 rounded-full ${PLANT_TYPE_LABEL[plant.type].color}`} />
-              {PLANT_TYPE_LABEL[plant.type].code} · {plant.state} · Subsistema {plant.subsystem}
+              {PLANT_TYPE_LABEL[plant.type].code} · {plant.state} · {t.inspector.subsystem} {plant.subsystem}
             </p>
             {plant.verification === 'unverified' && <UnverifiedNote />}
 
             <dl className="mt-4 divide-y divide-slate-800/70 border-y border-slate-800/70">
-              <Field label="Potência outorgada">
-                <Num>{plant.capacityMW.toLocaleString('pt-BR')} MW</Num>
+              <Field label={t.inspector.capacity}>
+                <Num>{formatNumber(plant.capacityMW)} MW</Num>
               </Field>
-              <Field label="Operador">{plant.operator}</Field>
-              <Field label="Rio / região">{plant.riverOrRegion}</Field>
+              <Field label={t.inspector.operator}>{plant.operator}</Field>
+              <Field label={t.inspector.riverOrRegion}>{plant.riverOrRegion}</Field>
               {plant.technicalDetails?.commissionYear && (
-                <Field label="Comissionamento">
+                <Field label={t.inspector.commissioning}>
                   <Num>{plant.technicalDetails.commissionYear}</Num>
                 </Field>
               )}
               {plant.technicalDetails?.gridConnectionVoltage && (
-                <Field label="Tensão de conexão">
+                <Field label={t.inspector.connectionVoltage}>
                   <Num>{plant.technicalDetails.gridConnectionVoltage}</Num>
                 </Field>
               )}
               {plant.technicalDetails?.turbinesOrUnits && (
-                <Field label="Unidades geradoras" stacked>
+                <Field label={t.inspector.units} stacked>
                   {plant.technicalDetails.turbinesOrUnits}
                 </Field>
               )}
               {plant.technicalDetails?.flowOrEfficiency && (
-                <Field label="Vazão / queda" stacked>
+                <Field label={t.inspector.flowOrHead} stacked>
                   {plant.technicalDetails.flowOrEfficiency}
                 </Field>
               )}
@@ -135,29 +138,29 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({ plant, line, onBac
           <>
             <h2 className="text-base font-semibold text-slate-100 leading-snug">{line.name}</h2>
             <p className="mt-1 text-xs text-slate-400">
-              <Num>{line.voltageKV} kV</Num> · {line.type === 'CC' ? 'Corrente contínua (HVDC)' : 'Corrente alternada'}
+              <Num>{line.voltageKV} kV</Num> · {line.type === 'CC' ? t.inspector.dc : t.inspector.ac}
             </p>
             {line.verification === 'unverified' && <UnverifiedNote />}
 
             <dl className="mt-4 divide-y divide-slate-800/70 border-y border-slate-800/70">
-              <Field label="Extensão">
-                <Num>{line.lengthKm.toLocaleString('pt-BR')} km</Num>
+              <Field label={t.inspector.length}>
+                <Num>{formatNumber(line.lengthKm)} km</Num>
               </Field>
-              <Field label="Origem">{line.from}</Field>
-              <Field label="Destino">{line.to}</Field>
-              <Field label="Concessionária">{line.concessionaire}</Field>
+              <Field label={t.inspector.from}>{line.from}</Field>
+              <Field label={t.inspector.to}>{line.to}</Field>
+              <Field label={t.inspector.concessionaire}>{line.concessionaire}</Field>
               {line.technicalDetails?.towerCount && (
-                <Field label="Torres">
-                  <Num>{line.technicalDetails.towerCount.toLocaleString('pt-BR')}</Num>
+                <Field label={t.inspector.towers}>
+                  <Num>{formatNumber(line.technicalDetails.towerCount)}</Num>
                 </Field>
               )}
               {line.technicalDetails?.converterTechnology && (
-                <Field label="Tecnologia" stacked>
+                <Field label={t.inspector.technology} stacked>
                   {line.technicalDetails.converterTechnology}
                 </Field>
               )}
               {line.technicalDetails?.substations && (
-                <Field label="Subestações" stacked>
+                <Field label={t.inspector.substations} stacked>
                   {line.technicalDetails.substations.join(' → ')}
                 </Field>
               )}

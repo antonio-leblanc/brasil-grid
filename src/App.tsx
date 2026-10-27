@@ -11,6 +11,7 @@ import { majorPowerPlants, majorTransmissionLines } from './data/gridData';
 import type { PowerPlantFeature, TransmissionLineFeature } from './data/gridData';
 import type { InterchangeId } from './data/interchangeData';
 import { normalizeLineFilter, type LineVoltageFilter } from './data/gridFilters';
+import { useI18n } from './i18n/context';
 
 const VALID_PLANT_TYPES = ['all', 'hidro', 'solar', 'eolica', 'nuclear', 'termica'];
 const VALID_INTERCHANGES: InterchangeId[] = ['NE_SECO', 'N_SECO', 'N_NE', 'S_SECO'];
@@ -57,6 +58,7 @@ function parseUrlState(): UrlState {
 }
 
 export function App() {
+  const { t, lang, isExplicit } = useI18n();
   const [initialState] = useState<UrlState>(parseUrlState);
   const [view, setView] = useState<AppView>(initialState.view);
   const [section, setSection] = useState<SectionId>(initialState.section);
@@ -84,6 +86,10 @@ export function App() {
   useEffect(() => {
     const params = new URLSearchParams();
 
+    if (isExplicit) {
+      params.set('lang', lang);
+    }
+
     if (view === 'sistema') {
       params.set('tab', section);
       if (section === 'intercambios') {
@@ -108,7 +114,7 @@ export function App() {
     if (window.location.search !== newSearch) {
       window.history.replaceState(null, '', `${window.location.pathname}${newSearch}`);
     }
-  }, [view, section, selectedPlant, selectedLine, voltageFilter, plantTypeFilter, selectedInterchangeId]);
+  }, [view, section, selectedPlant, selectedLine, voltageFilter, plantTypeFilter, selectedInterchangeId, lang, isExplicit]);
 
   const handlePopState = useCallback(() => {
     const next = parseUrlState();
@@ -214,22 +220,22 @@ export function App() {
                 {isLegendOpen && (
                   <div className="mb-2 w-64 rounded-md border border-slate-800 bg-[#090c13] p-3 text-xs text-slate-300">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-slate-200">Legenda</span>
+                      <span className="text-slate-200">{t.legend.title}</span>
                       <button
                         onClick={() => setIsLegendOpen(false)}
                         className="p-0.5 rounded-md text-slate-500 hover:text-slate-200 transition-colors cursor-pointer"
-                        aria-label="Fechar legenda"
+                        aria-label={t.legend.close}
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
                     </div>
 
-                    <div className="text-[11px] text-slate-500 mb-1.5">Transmissão</div>
+                    <div className="text-[11px] text-slate-500 mb-1.5">{t.legend.transmission}</div>
                     <ul className="space-y-1 mb-3">
                       {[
-                        ['bg-amber-400', 'CC ±800 / ±600 kV', 'HVDC'],
-                        ['bg-cyan-400', 'CA 765 / 500–525 kV', 'Rede básica'],
-                        ['bg-purple-400', 'CA 440 / 230 kV', 'Regional']
+                        ['bg-amber-400', t.legend.hvdc, 'HVDC'],
+                        ['bg-cyan-400', t.legend.bulk, t.legend.bulkTag],
+                        ['bg-purple-400', t.legend.regional, t.legend.regionalTag]
                       ].map(([color, label, tag]) => (
                         <li key={label} className="flex items-center justify-between">
                           <span className="flex items-center gap-2">
@@ -241,14 +247,14 @@ export function App() {
                       ))}
                     </ul>
 
-                    <div className="text-[11px] text-slate-500 mb-1.5">Geração</div>
+                    <div className="text-[11px] text-slate-500 mb-1.5">{t.legend.generation}</div>
                     <ul className="grid grid-cols-2 gap-x-2 gap-y-1">
                       {[
-                        ['bg-sky-400', 'Hidro (UHE)'],
-                        ['bg-amber-400', 'Solar (UFV)'],
-                        ['bg-emerald-400', 'Eólica (EOL)'],
-                        ['bg-orange-500', 'Nuclear (UTN)'],
-                        ['bg-rose-500', 'Térmica / Biomassa (UTE)']
+                        ['bg-sky-400', t.legend.hydro],
+                        ['bg-amber-400', t.legend.solar],
+                        ['bg-emerald-400', t.legend.wind],
+                        ['bg-orange-500', t.legend.nuclear],
+                        ['bg-rose-500', t.legend.thermal]
                       ].map(([color, label]) => (
                         <li key={label} className="flex items-center gap-2 last:col-span-2">
                           <span className={`w-2 h-2 rounded-full ${color}`} />
@@ -260,7 +266,7 @@ export function App() {
                     {showSubsystems && (
                       <div className="mt-3 pt-2 border-t border-slate-800 flex items-center gap-2 text-[11px] text-slate-400">
                         <span className="w-2.5 h-2.5 border border-amber-500/70 border-dashed" />
-                        <span>4 subsistemas ONS (SE/CO, S, NE, N)</span>
+                        <span>{t.legend.subsystems}</span>
                       </div>
                     )}
                   </div>
@@ -268,11 +274,11 @@ export function App() {
 
                 <button
                   onClick={() => setIsLegendOpen((prev) => !prev)}
-                  aria-label="Abrir legenda do mapa"
+                  aria-label={t.legend.open}
                   aria-expanded={isLegendOpen}
                   className="h-7 px-2.5 rounded-md border border-slate-800 bg-[#090c13] text-xs text-slate-400 hover:text-slate-100 transition-colors cursor-pointer"
                 >
-                  Legenda
+                  {t.legend.title}
                 </button>
               </div>
             </div>
