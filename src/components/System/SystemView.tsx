@@ -94,7 +94,7 @@ export const SystemView: React.FC<SystemViewProps> = ({
 
       <main className="flex-1 overflow-y-auto">
         <div className={cn('mx-auto px-4 sm:px-8 py-8', currentSection.wide ? 'max-w-5xl' : 'max-w-4xl')}>
-          {t.system.portugueseOnly && (
+          {t.system.portugueseOnly && !currentSection.translated && (
             <p className="mb-6 rounded-md border border-slate-800 px-3 py-2 text-xs text-slate-400">{t.system.portugueseOnly}</p>
           )}
           <Suspense fallback={<SectionLoadingFallback />}>{renderSection()}</Suspense>

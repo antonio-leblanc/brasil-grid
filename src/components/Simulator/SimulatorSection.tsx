@@ -14,7 +14,9 @@ import {
   DAY_SPEEDS,
   DEFAULT_TRIP_MW,
   ERAC_STAGES,
-  GOVERNOR_DROOP_R
+  GOVERNOR_DROOP_R,
+  OVERFREQUENCY_COLLAPSE_HZ,
+  UNDERFREQUENCY_COLLAPSE_HZ
 } from '../../services/gridPhysics';
 import { simulatorDay } from '../../data/simulatorDayData';
 import { SourcesList } from '../Sources/SourcesList';
@@ -22,29 +24,15 @@ import { DayChart } from './DayChart';
 import { FrequencyGauge } from './FrequencyGauge';
 import { FrequencyStripChart } from './FrequencyStripChart';
 import { DispatchControlDesk } from './DispatchControlDesk';
-import { formatDecimal } from '../../utils/format';
+import { formatDate, formatDecimal } from '../../utils/format';
+import { useSimulatorCopy } from './copy';
 import { SegmentedControl, type SegmentOption } from '../Controls/SegmentedControl';
 
 type ScenarioId = GridSimulationState['scenarioId'];
 
 const peakMmgdMW = Math.max(...simulatorDay.hours.map((h) => h.mmgdMW));
 
-const tripHours = DAY_SCHEDULED_TRIPS.map((t) => `${t.atSeconds / 3600}h`).join(' e às ');
-
-const SCENARIOS: { id: ScenarioId; label: string; description: string }[] = [
-  {
-    id: 'dia',
-    label: simulatorDay.dateLabel,
-    description: `Despacho verificado do SIN, hora a hora. Quedas de ${formatDecimal(DEFAULT_TRIP_MW / 1000, 1)} GW às ${tripHours}: mesma perda, inércia diferente.`
-  },
-  {
-    id: 'livre',
-    label: 'Livre',
-    description: 'Sem programa nem eventos. Ajuste as fontes ou dispare uma contingência.'
-  }
-];
-
-const SCENARIO_OPTIONS: SegmentOption<ScenarioId>[] = SCENARIOS.map((sc) => ({ value: sc.id, label: sc.label }));
+const tripHours = DAY_SCHEDULED_TRIPS.map((t) => t.atSeconds / 3600);
 
 const SPEEDS: Record<ScenarioId, SegmentOption<number>[]> = {
   dia: DAY_SPEEDS.map((value) => ({ value, label: `${value / 60} min/s` })),
@@ -62,6 +50,16 @@ const toHistoryPoint = (s: GridSimulationState): HistoryPoint => ({
 });
 
 export const SimulatorSection: React.FC = () => {
+  const c = useSimulatorCopy();
+  const scenarios: { id: ScenarioId; label: string; description: string }[] = [
+    {
+      id: 'dia',
+      label: formatDate(simulatorDay.id).full,
+      description: c.dayDescription(formatDecimal(DEFAULT_TRIP_MW / 1000, 1), tripHours)
+    },
+    { id: 'livre', label: c.freeLabel, description: c.freeDescription }
+  ];
+  const scenarioOptions: SegmentOption<ScenarioId>[] = scenarios.map((sc) => ({ value: sc.id, label: sc.label }));
   const [scenarioId, setScenarioId] = useState<ScenarioId>('dia');
   const [simState, setSimState] = useState<GridSimulationState>(() => createInitialSimulation('dia'));
   const [history, setHistory] = useState<HistoryPoint[]>([]);
@@ -137,22 +135,22 @@ export const SimulatorSection: React.FC = () => {
     simState.solar.actualMW +
     simState.wind.actualMW;
 
-  const activeScenario = SCENARIOS.find((s) => s.id === scenarioId) ?? SCENARIOS[0];
+  const activeScenario = scenarios.find((s) => s.id === scenarioId) ?? scenarios[0];
   const isPaused = simState.speedMultiplier === 0;
   const isEventSlowdown = !isPaused && effectiveSpeed(simState) < simState.speedMultiplier;
 
   return (
     <section className="space-y-4">
       <header>
-        <h2 className="text-lg font-semibold text-slate-100">Simulador 60 Hz</h2>
+        <h2 className="text-lg font-semibold text-slate-100">{c.title}</h2>
         <p className="mt-1 text-xs text-slate-400">{activeScenario.description}</p>
       </header>
 
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <SegmentedControl options={SCENARIO_OPTIONS} value={scenarioId} onChange={handleSelectScenario} />
+        <SegmentedControl options={scenarioOptions} value={scenarioId} onChange={handleSelectScenario} />
 
         <div className="flex items-center gap-2">
-          {isEventSlowdown && <span className="text-xs text-amber-400">câmera lenta</span>}
+          {isEventSlowdown && <span className="text-xs text-amber-400">{c.slowMotion}</span>}
           <span className="font-mono tabular-nums text-xs text-slate-400">{formatSimClock(simState.simTimeSeconds)}</span>
           <SegmentedControl
             options={SPEEDS[scenarioId]}
@@ -166,7 +164,7 @@ export const SimulatorSection: React.FC = () => {
               className={`p-1 rounded transition-colors cursor-pointer ${
                 isPaused ? 'text-amber-400' : 'text-slate-500 hover:text-slate-200'
               }`}
-              aria-label={isPaused ? 'Continuar' : 'Pausar'}
+              aria-label={isPaused ? c.resume : c.pause}
             >
               {isPaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
             </button>
@@ -175,7 +173,7 @@ export const SimulatorSection: React.FC = () => {
             type="button"
             onClick={() => handleReset()}
             className="p-1.5 rounded-md text-slate-500 hover:text-slate-200 hover:bg-slate-900 transition-colors cursor-pointer"
-            aria-label="Reiniciar cenário"
+            aria-label={c.restartScenario}
           >
             <RotateCcw className="w-4 h-4" />
           </button>
@@ -185,9 +183,15 @@ export const SimulatorSection: React.FC = () => {
       {simState.isBlackout && (
         <div className="px-3 py-2.5 rounded-md border border-red-500/40 bg-red-950/30 flex items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold text-red-300">Apagão</p>
+            <p className="text-sm font-semibold text-red-300">{c.blackout}</p>
             <p className="mt-0.5 text-xs text-red-200/80">
-              {simState.blackoutReason ?? 'A frequência saiu dos limites e as proteções desligaram os geradores.'}
+              {simState.blackoutCause
+                ? c.blackoutCause(simState.blackoutCause, {
+                    underHz: formatDecimal(UNDERFREQUENCY_COLLAPSE_HZ, 1),
+                    overHz: formatDecimal(OVERFREQUENCY_COLLAPSE_HZ, 1),
+                    eracStages: ERAC_STAGES.length
+                  })
+                : c.blackoutFallback}
             </p>
           </div>
           <button
@@ -195,20 +199,20 @@ export const SimulatorSection: React.FC = () => {
             onClick={() => handleReset()}
             className="shrink-0 px-3 py-1.5 rounded-md bg-red-500/20 hover:bg-red-500/30 text-red-200 text-xs transition-colors cursor-pointer"
           >
-            Reiniciar
+            {c.restart}
           </button>
         </div>
       )}
 
       {simState.isDayFinished && (
         <div className="px-3 py-2.5 rounded-md border border-slate-700 flex items-center justify-between gap-3">
-          <p className="text-sm text-slate-300">Fim do dia.</p>
+          <p className="text-sm text-slate-300">{c.dayEnd}</p>
           <button
             type="button"
             onClick={() => handleReset()}
             className="shrink-0 px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs transition-colors cursor-pointer"
           >
-            Recomeçar
+            {c.startOver}
           </button>
         </div>
       )}
@@ -262,30 +266,14 @@ export const SimulatorSection: React.FC = () => {
       />
 
       <details className="text-xs text-slate-400">
-        <summary className="cursor-pointer text-slate-500 hover:text-slate-300">Como funciona</summary>
+        <summary className="cursor-pointer text-slate-500 hover:text-slate-300">{c.howItWorks}</summary>
         <div className="mt-2 space-y-1.5 leading-relaxed">
-          <p>
-            Todas as máquinas síncronas giram a 60 Hz. Se a carga supera a geração, a energia cinética dos rotores
-            cobre a diferença e a frequência cai, tanto mais rápido quanto menor a inércia:{' '}
-            <span className="font-mono text-slate-300">df/dt = f₀·ΔP / 2Eₖ</span>.
-          </p>
-          <p>
-            A regulação primária das hidrelétricas (estatismo{' '}
-            <span className="font-mono">{(GOVERNOR_DROOP_R * 100).toFixed(0)}%</span>) reage em segundos. Abaixo de{' '}
-            <span className="font-mono">{formatDecimal(ERAC_STAGES[0].thresholdHz, 1)} Hz</span> o ERAC corta carga em{' '}
-            {ERAC_STAGES.length} estágios.
-          </p>
-          <p>
-            O CAG (regulação secundária) corrige o programa das hidrelétricas nos minutos seguintes até a frequência
-            voltar a 60 Hz. Inércia H = energia cinética das máquinas síncronas ÷ geração total: cai ao meio-dia,
-            quando solar e eólica, sem massa girante, dominam.
-          </p>
-          <p>
-            <span className="text-slate-300">Curva do pato.</span> A solar hachurada é MMGD, a micro e minigeração atrás dos
-            medidores das distribuidoras: o ONS não a despacha, só a estima com dados meteorológicos. Ela chega a{' '}
-            <span className="font-mono">{formatDecimal(peakMmgdMW / 1000, 1)} GW</span> perto do meio-dia e afunda a carga que
-            as usinas atendem; no fim da tarde some com a carga ainda alta e as hidrelétricas fazem a rampa.
-          </p>
+          {c.explanation({
+            droopPct: (GOVERNOR_DROOP_R * 100).toFixed(0),
+            eracStartHz: formatDecimal(ERAC_STAGES[0].thresholdHz, 1),
+            eracStages: ERAC_STAGES.length,
+            peakMmgdGW: formatDecimal(peakMmgdMW / 1000, 1)
+          })}
         </div>
       </details>
 

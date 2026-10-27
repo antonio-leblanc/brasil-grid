@@ -4,7 +4,7 @@ import {
   LOCALES,
   readBrowserLanguage,
   readExplicitLanguage,
-  setNumberLocale,
+  setActiveLang,
   storeLanguage,
   type Lang
 } from './language';
@@ -17,14 +17,14 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [initial] = useState(() => {
     const explicit = readExplicitLanguage();
     const lang = explicit ?? readBrowserLanguage();
-    setNumberLocale(lang);
+    setActiveLang(lang);
     return { lang, isExplicit: explicit !== null };
   });
   const [lang, setLangState] = useState<Lang>(initial.lang);
   const [isExplicit, setIsExplicit] = useState(initial.isExplicit);
 
   const setLang = useCallback((next: Lang) => {
-    setNumberLocale(next);
+    setActiveLang(next);
     storeLanguage(next);
     setIsExplicit(true);
     setLangState(next);

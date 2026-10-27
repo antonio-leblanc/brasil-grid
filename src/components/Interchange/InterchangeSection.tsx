@@ -6,34 +6,25 @@ import {
   getStatusTheme,
   calculateSubsystemsBalance
 } from '../../data/interchangeData';
-import type { InterchangeId, InterchangeStatus } from '../../data/interchangeData';
+import type { InterchangeId } from '../../data/interchangeData';
 import { SourcesList } from '../Sources/SourcesList';
 import { SegmentedControl, type SegmentOption } from '../Controls/SegmentedControl';
 import { formatDecimal } from '../../utils/format';
+import { useI18n } from '../../i18n/context';
+import { localizeInterchange } from '../../i18n/data/interchanges';
+import { useInterchangeCopy, type InterchangeView } from './copy';
 
 interface InterchangeSectionProps {
   selectedId: InterchangeId;
   onSelect: (id: InterchangeId) => void;
 }
 
-type View = 'fronteiras' | 'curva' | 'dossie';
-
-const VIEW_OPTIONS: SegmentOption<View>[] = [
-  { value: 'fronteiras', label: 'Fronteiras' },
-  { value: 'curva', label: 'Curva 24h' },
-  { value: 'dossie', label: 'Dossiê do gargalo' }
-];
+type View = InterchangeView;
 
 const INTERCHANGE_OPTIONS: SegmentOption<InterchangeId>[] = regionalInterchanges.map((ic) => ({
   value: ic.id,
   label: <span className="font-mono">{ic.shortCode}</span>
 }));
-
-const STATUS_LABEL: Record<InterchangeStatus, string> = {
-  nominal: 'nominal',
-  alert: 'alerta',
-  critical: 'crítico'
-};
 
 const formatGW = (mw: number) => formatDecimal(mw / 1000, 2);
 
@@ -41,10 +32,17 @@ const CHART_X0 = 60;
 const CHART_W = 710;
 
 export const InterchangeSection: React.FC<InterchangeSectionProps> = ({ selectedId, onSelect }) => {
+  const { lang } = useI18n();
+  const c = useInterchangeCopy();
   const [view, setView] = useState<View>('fronteiras');
   const [hoveredHour, setHoveredHour] = useState<number | null>(null);
 
-  const activeInterchange = regionalInterchanges.find((ic) => ic.id === selectedId) ?? regionalInterchanges[0];
+  const interchanges = useMemo(() => regionalInterchanges.map((ic) => localizeInterchange(ic, lang)), [lang]);
+  const activeInterchange = interchanges.find((ic) => ic.id === selectedId) ?? interchanges[0];
+  const viewOptions: SegmentOption<View>[] = (['fronteiras', 'curva', 'dossie'] as const).map((value) => ({
+    value,
+    label: c.views[value]
+  }));
 
   const subsystemsBalance = useMemo(() => calculateSubsystemsBalance(regionalInterchanges), []);
   const totalInterchangeMW = regionalInterchanges.reduce((sum, ic) => sum + Math.abs(ic.nominalFlowMW), 0);
@@ -57,23 +55,23 @@ export const InterchangeSection: React.FC<InterchangeSectionProps> = ({ selected
   return (
     <section className="space-y-6">
       <header>
-        <h2 className="text-lg font-semibold text-slate-100">Intercâmbios</h2>
+        <h2 className="text-lg font-semibold text-slate-100">{c.title}</h2>
         <p className="mt-1 text-xs text-slate-400">
-          Potência ativa entre subsistemas contra o limite operativo do ONS. Em trânsito agora:{' '}
+          {c.intro}{' '}
           <span className="font-mono tabular-nums text-slate-200">{formatGW(totalInterchangeMW)} GW</span>.
         </p>
-        <p className="mt-1 text-[11px] text-amber-400">Snapshot de referência, não telemetria em tempo real.</p>
+        <p className="mt-1 text-[11px] text-amber-400">{c.snapshotNote}</p>
       </header>
 
       <div className="flex flex-wrap items-center gap-2">
-        <SegmentedControl options={VIEW_OPTIONS} value={view} onChange={setView} />
+        <SegmentedControl options={viewOptions} value={view} onChange={setView} />
         {view !== 'fronteiras' && <SegmentedControl options={INTERCHANGE_OPTIONS} value={selectedId} onChange={onSelect} />}
       </div>
 
       {view === 'fronteiras' && (
         <div className="space-y-6">
           <div>
-            <p className="text-[11px] text-slate-500 mb-2">Saldo líquido por subsistema (soma das fronteiras)</p>
+            <p className="text-[11px] text-slate-500 mb-2">{c.balanceTitle}</p>
             <dl className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4 border-y border-slate-800/70 py-4">
               {(Object.keys(subsystemsBalance) as (keyof typeof subsystemsBalance)[]).map((code) => {
                 const item = subsystemsBalance[code];
@@ -85,7 +83,7 @@ export const InterchangeSection: React.FC<InterchangeSectionProps> = ({ selected
                       {isExporter ? '+' : ''}
                       {formatGW(item.netExportMW)} <span className="text-xs text-slate-500">GW</span>
                     </dd>
-                    <dd className="mt-0.5 text-[11px] text-slate-500">{isExporter ? 'exportando' : 'importando'}</dd>
+                    <dd className="mt-0.5 text-[11px] text-slate-500">{isExporter ? c.exporting : c.importing}</dd>
                   </div>
                 );
               })}
@@ -93,7 +91,7 @@ export const InterchangeSection: React.FC<InterchangeSectionProps> = ({ selected
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {regionalInterchanges.map((ic) => {
+            {interchanges.map((ic) => {
               const isSelected = ic.id === selectedId;
               const status = getInterchangeStatus(ic.nominalFlowMW, ic.maxExportLimitMW);
               const theme = getStatusTheme(status);
@@ -122,18 +120,18 @@ export const InterchangeSection: React.FC<InterchangeSectionProps> = ({ selected
                         <span className="font-mono">{ic.voltageKV.join(' / ')} kV</span>
                       </p>
                     </div>
-                    <span className={`text-[11px] ${theme.badgeText}`}>{STATUS_LABEL[status]}</span>
+                    <span className={`text-[11px] ${theme.badgeText}`}>{c.status[status]}</span>
                   </div>
 
                   <div className="flex items-baseline justify-between">
                     <div>
-                      <p className="text-[11px] text-slate-500">Carregamento</p>
+                      <p className="text-[11px] text-slate-500">{c.loading}</p>
                       <p className="font-mono tabular-nums text-xl" style={{ color: theme.color }}>
                         {formatDecimal(saturationPct, 1)}%
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-[11px] text-slate-500">Margem</p>
+                      <p className="text-[11px] text-slate-500">{c.margin}</p>
                       <p className="font-mono tabular-nums text-base text-slate-100">{formatGW(marginMW)} GW</p>
                     </div>
                   </div>
@@ -144,15 +142,15 @@ export const InterchangeSection: React.FC<InterchangeSectionProps> = ({ selected
                         className="h-full rounded-full"
                         style={{ width: `${Math.min(100, saturationPct)}%`, backgroundColor: theme.color }}
                       />
-                      <div className="absolute inset-y-0 w-px bg-amber-500/60" style={{ left: '70%' }} title="Alerta: 70%" />
-                      <div className="absolute inset-y-0 w-px bg-red-500/80" style={{ left: '90%' }} title="Crítico: 90%" />
+                      <div className="absolute inset-y-0 w-px bg-amber-500/60" style={{ left: '70%' }} title={c.alertMark} />
+                      <div className="absolute inset-y-0 w-px bg-red-500/80" style={{ left: '90%' }} title={c.criticalMark} />
                     </div>
                     <p className="mt-1 flex justify-between text-[11px] font-mono tabular-nums text-slate-500">
                       <span>
-                        fluxo <span className="text-slate-300">{formatGW(ic.nominalFlowMW)} GW</span>
+                        {c.flow} <span className="text-slate-300">{formatGW(ic.nominalFlowMW)} GW</span>
                       </span>
                       <span>
-                        limite <span className="text-slate-300">{formatGW(ic.maxExportLimitMW)} GW</span>
+                        {c.limit} <span className="text-slate-300">{formatGW(ic.maxExportLimitMW)} GW</span>
                       </span>
                     </p>
                   </div>
@@ -168,7 +166,7 @@ export const InterchangeSection: React.FC<InterchangeSectionProps> = ({ selected
                         }}
                         className="text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer"
                       >
-                        Curva 24h
+                        {c.curveLink}
                       </button>
                       <button
                         type="button"
@@ -178,7 +176,7 @@ export const InterchangeSection: React.FC<InterchangeSectionProps> = ({ selected
                         }}
                         className="text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer"
                       >
-                        Dossiê
+                        {c.dossierLink}
                       </button>
                     </span>
                   </div>
@@ -196,16 +194,16 @@ export const InterchangeSection: React.FC<InterchangeSectionProps> = ({ selected
               <h3 className="text-sm font-semibold text-slate-100">
                 {activeInterchange.name} <span className="font-mono font-normal text-slate-500">{activeInterchange.shortCode}</span>
               </h3>
-              <p className="mt-0.5 text-[11px] text-slate-500">Perfil horário ilustrativo contra o limite operativo do ONS</p>
+              <p className="mt-0.5 text-[11px] text-slate-500">{c.curveSubtitle}</p>
             </div>
             <div className="flex items-center gap-4 text-[11px] text-slate-400">
               <span className="flex items-center gap-1.5">
                 <span className="w-3 h-0.5 bg-sky-400" />
-                Fluxo de referência
+                {c.referenceFlow}
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="w-3 border-t border-dashed border-red-400" />
-                Limite ONS
+                {c.onsLimit}
               </span>
             </div>
           </div>
@@ -298,9 +296,7 @@ export const InterchangeSection: React.FC<InterchangeSectionProps> = ({ selected
           </div>
 
           <p className="text-xs text-slate-400 leading-relaxed">
-            Positivo: sentido principal ({activeInterchange.primaryDirection}). Negativo: fluxo reverso (
-            {activeInterchange.reverseDirection}). Pontos vermelhos acima de 90% indicam risco de{' '}
-            <em>curtailment</em> por gargalo de rede.
+            {c.curveNote(activeInterchange.primaryDirection, activeInterchange.reverseDirection)}
           </p>
         </div>
       )}
@@ -313,9 +309,9 @@ export const InterchangeSection: React.FC<InterchangeSectionProps> = ({ selected
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { title: 'Causa física', color: 'text-amber-300', text: activeInterchange.bottleneck.cause },
-              { title: 'Impacto na operação e no mercado', color: 'text-red-300', text: activeInterchange.bottleneck.consequences },
-              { title: 'Solução de engenharia', color: 'text-emerald-300', text: activeInterchange.bottleneck.mitigation }
+              { title: c.cause, color: 'text-amber-300', text: activeInterchange.bottleneck.cause },
+              { title: c.impact, color: 'text-red-300', text: activeInterchange.bottleneck.consequences },
+              { title: c.solution, color: 'text-emerald-300', text: activeInterchange.bottleneck.mitigation }
             ].map((pillar) => (
               <div key={pillar.title}>
                 <h4 className={`text-[11px] ${pillar.color}`}>{pillar.title}</h4>
@@ -326,7 +322,7 @@ export const InterchangeSection: React.FC<InterchangeSectionProps> = ({ selected
 
           <div className="border-t border-slate-800 pt-4 space-y-2">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h4 className="text-[11px] text-slate-500">Troncos da interface</h4>
+              <h4 className="text-[11px] text-slate-500">{c.trunks}</h4>
               <span className="text-[11px] text-slate-500">{activeInterchange.bottleneck.technicalStandard}</span>
             </div>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">

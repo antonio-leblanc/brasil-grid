@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { getNumberLocale } from '../../i18n/language';
 import type { MarketMonth } from '../../data/marketData';
 import { formatMonth } from './format';
+import { useMarketCopy } from './copy';
 
 const BAR_COLOR = '#22d3ee';
 
@@ -18,6 +19,7 @@ interface ModulationCostBarsProps {
 }
 
 export const ModulationCostBars: React.FC<ModulationCostBarsProps> = ({ months }) => {
+  const c = useMarketCopy().charts;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   const bars = months.filter((m): m is MarketMonth & { modulacao: number } => m.modulacao !== null);
@@ -43,7 +45,7 @@ export const ModulationCostBars: React.FC<ModulationCostBarsProps> = ({ months }
         viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
         className="w-full h-auto block"
         role="img"
-        aria-label="Custo de modulação do Sudeste por mês, em R$/MWh"
+        aria-label={c.barsAria}
       >
         {yTicks.map((tick) => (
           <g key={tick}>

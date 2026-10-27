@@ -10,19 +10,21 @@ export interface SectionDef {
   id: SectionId;
   icon: LucideIcon;
   wide?: boolean;
+  /** Has English copy; the others show the Portuguese-only notice in English. */
+  translated?: boolean;
 }
 
 export const SECTION_GROUPS: { id: SectionGroupId; sections: SectionDef[] }[] = [
   {
     id: 'operacao',
     sections: [
-      { id: 'intercambios', icon: ArrowLeftRight, wide: true },
-      { id: 'simulador', icon: Gauge, wide: true }
+      { id: 'intercambios', icon: ArrowLeftRight, wide: true, translated: true },
+      { id: 'simulador', icon: Gauge, wide: true, translated: true }
     ]
   },
   {
     id: 'mercado',
-    sections: [{ id: 'preco', icon: TrendingUp }]
+    sections: [{ id: 'preco', icon: TrendingUp, translated: true }]
   },
   {
     id: 'referencia',

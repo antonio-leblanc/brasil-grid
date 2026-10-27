@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import type { CmoYearProfile } from '../../data/marketData';
 import { formatBRL } from './format';
+import { formatHour } from '../../utils/format';
+import { useMarketCopy } from './copy';
 
 // Anos até 2023 têm perfil plano e ficam como contexto; a rampa ciano (validada contra #07090e)
 // só marca os anos em que a curva do pato existe, do mais fraco ao mais forte.
@@ -43,6 +45,7 @@ interface CmoHourlyProfileChartProps {
 }
 
 export const CmoHourlyProfileChart: React.FC<CmoHourlyProfileChartProps> = ({ years, lastDataLabel }) => {
+  const c = useMarketCopy().charts;
   const [hoverSlot, setHoverSlot] = useState<number | null>(null);
 
   const maxValue = Math.max(...years.flatMap((y) => y.cmo));
@@ -73,7 +76,7 @@ export const CmoHourlyProfileChart: React.FC<CmoHourlyProfileChartProps> = ({ ye
         {duckYears.map((yr) => (
           <span key={yr.ano} className="flex items-center gap-1.5">
             <span className="w-3 h-0.5" style={{ backgroundColor: colorFor(yr.ano) }} />
-            <span className="font-mono tabular-nums">{yr.parcial ? `${yr.ano} (até ${lastDataLabel})` : yr.ano}</span>
+            <span className="font-mono tabular-nums">{yr.parcial ? c.partialYear(yr.ano, lastDataLabel) : yr.ano}</span>
           </span>
         ))}
         <span className="flex items-center gap-1.5">
@@ -89,7 +92,7 @@ export const CmoHourlyProfileChart: React.FC<CmoHourlyProfileChartProps> = ({ ye
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
           className="w-full h-auto block"
           role="img"
-          aria-label="CMO médio do Sudeste por meia hora do dia, uma linha por ano"
+          aria-label={c.hourlyAria}
         >
           {yTicks.map((tick) => (
             <g key={tick}>
@@ -107,7 +110,7 @@ export const CmoHourlyProfileChart: React.FC<CmoHourlyProfileChartProps> = ({ ye
               textAnchor="middle"
               className="fill-slate-500 font-mono text-[10px]"
             >
-              {`${String(hour).padStart(2, '0')}h`}
+              {formatHour(hour)}
             </text>
           ))}
           <text x={PAD.left} y={PAD.top - 5} className="fill-slate-500 text-[10px]">R$/MWh</text>
@@ -138,7 +141,7 @@ export const CmoHourlyProfileChart: React.FC<CmoHourlyProfileChartProps> = ({ ye
             .filter((yr) => yr.ano === 2021)
             .map((yr) => (
               <text key={yr.ano} x={x(SLOTS - 1) + 6} y={y(yr.cmo[SLOTS - 1]) + 3} className="fill-slate-500 font-mono text-[10px]">
-                2021 · seca
+                2021 · {c.drought}
               </text>
             ))}
 

@@ -17,6 +17,7 @@ import {
 } from '../../data/gridFilters';
 import { cn } from '../../utils/cn';
 import { useI18n } from '../../i18n/context';
+import { localizeInterchange } from '../../i18n/data/interchanges';
 import { formatDecimal, formatNumber } from '../../utils/format';
 
 interface ConsoleSidebarProps {
@@ -70,7 +71,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
   setShowSubsystems,
   onOpenInterchange
 }) => {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [assetTab, setAssetTab] = useState<'plants' | 'lines'>('plants');
   const voltageFilters: { id: LineVoltageFilter; label: string; aria: string }[] = [
     { id: 'all', label: t.sidebar.allLines, aria: t.sidebar.allLinesAria },
@@ -178,7 +179,7 @@ export const ConsoleSidebar: React.FC<ConsoleSidebarProps> = ({
                       type="button"
                       onClick={() => onOpenInterchange?.(ic.id)}
                       className="w-full text-left group cursor-pointer"
-                      title={ic.name}
+                      title={localizeInterchange(ic, lang).name}
                     >
                       <div className="flex items-baseline justify-between text-xs">
                         <span className="text-slate-300 group-hover:text-white transition-colors">

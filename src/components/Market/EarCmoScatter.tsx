@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { getNumberLocale } from '../../i18n/language';
 import type { MarketMonth } from '../../data/marketData';
 import { formatBRL, formatMonth } from './format';
+import { useMarketCopy } from './copy';
 
 // 2025 em diante é destaque; antes disso, cinza de contexto (não é série categórica).
 // Separação ΔE e contraste contra #07090e conferidos no validador de paleta.
@@ -26,6 +27,7 @@ interface EarCmoScatterProps {
 }
 
 export const EarCmoScatter: React.FC<EarCmoScatterProps> = ({ months }) => {
+  const c = useMarketCopy().charts;
   const [hovered, setHovered] = useState<MarketMonth | null>(null);
 
   const x = (ear: number) => PAD.left + ((ear - X_MIN) / (X_MAX - X_MIN)) * PLOT_W;
@@ -43,7 +45,7 @@ export const EarCmoScatter: React.FC<EarCmoScatterProps> = ({ months }) => {
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-400">
         <span className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full" style={{ backgroundColor: NEW_COLOR }} />
-          <span className="font-mono tabular-nums">{NEW_REGIME_FROM}–hoje</span>
+          <span className="font-mono tabular-nums">{NEW_REGIME_FROM}–{c.today}</span>
         </span>
         <span className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full" style={{ backgroundColor: OLD_COLOR }} />
@@ -56,7 +58,7 @@ export const EarCmoScatter: React.FC<EarCmoScatterProps> = ({ months }) => {
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
           className="w-full h-auto block"
           role="img"
-          aria-label="Um ponto por mês: EAR do Brasil no eixo horizontal, CMO médio do Sudeste no vertical"
+          aria-label={c.scatterAria}
         >
           {yTicks.map((tick) => (
             <g key={tick}>
@@ -71,9 +73,9 @@ export const EarCmoScatter: React.FC<EarCmoScatterProps> = ({ months }) => {
               {tick}%
             </text>
           ))}
-          <text x={PAD.left} y={PAD.top - 14} className="fill-slate-500 text-[10px]">CMO médio do mês, R$/MWh</text>
+          <text x={PAD.left} y={PAD.top - 14} className="fill-slate-500 text-[10px]">{c.scatterY}</text>
           <text x={PAD.left + PLOT_W} y={HEIGHT - 4} textAnchor="end" className="fill-slate-500 text-[10px]">
-            EAR Brasil, média do mês (% da capacidade)
+            {c.scatterX}
           </text>
 
           {clipped.length > 0 && (
@@ -118,11 +120,11 @@ export const EarCmoScatter: React.FC<EarCmoScatterProps> = ({ months }) => {
           >
             <div className="mb-1 font-mono tabular-nums text-slate-200">{formatMonth(hovered.mes)}</div>
             <div className="flex justify-between gap-4 text-slate-400">
-              <span>EAR Brasil</span>
+              <span>{c.earBrazil}</span>
               <span className="font-mono tabular-nums text-slate-100">{hovered.earBrasil.toLocaleString(getNumberLocale())}%</span>
             </div>
             <div className="flex justify-between gap-4 text-slate-400">
-              <span>CMO SE</span>
+              <span>{c.cmoSE}</span>
               <span className="font-mono tabular-nums text-slate-100">R$ {formatBRL(hovered.cmo)}</span>
             </div>
           </div>

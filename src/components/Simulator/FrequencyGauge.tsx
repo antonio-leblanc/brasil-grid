@@ -1,6 +1,7 @@
 import React from 'react';
 import { ERAC_STAGES, OVERFREQUENCY_ALERT_HZ } from '../../services/gridPhysics';
 import { formatDecimal } from '../../utils/format';
+import { useSimulatorCopy } from './copy';
 
 interface FrequencyGaugeProps {
   frequencyHz: number;
@@ -32,21 +33,23 @@ export const FrequencyGauge: React.FC<FrequencyGaugeProps> = ({
   isBlackout,
   isOverfrequencyAlert
 }) => {
+  const sim = useSimulatorCopy();
+  const c = sim.gauge;
   const eracStartHz = ERAC_STAGES[0].thresholdHz;
 
-  let status = 'Normal';
+  let status = c.normal;
   let tone = 'text-slate-100';
   if (isBlackout) {
-    status = 'Apagão';
+    status = sim.blackout;
     tone = 'text-red-400';
   } else if (eracStage > 0) {
-    status = `ERAC estágio ${eracStage}`;
+    status = c.eracStage(eracStage);
     tone = 'text-red-400';
   } else if (isOverfrequencyAlert || frequencyHz > SAFE_HIGH_HZ) {
-    status = 'Sobrefrequência';
+    status = c.overfrequency;
     tone = 'text-amber-400';
   } else if (frequencyHz < SAFE_LOW_HZ) {
-    status = 'Subfrequência';
+    status = c.underfrequency;
     tone = 'text-amber-400';
   }
 
@@ -60,7 +63,7 @@ export const FrequencyGauge: React.FC<FrequencyGaugeProps> = ({
   return (
     <div className="select-none">
       <div className="flex items-baseline justify-between text-xs">
-        <span className="text-slate-500">Frequência</span>
+        <span className="text-slate-500">{c.frequency}</span>
         <span className={tone}>{status}</span>
       </div>
 
@@ -94,11 +97,11 @@ export const FrequencyGauge: React.FC<FrequencyGaugeProps> = ({
           <dd className="font-mono tabular-nums text-slate-200">{signed(rocofHzS, 3)} Hz/s</dd>
         </div>
         <div className="py-1.5 flex justify-between">
-          <dt className="text-slate-500">Inércia equivalente</dt>
+          <dt className="text-slate-500">{c.inertia}</dt>
           <dd className="font-mono tabular-nums text-slate-200">{formatDecimal(inertiaH, 2)} s</dd>
         </div>
         <div className="py-1.5 flex justify-between">
-          <dt className="text-slate-500">Início do ERAC</dt>
+          <dt className="text-slate-500">{c.eracStart}</dt>
           <dd className="font-mono tabular-nums text-slate-200">{formatDecimal(eracStartHz, 1)} Hz</dd>
         </div>
       </dl>

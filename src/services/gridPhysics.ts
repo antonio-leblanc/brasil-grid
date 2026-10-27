@@ -67,7 +67,7 @@ export interface GridSimulationState {
   eracStageTimers: number[];
   eracRestoreTimerSeconds: number;
   isBlackout: boolean;
-  blackoutReason?: string;
+  blackoutCause?: BlackoutCause;
   isOverfrequencyAlert: boolean;
   isIbrFrequencyWattActive: boolean;
 
@@ -183,6 +183,8 @@ export const ERAC_RESTORE_THRESHOLD_HZ = 59.9;
 export const ERAC_RESTORE_DELAY_SECONDS = 45;
 
 // Didactic collapse limits: below the last ERAC stage, thermal and hydro unit protections trip in cascade
+export type BlackoutCause = 'sync_loss' | 'underfrequency' | 'overfrequency';
+
 export const UNDERFREQUENCY_COLLAPSE_HZ = 56.5;
 export const OVERFREQUENCY_COLLAPSE_HZ = 62.5;
 export const OVERFREQUENCY_ALERT_HZ = 60.5;
@@ -599,13 +601,13 @@ export function stepSimulation(state: GridSimulationState, dtSeconds: number): G
   const powerMismatchMW = totalGenMW - frequencyDependentLoadMW;
 
   let isBlackout = false;
-  let blackoutReason: string | undefined;
+  let blackoutCause: BlackoutCause | undefined;
   let rocofHzS = 0;
   let newFreq = state.frequencyHz;
 
   if (kineticEnergyMWs <= 0) {
     isBlackout = true;
-    blackoutReason = 'Perda de todas as máquinas síncronas: sem inércia, não há referência de frequência para o sistema.';
+    blackoutCause = 'sync_loss';
     pushEvent(events, 'blackout_sync', newSimTime, 'critical', 'APAGÃO SISTÊMICO: nenhuma máquina síncrona em operação.');
   } else {
     rocofHzS = (F_NOMINAL * powerMismatchMW) / (2 * kineticEnergyMWs);
@@ -614,12 +616,12 @@ export function stepSimulation(state: GridSimulationState, dtSeconds: number): G
 
   if (!isBlackout && newFreq <= UNDERFREQUENCY_COLLAPSE_HZ) {
     isBlackout = true;
-    blackoutReason = `Colapso por subfrequência (f < ${UNDERFREQUENCY_COLLAPSE_HZ.toFixed(1)} Hz): o ERAC esgotou seus ${ERAC_STAGES.length} estágios e as proteções das unidades geradoras atuaram em cascata.`;
+    blackoutCause = 'underfrequency';
     pushEvent(events, 'blackout_under', newSimTime, 'critical',
       `APAGÃO SISTÊMICO: frequência abaixo de ${UNDERFREQUENCY_COLLAPSE_HZ.toFixed(1)} Hz. Desligamento em cascata dos geradores.`);
   } else if (!isBlackout && newFreq >= OVERFREQUENCY_COLLAPSE_HZ) {
     isBlackout = true;
-    blackoutReason = `Colapso por sobrefrequência (f > ${OVERFREQUENCY_COLLAPSE_HZ.toFixed(1)} Hz): proteção de sobrevelocidade das turbinas desligou as unidades síncronas.`;
+    blackoutCause = 'overfrequency';
     pushEvent(events, 'blackout_over', newSimTime, 'critical',
       `APAGÃO SISTÊMICO: frequência acima de ${OVERFREQUENCY_COLLAPSE_HZ.toFixed(1)} Hz. Trip por sobrevelocidade.`);
   }
@@ -643,7 +645,7 @@ export function stepSimulation(state: GridSimulationState, dtSeconds: number): G
     eracStageTimers,
     eracRestoreTimerSeconds,
     isBlackout,
-    blackoutReason,
+    blackoutCause,
     isOverfrequencyAlert: newFreq >= OVERFREQUENCY_ALERT_HZ,
     isIbrFrequencyWattActive,
     hydroGovernorMW,

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { GridSimulationState, PlantFleetState } from '../../services/gridPhysics';
 import { formatDecimal } from '../../utils/format';
+import { useSimulatorCopy } from './copy';
 
 interface DispatchControlDeskProps {
   state: GridSimulationState;
@@ -61,6 +62,7 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
   onTogglePrimaryControl,
   onToggleSecondaryControl
 }) => {
+  const c = useSimulatorCopy().desk;
   const {
     hydro,
     thermal,
@@ -93,7 +95,7 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
 
   const target = (fleet: PlantFleetState) => (
     <span className="ml-1">
-      / {isDay ? 'programa' : 'alvo'} <Num>{gw(fleet.targetMW)}</Num>
+      / {isDay ? c.schedule : c.target} <Num>{gw(fleet.targetMW)}</Num>
     </span>
   );
 
@@ -120,11 +122,11 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
       <div>
         <div className="grid grid-cols-3 gap-4 text-xs">
           <div>
-            <div className="text-slate-500">Geração</div>
+            <div className="text-slate-500">{c.generation}</div>
             <Num className="text-lg text-slate-100">{gw(totalGenMW)}</Num> <span className="text-slate-500">GW</span>
           </div>
           <div>
-            <div className="text-slate-500">Carga</div>
+            <div className="text-slate-500">{c.load}</div>
             <Num className="text-lg text-slate-100">{gw(actualLoadMW)}</Num> <span className="text-slate-500">GW</span>
           </div>
           <div>
@@ -145,19 +147,19 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
           <div
             className="absolute -top-1 -bottom-1 w-0.5 bg-slate-100"
             style={{ left: `${Math.min(100, (actualLoadMW / BALANCE_SCALE_MW) * 100)}%` }}
-            title="Carga"
+            title={c.load}
           />
         </div>
         {eracStage > 0 && (
           <p className="mt-2 text-xs text-red-400">
-            ERAC cortou <Num>{gw(shedLoadMW)}</Num> GW de carga
+            {c.eracShed(<Num>{gw(shedLoadMW)}</Num>)}
           </p>
         )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
         <div className="divide-y divide-slate-800/70 border-y border-slate-800/70">
-          <FleetRow label="Hidrelétricas" dotClass="bg-sky-400" fleet={hydro} detail={target(hydro)}>
+          <FleetRow label={c.hydro} dotClass="bg-sky-400" fleet={hydro} detail={target(hydro)}>
             {!isDay && (
               <>
                 <input
@@ -168,7 +170,7 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
                   value={hydro.targetMW}
                   onChange={(e) => onUpdateHydroTarget(Number(e.target.value))}
                   className={`${slider} text-sky-400`}
-                  aria-label="Alvo das hidrelétricas"
+                  aria-label={c.hydroTarget}
                 />
                 <div className="mt-1.5 flex gap-1">
                   <button type="button" onClick={() => onUpdateHydroTarget(clampHydro(hydro.targetMW - 2000))} className={smallButton}>
@@ -181,16 +183,16 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
                     type="button"
                     onClick={balanceHydro}
                     className={smallButton}
-                    title="Leva o alvo das hidrelétricas ao valor que zera ΔP"
+                    title={c.zeroDeltaTitle}
                   >
-                    Zerar ΔP
+                    {c.zeroDelta}
                   </button>
                 </div>
               </>
             )}
           </FleetRow>
 
-          <FleetRow label="Termelétricas" dotClass="bg-rose-500" fleet={thermal} detail={target(thermal)}>
+          <FleetRow label={c.thermal} dotClass="bg-rose-500" fleet={thermal} detail={target(thermal)}>
             {!isDay && (
               <>
                 <input
@@ -201,11 +203,11 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
                   value={thermal.targetMW}
                   onChange={(e) => onUpdateThermalTarget(Number(e.target.value))}
                   className={`${slider} text-rose-500`}
-                  aria-label="Alvo das termelétricas"
+                  aria-label={c.thermalTarget}
                 />
                 <div className="mt-1 flex justify-between font-mono text-[10px] text-slate-600">
-                  <span>mín {gw(thermal.minTechnicalMW, 0)}</span>
-                  <span>máx {gw(thermal.maxCapacityMW, 0)}</span>
+                  <span>{c.min} {gw(thermal.minTechnicalMW, 0)}</span>
+                  <span>{c.max} {gw(thermal.maxCapacityMW, 0)}</span>
                 </div>
               </>
             )}
@@ -213,12 +215,12 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
         </div>
 
         <div className="divide-y divide-slate-800/70 border-y border-slate-800/70 md:border-t">
-          <FleetRow label="Solar" dotClass="bg-amber-400" fleet={solar} />
-          <FleetRow label="Eólica" dotClass="bg-emerald-400" fleet={wind} />
+          <FleetRow label={c.solar} dotClass="bg-amber-400" fleet={solar} />
+          <FleetRow label={c.wind} dotClass="bg-emerald-400" fleet={wind} />
           {isSecondaryControlEnabled && (
             <div className="py-2.5 flex items-baseline justify-between text-xs">
-              <span className="text-slate-400" title="Correção da regulação secundária sobre o programa das hidrelétricas">
-                Ajuste do CAG
+              <span className="text-slate-400" title={c.agcAdjustTitle}>
+                {c.agcAdjust}
               </span>
               <span className="text-slate-500">
                 <Num className="text-slate-100">
@@ -231,7 +233,7 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
           )}
           {!isDay && (
             <div className="py-2.5 flex items-center justify-between text-xs">
-              <span className="text-slate-400">Curtailment solar + eólica</span>
+              <span className="text-slate-400">{c.curtailment}</span>
               <button
                 type="button"
                 onClick={() => onSetCurtailment(isCurtailing ? 0 : CURTAILMENT_STEP_PERCENT)}
@@ -247,16 +249,16 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
       <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
           {toggle(
-            'Regulação primária',
+            c.primary,
             isPrimaryControlEnabled,
             onTogglePrimaryControl,
-            'Resposta automática das hidrelétricas ao desvio de frequência (estatismo)'
+            c.primaryTitle
           )}
           {toggle(
-            'CAG',
+            c.agc,
             isSecondaryControlEnabled,
             onToggleSecondaryControl,
-            'Controle automático de geração: corrige o programa das hidrelétricas até a frequência voltar a 60 Hz'
+            c.agcTitle
           )}
         </div>
 
@@ -264,9 +266,9 @@ export const DispatchControlDesk: React.FC<DispatchControlDeskProps> = ({
           type="button"
           onClick={onTriggerGeneratorTrip}
           className="px-2.5 py-1 rounded-md border border-red-500/30 text-red-300 hover:bg-red-500/10 transition-colors cursor-pointer"
-          title="Desliga unidades hidrelétricas de forma intempestiva; a inércia e a reserva delas saem junto"
+          title={c.tripTitle}
         >
-          Queda de usina <Num>−{gw(tripMW)}</Num> GW
+          {c.trip} <Num>−{gw(tripMW)}</Num> GW
         </button>
       </div>
     </div>

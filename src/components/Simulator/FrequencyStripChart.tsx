@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import type { HistoryPoint } from '../../services/gridPhysics';
 import { ERAC_STAGES } from '../../services/gridPhysics';
 import { formatDecimal } from '../../utils/format';
+import { useSimulatorCopy } from './copy';
 
 interface FrequencyStripChartProps {
   history: HistoryPoint[];
@@ -17,6 +18,7 @@ export const FrequencyStripChart: React.FC<FrequencyStripChartProps> = ({
   currentFreq,
   isBlackout
 }) => {
+  const c = useSimulatorCopy().strip;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -96,9 +98,9 @@ export const FrequencyStripChart: React.FC<FrequencyStripChartProps> = ({
   return (
     <div className="flex-1 flex flex-col select-none">
       <div className="flex items-baseline justify-between text-xs">
-        <span className="text-slate-500">Histórico</span>
+        <span className="text-slate-500">{c.history}</span>
         <span className="text-slate-600">
-          faixa normal <span className="font-mono">59,9–60,1 Hz</span>
+          {c.normalBand} <span className="font-mono">{formatDecimal(59.9, 1)}–{formatDecimal(60.1, 1)} Hz</span>
         </span>
       </div>
       <div className="mt-2 flex-1 w-full relative min-h-[180px] rounded-md border border-slate-800">

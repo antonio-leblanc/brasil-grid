@@ -6,13 +6,15 @@ const STORAGE_KEY = 'brasil-grid:lang';
 
 const isLang = (value: string | null): value is Lang => value === 'pt' || value === 'en';
 
-// Number formatting lives in plain helpers outside React, so the active locale is module state set by the provider.
-let numberLocale = LOCALES.pt;
+// Number and date formatting live in plain helpers outside React, so the active language is module state set by the provider.
+let activeLang: Lang = 'pt';
 
-export const getNumberLocale = () => numberLocale;
+export const getActiveLang = () => activeLang;
 
-export const setNumberLocale = (lang: Lang) => {
-  numberLocale = LOCALES[lang];
+export const getNumberLocale = () => LOCALES[activeLang];
+
+export const setActiveLang = (lang: Lang) => {
+  activeLang = lang;
 };
 
 /** `?lang=` wins over a stored choice, so a shared link always opens in the language it was sent in. */

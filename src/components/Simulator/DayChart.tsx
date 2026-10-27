@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 import type { SimulatorDay } from '../../data/simulatorDayData';
 import type { DaySchedule, ScheduledTrip } from '../../services/gridPhysics';
 import { DAY_SCHEDULED_TRIPS, dayScheduleAt, synchronousInertiaH } from '../../services/gridPhysics';
-import { formatDecimal } from '../../utils/format';
+import { formatDate, formatDecimal, formatHour } from '../../utils/format';
+import { useSimulatorCopy } from './copy';
 
 interface DayChartProps {
   day: SimulatorDay;
@@ -19,12 +20,12 @@ const W = 1000;
 const STACK_H = 160;
 const INERTIA_H = 40;
 
-const LAYERS: { key: string; label: string; fill: string; mw: (s: DaySchedule) => number }[] = [
-  { key: 'hydro', label: 'Hidro', fill: '#38bdf8', mw: (s) => s.hydroMW },
-  { key: 'thermal', label: 'Térmica', fill: '#f43f5e', mw: (s) => s.thermalMW },
-  { key: 'wind', label: 'Eólica', fill: '#34d399', mw: (s) => s.windMW },
-  { key: 'solar', label: 'Solar centralizada', fill: '#fbbf24', mw: (s) => s.solarMW - s.mmgdMW },
-  { key: 'mmgd', label: 'Solar MMGD', fill: MMGD_FILL, mw: (s) => s.mmgdMW }
+const LAYERS: { key: 'hydro' | 'thermal' | 'wind' | 'solar' | 'mmgd'; fill: string; mw: (s: DaySchedule) => number }[] = [
+  { key: 'hydro', fill: '#38bdf8', mw: (s) => s.hydroMW },
+  { key: 'thermal', fill: '#f43f5e', mw: (s) => s.thermalMW },
+  { key: 'wind', fill: '#34d399', mw: (s) => s.windMW },
+  { key: 'solar', fill: '#fbbf24', mw: (s) => s.solarMW - s.mmgdMW },
+  { key: 'mmgd', fill: MMGD_FILL, mw: (s) => s.mmgdMW }
 ];
 
 const x = (seconds: number) => (seconds / DAY_SECONDS) * W;
@@ -56,12 +57,13 @@ export const DayChart: React.FC<DayChartProps> = ({ day, simTimeSeconds, pending
     return { layerPaths, inertiaPath };
   }, [day]);
 
+  const c = useSimulatorCopy().day;
   const firedTrips = DAY_SCHEDULED_TRIPS.filter((t) => !pendingTrips.some((p) => p.atSeconds === t.atSeconds));
 
   return (
     <div className="select-none">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-xs">
-        <span className="text-slate-500">Geração verificada do SIN · {day.dateLabel}</span>
+        <span className="text-slate-500">{c.title} · {formatDate(day.id).full}</span>
         <span className="flex items-center gap-3 text-slate-400">
           {LAYERS.map((l) => (
             <span key={l.key} className="flex items-center gap-1.5">
@@ -69,7 +71,7 @@ export const DayChart: React.FC<DayChartProps> = ({ day, simTimeSeconds, pending
                 className={`w-2 h-2 rounded-sm ${l.key === 'mmgd' ? 'border border-amber-200/80' : ''}`}
                 style={{ backgroundColor: l.key === 'mmgd' ? 'transparent' : l.fill }}
               />
-              {l.label}
+              {c[l.key]}
             </span>
           ))}
         </span>
@@ -133,14 +135,14 @@ export const DayChart: React.FC<DayChartProps> = ({ day, simTimeSeconds, pending
           <path d={inertiaPath} fill="none" stroke="#cbd5e1" strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
         </svg>
         <span className="absolute top-0 left-1 text-[10px] text-slate-500">
-          Inércia H <span className="font-mono">0–{INERTIA_MAX_S} s</span>
+          {c.inertia} <span className="font-mono">0–{INERTIA_MAX_S} s</span>
         </span>
         <div className="absolute inset-y-0 w-px bg-slate-100 pointer-events-none" style={{ left: pct(simTimeSeconds) }} />
       </div>
 
       <div className="mt-1 flex justify-between font-mono text-[10px] text-slate-600">
         {[0, 6, 12, 18, 24].map((h) => (
-          <span key={h}>{String(h).padStart(2, '0')}h</span>
+          <span key={h}>{formatHour(h)}</span>
         ))}
       </div>
     </div>

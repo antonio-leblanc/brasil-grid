@@ -1,7 +1,5 @@
 import { getNumberLocale } from '../../i18n/language';
 
-const MONTHS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
-
-export const formatMonth = (mes: string) => `${MONTHS[Number(mes.slice(5, 7)) - 1]}/${mes.slice(0, 4)}`;
+export { formatMonth } from '../../utils/format';
 
 export const formatBRL = (value: number) => Math.round(value).toLocaleString(getNumberLocale());
