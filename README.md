@@ -1,65 +1,71 @@
 # brasil-grid
 
-Laboratório aberto pra entender o Sistema Interligado Nacional (SIN) e o setor elétrico brasileiro com dados públicos do ONS, da EPE, da CCEE e da ANEEL: onde estão as linhas e as usinas, como a frequência reage quando uma usina cai e por que o preço da energia passou a depender da hora do dia.
+**English** · [Português](./README.pt-BR.md)
+
+An open lab for understanding Brazil's National Interconnected System (SIN) and its power sector, built on public data from ONS, EPE, CCEE and ANEEL: where the lines and plants are, how frequency responds when a plant trips, and why the price of energy now depends on the hour of the day.
+
+**Live:** [antonioleblanc.com/brasil-grid](https://antonioleblanc.com/brasil-grid/)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald?style=flat-square)](LICENSE)
 
-## O que tem no app
+> The app interface is in Portuguese for now. An English version is in progress.
 
-São duas abas: **Mapa** e **Sistema**.
+## What's in the app
 
-### Mapa
+Two tabs: **Map** and **System**.
 
-A malha de transmissão e os grandes polos de geração do SIN, sobre MapLibre GL.
+### Map
 
-- **Transmissão:** os bipolos de ±800 kV de Belo Monte (Xingu–Estreito e Xingu–Terminal Rio, ~2.540 km), os de ±600 kV do Madeira e de Itaipu, a malha tronco de 500–765 kV e linhas regionais de 230–440 kV selecionadas.
-- **Geração:** Itaipu (14 GW), Belo Monte (11,2 GW), Tucuruí (8,5 GW), Angra 1 e 2 (2,0 GW), complexos eólicos e solares. O tamanho do ponto acompanha a capacidade instalada.
-- Filtro por tensão e por fonte, contorno dos 4 subsistemas do ONS e ficha de cada usina e linha com a fonte do dado.
+The SIN transmission backbone and its major generation hubs, on MapLibre GL.
 
-### Sistema
+- **Transmission:** the ±800 kV Belo Monte bipoles (Xingu–Estreito and Xingu–Terminal Rio, ~2,540 km), the ±600 kV Madeira and Itaipu links, the 500–765 kV trunk grid and selected 230–440 kV regional lines.
+- **Generation:** Itaipu (14 GW), Belo Monte (11.2 GW), Tucuruí (8.5 GW), Angra 1 and 2 (2.0 GW), wind and solar complexes. Marker size follows installed capacity.
+- Filters by voltage and by source, outlines of the 4 ONS subsystems, and a card for each plant and line with the source of its data.
 
-| Grupo | Seção | O que mostra |
+### System
+
+| Group | Section | What it shows |
 |---|---|---|
-| Operação | Intercâmbios | Fluxo entre subsistemas contra o limite de cada interface, e o gargalo por trás de cada uma |
-| Operação | Simulador 60 Hz | Equação de swing agregada, regulação primária, ERAC e curva P(f) dos inversores, sobre um dia verificado do SIN com a MMGD separada da solar centralizada |
-| Mercado | Preço | CMO do Sudeste a partir dos dados do ONS: a curva do pato (CMO das 18h ÷ meio-dia, ~2× em 2024 e ~7× em 2026), EAR × CMO e custo de modulação |
-| Referência | Cadeia de valor do SEB | Geração, transmissão, distribuição e comercialização: como cada elo é remunerado e quem são os grandes grupos |
-| Referência | Dossiês do SIN | A perturbação de 15/08/2023 e a formação do CMO/PLD por NEWAVE, DECOMP e DESSEM |
-| Referência | Régua de grandezas | Potência × energia, do chuveiro (~5,5 kW) ao recorde de demanda do SIN (106.532 MW, 26/02/2025) |
+| Operation | Interchanges | Flow between subsystems against each interface's limit, and the bottleneck behind each one |
+| Operation | 60 Hz simulator | Aggregate swing equation, primary frequency response, under-frequency load shedding (ERAC) and the inverters' P(f) curve, over a verified SIN day with distributed solar (MMGD) separated from utility-scale solar |
+| Market | Price | Southeast marginal cost of operation (CMO) from ONS data: the duck curve (6 pm CMO ÷ noon CMO, ~2× in 2024 and ~7× in 2026), stored energy (EAR) × CMO, and the cost of shaping |
+| Reference | Power sector value chain | Generation, transmission, distribution and retail: how each link is paid and who the major groups are |
+| Reference | SIN dossiers | The 15 Aug 2023 blackout, and how CMO and the spot price (PLD) are formed by NEWAVE, DECOMP and DESSEM |
+| Reference | Scale of magnitudes | Power × energy, from an electric shower (~5.5 kW) to the SIN demand record (106,532 MW, 26 Feb 2025) |
 
-## O que é dado real e o que é ilustrativo
+## What's real data and what's illustrative
 
-- **Real, ao vivo:** a carga do SIN no header vem da API de Dados Abertos do ONS (Carga Verificada), com cache. Se a API cair, usa um snapshot de referência.
-- **Real, exportado:** o dia verificado do simulador (`scripts/export-simulator-day.mjs`, Balanço de Energia do ONS) e as séries da seção Preço (`pipeline/`, CMO, EAR e curva de carga do ONS).
-- **Snapshot de referência:** frequência, intercâmbios e mix de geração do console.
-- **Modelo didático:** o simulador é de barra única, com parâmetros ilustrativos.
+- **Real, live:** the SIN load in the header comes from the ONS Open Data API (Verified Load), cached. If the API is down, it falls back to a reference snapshot.
+- **Real, exported:** the simulator's verified day (`scripts/export-simulator-day.mjs`, ONS Energy Balance) and the Price section series (`pipeline/`, ONS CMO, EAR and load curve).
+- **Reference snapshot:** frequency, interchanges and generation mix in the console.
+- **Teaching model:** the simulator is single-bus, with illustrative parameters.
 
-Usinas, linhas e limites têm fonte primária no código (`sources`) e no registro de proveniência em [`docs/data-audit-log.md`](./docs/data-audit-log.md). Visão e arquitetura em [`docs/spec.md`](./docs/spec.md).
+Plants, lines and limits carry a primary source in the code (`sources`) and in the provenance log at [`docs/data-audit-log.md`](./docs/data-audit-log.md) (in Portuguese). Vision and architecture in [`docs/spec.md`](./docs/spec.md) (in Portuguese).
 
-## Rodar localmente
+## Run locally
 
 ```bash
 git clone https://github.com/antonio-leblanc/brasil-grid.git
 cd brasil-grid
 npm install
-npm run dev     # servidor de desenvolvimento
-npm test        # testes (vitest)
-npm run build   # build de produção
+npm run dev     # dev server
+npm test        # tests (vitest)
+npm run build   # production build
 ```
 
-Pra atualizar os dados da seção Preço, ver [`pipeline/README.md`](./pipeline/README.md) (Python com `uv`).
+To refresh the Price section data, see [`pipeline/README.md`](./pipeline/README.md) (Python with `uv`, in Portuguese).
 
 ## Stack
 
-React 19, TypeScript, Vite e Tailwind CSS v4. Mapa em MapLibre GL com basemap Esri World Dark Gray Canvas (sem token, com atribuição Esri). Gráficos em SVG nativo, sem biblioteca de chart. Sem backend: dados estáticos mais a API aberta do ONS.
+React 19, TypeScript, Vite and Tailwind CSS v4. Map on MapLibre GL with the Esri World Dark Gray Canvas basemap (no token, with Esri attribution). Charts in plain SVG, no charting library. No backend: static data plus the open ONS API.
 
-## Fontes
+## Sources
 
-- [ONS](https://dados.ons.org.br): dados abertos de carga, CMO, EAR e balanço de energia
-- [CCEE](https://www.ccee.org.br): regras de comercialização e PLD
-- [ANEEL](https://www.gov.br/aneel): SIGEL, cadastro georreferenciado de usinas e linhas
-- [EPE](https://www.epe.gov.br): Balanço Energético Nacional
+- [ONS](https://dados.ons.org.br): open data on load, CMO, EAR and energy balance
+- [CCEE](https://www.ccee.org.br): market rules and spot price (PLD)
+- [ANEEL](https://www.gov.br/aneel): SIGEL, georeferenced registry of plants and lines
+- [EPE](https://www.epe.gov.br): National Energy Balance
 
-## Licença
+## License
 
-MIT. Feito por [Antonio Leblanc](https://github.com/antonio-leblanc).
+MIT. Made by [Antonio Leblanc](https://github.com/antonio-leblanc).
