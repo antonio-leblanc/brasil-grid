@@ -2,6 +2,8 @@
 
 [English](./README.md) · **Português**
 
+### [→ Ver no ar](https://antonioleblanc.com/brasil-grid/)
+
 Laboratório aberto pra entender o Sistema Interligado Nacional (SIN) e o setor elétrico brasileiro com dados públicos do ONS, da EPE, da CCEE e da ANEEL: onde estão as linhas e as usinas, como a frequência reage quando uma usina cai e por que o preço da energia passou a depender da hora do dia.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald?style=flat-square)](LICENSE)

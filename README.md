@@ -2,9 +2,9 @@
 
 **English** · [Português](./README.pt-BR.md)
 
-An open lab for understanding Brazil's National Interconnected System (SIN) and its power sector, built on public data from ONS, EPE, CCEE and ANEEL: where the lines and plants are, how frequency responds when a plant trips, and why the price of energy now depends on the hour of the day.
+### [→ See it live](https://antonioleblanc.com/brasil-grid/)
 
-**Live:** [antonioleblanc.com/brasil-grid](https://antonioleblanc.com/brasil-grid/)
+An open lab for understanding Brazil's National Interconnected System (SIN) and its power sector, built on public data from ONS, EPE, CCEE and ANEEL: where the lines and plants are, how frequency responds when a plant trips, and why the price of energy now depends on the hour of the day.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald?style=flat-square)](LICENSE)
 
